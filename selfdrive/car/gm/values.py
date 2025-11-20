@@ -250,12 +250,12 @@ class AccState:
   STANDSTILL = 4
 
 class CanBus:
-  POWERTRAIN = 0
-  OBSTACLE = 1
-  CAMERA = 2
-  CHASSIS = 2
-  LOOPBACK = 128
-  DROPPED = 192
+  POWERTRAIN = 0 + 4
+  OBSTACLE = 1 + 4
+  CAMERA = 2 + 4
+  CHASSIS = 2 + 4
+  LOOPBACK = 128 + 4
+  DROPPED = 192 + 4
 
 class GMFlags(IntFlag):
   PEDAL_LONG = 1
