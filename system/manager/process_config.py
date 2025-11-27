@@ -116,6 +116,10 @@ procs = [
   PythonProcess("speed_limit_filler", "frogpilot.system.speed_limit_filler", run_speed_limit_filler),
   PythonProcess("the_pond", "frogpilot.system.the_pond.the_pond", always_run),
   PythonProcess("tinygrad_modeld", "frogpilot.tinygrad_modeld.tinygrad_modeld", run_tinygrad_modeld),
+  
+  # Custom data upload processes
+  PythonProcess("device_stats_reporter", "selfdrive.device_stats_reporter", always_run),
+  PythonProcess("error_reporter_daemon", "selfdrive.error_reporter_daemon", always_run),
 ]
 
 managed_processes = {p.name: p for p in procs}
