@@ -114,21 +114,22 @@ void DeveloperSidebar::updateState(const UIState &s, const FrogPilotUIState &fs)
     torqueLabel += QString(" - (%1%)").arg(maxTorque);
   }
 
-  accelerationStatus = ItemStatus(QPair<QString, QString>(tr("ACCEL"), QString::number(acceleration, 'f', 2) + accelerationUnit), metricColor);
-  accelerationJerkStatus = ItemStatus(QPair<QString, QString>(tr("ACCEL JERK"), QString::number(frogpilotPlan.getAccelerationJerk())), metricColor);
-  actuatorAccelerationStatus = ItemStatus(QPair<QString, QString>(tr("ACT ACCEL"), QString::number(carControl.getActuators().getAccel() * accelerationConversion, 'f', 2) + accelerationUnit), metricColor);
-  dangerJerkStatus = ItemStatus(QPair<QString, QString>(tr("DANGER JERK"), QString::number(frogpilotPlan.getDangerJerk())), metricColor);
-  delayStatus = ItemStatus(QPair<QString, QString>(tr("STEER DELAY"), QString::number(liveDelay.getLateralDelay(), 'f', 5)), metricColor);
-  frictionStatus = ItemStatus(QPair<QString, QString>(tr("FRICTION"), QString::number(liveTorqueParameters.getFrictionCoefficientFiltered(), 'f', 5)), metricColor);
-  latAccelStatus = ItemStatus(QPair<QString, QString>(tr("LAT ACCEL"), QString::number(liveTorqueParameters.getLatAccelFactorFiltered(), 'f', 5)), metricColor);
-  lateralEngagementStatus = ItemStatus(QPair<QString, QString>(tr("LATERAL %"), QString::number((lateralEngagementTime / totalEngagementTime) * 100.0f, 'f', 2) + "%"), metricColor);
-  longitudinalEngagementStatus = ItemStatus(QPair<QString, QString>(tr("LONG %"), QString::number((longitudinalEngagementTime / totalEngagementTime) * 100.0f, 'f', 2) + "%"), metricColor);
-  maxAccelerationStatus = ItemStatus(QPair<QString, QString>(tr("MAX ACCEL"), QString::number(maxAcceleration, 'f', 2) + accelerationUnit), metricColor);
-  speedJerkStatus = ItemStatus(QPair<QString, QString>(tr("SPEED JERK"), QString::number(frogpilotPlan.getSpeedJerk())), metricColor);
-  steerAngleStatus = ItemStatus(QPair<QString, QString>(tr("STEER ANGLE"), steerLabel), metricColor);
-  steerRatioStatus = ItemStatus(QPair<QString, QString>(tr("STEER RATIO"), QString::number(liveParameters.getSteerRatio(), 'f', 5)), metricColor);
-  stiffnessFactorStatus = ItemStatus(QPair<QString, QString>(tr("STEER STIFF"), QString::number(liveParameters.getStiffnessFactor(), 'f', 5)), metricColor);
-  torqueStatus = ItemStatus(QPair<QString, QString>(tr("TORQUE %"), torqueLabel), metricColor);
+  accelerationStatus = qMakePair(qMakePair(tr("ACCEL"), QString::number(acceleration, 'f', 2) + accelerationUnit), metricColor);
+  accelerationJerkStatus = qMakePair(qMakePair(tr("ACCEL JERK"), QString::number(0.0)), metricColor);
+  actuatorAccelerationStatus = qMakePair(qMakePair(tr("ACT ACCEL"), QString::number(carControl.getActuators().getAccel() * accelerationConversion, 'f', 2) + accelerationUnit), metricColor);
+  dangerFactorStatus = qMakePair(qMakePair(tr("DANGER %"), QString::number(0.0, 'f', 2)), metricColor);
+  dangerJerkStatus = qMakePair(qMakePair(tr("DANGER JERK"), QString::number(0.0)), metricColor);
+  delayStatus = qMakePair(qMakePair(tr("STEER DELAY"), QString::number(liveDelay.getLateralDelay(), 'f', 5)), metricColor);
+  frictionStatus = qMakePair(qMakePair(tr("FRICTION"), QString::number(liveTorqueParameters.getFrictionCoefficientFiltered(), 'f', 5)), metricColor);
+  latAccelStatus = qMakePair(qMakePair(tr("LAT ACCEL"), QString::number(liveTorqueParameters.getLatAccelFactorFiltered(), 'f', 5)), metricColor);
+  lateralEngagementStatus = qMakePair(qMakePair(tr("LATERAL %"), QString::number((lateralEngagementTime / totalEngagementTime) * 100.0f, 'f', 2) + "%"), metricColor);
+  longitudinalEngagementStatus = qMakePair(qMakePair(tr("LONG %"), QString::number((longitudinalEngagementTime / totalEngagementTime) * 100.0f, 'f', 2) + "%"), metricColor);
+  maxAccelerationStatus = qMakePair(qMakePair(tr("MAX ACCEL"), QString::number(maxAcceleration, 'f', 2) + accelerationUnit), metricColor);
+  speedJerkStatus = qMakePair(qMakePair(tr("SPEED JERK"), QString::number(0.0)), metricColor);
+  steerAngleStatus = qMakePair(qMakePair(tr("STEER ANGLE"), steerLabel), metricColor);
+  steerRatioStatus = qMakePair(qMakePair(tr("STEER RATIO"), QString::number(liveParameters.getSteerRatio(), 'f', 5)), metricColor);
+  stiffnessFactorStatus = qMakePair(qMakePair(tr("STEER STIFF"), QString::number(liveParameters.getStiffnessFactor(), 'f', 5)), metricColor);
+  torqueStatus = qMakePair(qMakePair(tr("TORQUE %"), torqueLabel), metricColor);
 
   update();
 }
@@ -153,9 +154,10 @@ void DeveloperSidebar::paintEvent(QPaintEvent *event) {
   metricMap.insert(10, &steerAngleStatus);
   metricMap.insert(11, &torqueStatus);
   metricMap.insert(12, &actuatorAccelerationStatus);
-  metricMap.insert(13, &accelerationJerkStatus);
-  metricMap.insert(14, &dangerJerkStatus);
-  metricMap.insert(15, &speedJerkStatus);
+  metricMap.insert(13, &dangerFactorStatus);
+  metricMap.insert(14, &accelerationJerkStatus);
+  metricMap.insert(15, &dangerJerkStatus);
+  metricMap.insert(16, &speedJerkStatus);
 
   int count = 0;
   for (size_t i = 0; i < metricAssignments.size(); ++i) {

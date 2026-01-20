@@ -436,6 +436,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("UnlockDoors", "1", 0, "0"),
   ("UpdaterAvailableBranches", "", 0, ""),
   ("UseKonikServer", "0", 2, "0"),
+  ("UseRedPanda", "0", 2, "0"),
   ("UseSI", "1", 3, "1"),
   ("UseVienna", "0", 1, "0"),
   ("VEgoStarting", "", 3, ""),

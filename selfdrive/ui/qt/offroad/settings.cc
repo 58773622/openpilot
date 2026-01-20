@@ -207,6 +207,29 @@ void TogglesPanel::updateToggles() {
   }
 }
 
+GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
+  setSpacing(50);
+
+  auto use_red_panda = new ParamControl("UseRedPanda",
+                                        tr("Use External Red Panda"),
+                                        tr("<b>Use an external Red Panda for GM vehicles.</b> Requires a reboot after changing."),
+                                        "",
+                                        this);
+  addItem(use_red_panda);
+
+  QObject::connect(use_red_panda, &ToggleControl::toggleFlipped, [this](bool state) {
+    Q_UNUSED(state);
+
+    if (!uiState()->engaged()) {
+      if (ConfirmationDialog::confirm(tr("Reboot required to take effect."), tr("Reboot"), this)) {
+        Params().putBool("DoReboot", true);
+      }
+    } else {
+      ConfirmationDialog::alert(tr("Disengage to Reboot"), this);
+    }
+  });
+}
+
 DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
   setSpacing(50);
   addItem(new LabelControl(tr("Dongle ID"), getDongleId().value_or(tr("N/A"))));
@@ -442,13 +465,32 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(frogpilotSettingsWindow, &FrogPilotSettingsWindow::openSubPanel, [this]() {subPanelOpen=true;});
   QObject::connect(frogpilotSettingsWindow, &FrogPilotSettingsWindow::openSubSubPanel, [this]() {subSubPanelOpen=true;});
 
+  bool is_gm = false;
+  auto cp_bytes = params.get("CarParamsPersistent");
+  if (!cp_bytes.empty()) {
+    AlignedBuffer aligned_buf;
+    capnp::FlatArrayMessageReader cmsg(aligned_buf.align(cp_bytes.data(), cp_bytes.size()));
+    cereal::CarParams::Reader CP = cmsg.getRoot<cereal::CarParams>();
+    is_gm = CP.getCarName() == "gm";
+  }
+
+  GMPanel *gm_panel = nullptr;
+  if (is_gm) {
+    gm_panel = new GMPanel(this);
+  }
+
   QList<QPair<QString, QWidget *>> panels = {
     {tr("Device"), device},
     {tr("Network"), new Networking(this)},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
-    {tr("FrogPilot"), frogpilotSettingsWindow},
   };
+
+  if (is_gm && gm_panel != nullptr) {
+    panels.push_back({tr("GM"), gm_panel});
+  }
+
+  panels.push_back({tr("FrogPilot"), frogpilotSettingsWindow});
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {

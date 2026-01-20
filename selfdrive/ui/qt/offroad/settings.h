@@ -99,6 +99,12 @@ private:
   void updateToggles();
 };
 
+class GMPanel : public ListWidget {
+  Q_OBJECT
+public:
+  explicit GMPanel(SettingsWindow *parent);
+};
+
 class SoftwarePanel : public ListWidget {
   Q_OBJECT
 public:

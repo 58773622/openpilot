@@ -3791,24 +3791,12 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
         <translation type="gpt-5-generated">comma Pedal 支持</translation>
     </message>
     <message>
-        <source>Use Pedal for Longitudinal Control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Use the pedal interceptor for longitudinal control&lt;/b&gt; instead of camera ACC/Redneck when available.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SASCM Support</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Does your vehicle support "SASCMs"?&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
 <context>
     <name>FrogPilotVisualsPanel</name>
+    <message>
+        <source>FrogPilot</source>
+        <translation>青蛙飞行员</translation>
+    </message>
     <message>
         <source>Advanced UI Controls</source>
         <translation type="gpt-5-generated">高级界面控件</translation>
@@ -4972,7 +4960,11 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>FrogPilot</source>
-        <translation type="gpt-5-generated">FrogPilot</translation>
+        <translation>青蛙飞行员</translation>
+    </message>
+    <message>
+        <source>GM</source>
+        <translation>通用汽车</translation>
     </message>
     <message>
         <source>Welcome to FrogPilot! Since you're new to openpilot, the "Minimal" toggle preset has been applied, but you can change this at any time via the "Tuning Level" button!</source>
