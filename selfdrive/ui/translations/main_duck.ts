@@ -253,6 +253,10 @@
         <source>TORQUE %</source>
         <translation type="gpt-5-generated">Quack! TORQUE % — waddle-whoosh!</translation>
     </message>
+    <message>
+        <source>DANGER %</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DevicePanel</name>
@@ -422,6 +426,22 @@
     <message>
         <source>Miles</source>
         <translation type="gpt-5-generated">Quack-miles</translation>
+    </message>
+    <message>
+        <source>ALL TIME (KONIK)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALL TIME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PAST WEEK (KONIK)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PAST WEEK</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -909,6 +929,125 @@
     <message>
         <source> seconds</source>
         <translation type="gpt-5-generated"> quack seconds</translation>
+    </message>
+</context>
+<context>
+    <name>FrogPilotDriveSummary</name>
+    <message>
+        <source>Random Events Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drive Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UwUs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loch Ness Encounters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visits to 1955</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deja Vu Moments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internet Explorer Weeeeeeees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HAL 9000 Denials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>openpilot Crashes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This Is Fine Moments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To Be Continued Moments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attempted Frog Murders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Mail Received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>% of Drive With openpilot Engaged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drive Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drive Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>% of Drive In "Experimental Mode"</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Random Events Played!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> kilometer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> kilometers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> miles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> day </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> days </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hour </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hours </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minutes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3808,6 +3947,14 @@ Developer - Ultra-custom settings for seasoned duckthusiasts</translation>
         <source>&lt;b&gt;Does your vehicle support "SASCMs"?&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Use External Red Panda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FrogPilotVisualsPanel</name>
@@ -4576,6 +4723,29 @@ Developer - Ultra-custom settings for seasoned duckthusiasts</translation>
     </message>
 </context>
 <context>
+    <name>GMPanel</name>
+    <message>
+        <source>Use External Red Panda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reboot required to take effect.</source>
+        <translation type="unfinished">Quack! Reboot needed to make it stick, waddle!</translation>
+    </message>
+    <message>
+        <source>Reboot</source>
+        <translation type="unfinished">Quack-boot!</translation>
+    </message>
+    <message>
+        <source>Disengage to Reboot</source>
+        <translation type="unfinished">Quack! Waddle out to reboot!</translation>
+    </message>
+</context>
+<context>
     <name>InputDialog</name>
     <message>
         <source>Cancel</source>
@@ -4901,6 +5071,42 @@ Developer - Ultra-custom settings for seasoned duckthusiasts</translation>
             <numerusform>Quack! %n day(s) ago, waddle-waddle.</numerusform>
         </translation>
     </message>
+    <message>
+        <source>0 MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> GB</source>
+        <translation type="unfinished">Quack GB</translation>
+    </message>
+    <message>
+        <source> MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hour </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hours </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minute </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minutes </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> second</source>
+        <translation type="unfinished"> quack second</translation>
+    </message>
+    <message>
+        <source> seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Reset</name>
@@ -5003,6 +5209,10 @@ Waddle-wait, this may take up to a minute.</translation>
     <message>
         <source>Since you're very experienced with FrogPilot, the "Advanced" toggle preset has been applied, but you can change this at any time via the "Tuning Level" button!</source>
         <translation type="gpt-5-generated">Quack! Since you’re super seasoned with FrogPilot, the "Advanced" toggle preset is on—waddle anytime to switch it via the "Tuning Level" button!</translation>
+    </message>
+    <message>
+        <source>GM</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -66,7 +66,6 @@ void DeveloperSidebar::updateState(const UIState &s, const FrogPilotUIState &fs)
 
   const cereal::CarControl::Reader &carControl = fpsm["carControl"].getCarControl();
   const cereal::CarState::Reader &carState = fpsm["carState"].getCarState();
-  const cereal::FrogPilotPlan::Reader &frogpilotPlan = fpsm["frogpilotPlan"].getFrogpilotPlan();
   const cereal::LiveDelayData::Reader &liveDelay = fpsm["liveDelay"].getLiveDelay();
   const cereal::LiveParametersData::Reader &liveParameters = fpsm["liveParameters"].getLiveParameters();
   const cereal::LiveTorqueParametersData::Reader &liveTorqueParameters = fpsm["liveTorqueParameters"].getLiveTorqueParameters();
