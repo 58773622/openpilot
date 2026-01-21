@@ -4,7 +4,7 @@ from enum import IntFlag
 from cereal import car
 from openpilot.common.numpy_fast import interp
 from openpilot.common.params import Params
-from openpilot.selfdrive.car import dbc_dict, PlatformConfig, DbcDict, Platforms, CarSpecs
+from openpilot.selfdrive.car import dbc_dict, PlatformConfig, DbcDict, Platforms, CarSpecs, CanBusBase
 from openpilot.selfdrive.car.docs_definitions import CarHarness, CarDocs, CarParts
 from openpilot.selfdrive.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
 
@@ -293,23 +293,41 @@ class AccState:
   FAULTED = 3
   STANDSTILL = 4
 
-class CanBus:
-  POWERTRAIN = 0
-  OBSTACLE = 1
-  CAMERA = 2
-  CHASSIS = 2
-  LOOPBACK = 128
-  DROPPED = 192
+class CanBus(CanBusBase):
 
-  @staticmethod
-  def checkPanda():
-    if Params().get_bool("UseRedPanda"):
-      CanBus.POWERTRAIN += 4
-      CanBus.OBSTACLE += 4
-      CanBus.CAMERA += 4
-      CanBus.CHASSIS += 4
-      CanBus.LOOPBACK += 4
-      CanBus.DROPPED += 4
+  def __init__(self, CP=None, fingerprint=None) -> None:
+    super().__init__(CP, fingerprint)
+
+    self._powertrain = 0 + self.offset
+    self._obstacle = 1 + self.offset
+    self._camera = 2 + self.offset
+    self._chassis = 2 + self.offset
+    self._loopback = 128 + self.offset
+    self._dropped = 192 + self.offset
+
+  @property
+  def POWERTRAIN(self) -> int:
+    return self._powertrain
+
+  @property
+  def OBSTACLE(self) -> int:
+    return self._obstacle
+
+  @property
+  def CAMERA(self) -> int:
+    return self._camera
+
+  @property
+  def CHASSIS(self) -> int:
+    return self._chassis
+
+  @property
+  def LOOPBACK(self) -> int:
+    return self._loopback
+
+  @property
+  def DROPPED(self) -> int:
+    return self._dropped
 
 class GMFlags(IntFlag):
   PEDAL_LONG = 1
@@ -384,7 +402,4 @@ CAMERA_ACC_CAR.update({CAR.CHEVROLET_VOLT_CC, CAR.CHEVROLET_BOLT_CC, CAR.CHEVROL
 # CAMERA_ACC_CAR.update(CC_ONLY_CAR)
 
 STEER_THRESHOLD = 1.0
-
-CanBus.checkPanda()
-
 DBC = CAR.create_dbc_map()

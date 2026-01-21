@@ -161,6 +161,7 @@ class CarState(CarStateBase):
 
   @staticmethod
   def get_cam_can_parser(CP, FPCP):
+    CAN = CanBus(CP, None)
     messages = []
     if CP.networkLocation == NetworkLocation.fwdCamera and not CP.flags & GMFlags.NO_CAMERA.value:
       messages += [
@@ -175,10 +176,11 @@ class CarState(CarStateBase):
           ("ASCMActiveCruiseControlStatus", 25),
         ]
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CanBus.CAMERA)
+    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CAN.CAMERA)
 
   @staticmethod
   def get_can_parser(CP, FPCP):
+    CAN = CanBus(CP, None)
     messages = [
       ("BCMTurnSignals", 1),
       ("ECMPRDNL2", 10),
@@ -226,12 +228,13 @@ class CarState(CarStateBase):
       ]
 
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CanBus.POWERTRAIN)
+    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CAN.POWERTRAIN)
 
   @staticmethod
   def get_loopback_can_parser(CP):
+    CAN = CanBus(CP, None)
     messages = [
       ("ASCMLKASteeringCmd", 0),
     ]
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CanBus.LOOPBACK)
+    return CANParser(DBC[CP.carFingerprint]["pt"], messages, CAN.LOOPBACK)

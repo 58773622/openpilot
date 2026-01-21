@@ -109,8 +109,14 @@ class CarInterface(CarInterfaceBase):
 
   @staticmethod
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long, docs, frogpilot_toggles):
+    CAN = CanBus(None, fingerprint)
+
+    external_auto = CAN.POWERTRAIN >= 4
+    external_forced = Params().get_bool("UseRedPanda")
+    external_mode = external_auto or external_forced
+
     ret.carName = "gm"
-    if Params().get_bool("UseRedPanda"):
+    if external_mode:
       ret.safetyConfigs = [
         get_safety_config(car.CarParams.SafetyModel.noOutput),
         get_safety_config(car.CarParams.SafetyModel.gm),
@@ -120,13 +126,13 @@ class CarInterface(CarInterfaceBase):
       ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
       safety_config_index = 0
     ret.autoResumeSng = False
-    ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
+    ret.enableBsm = 0x142 in fingerprint[CAN.POWERTRAIN]
 
     # Detect Beartech SASCM allows openpilot longitudinal control on SDGM and ASCM_INT vehicles
-    if 0x2FF in fingerprint[0]:
+    if 0x2FF in fingerprint[CAN.POWERTRAIN]:
       ret.flags |= GMFlags.SASCM.value
 
-    if PEDAL_MSG in fingerprint[0]:
+    if PEDAL_MSG in fingerprint[CAN.POWERTRAIN]:
       ret.enableGasInterceptor = True
       ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_GAS_INTERCEPTOR
       # When a pedal interceptor is present, always use normal longitudinal (block stock cruise)
@@ -140,16 +146,16 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiBP = [5., 35.]
 
     if candidate in (CAMERA_ACC_CAR | SDGM_CAR | ASCM_INT) or candidate == CAR.CHEVROLET_VOLT_CAMERA:
-      ret.experimentalLongitudinalAvailable = candidate not in (CC_ONLY_CAR | ASCM_INT | SDGM_CAR) or 0x2FF in fingerprint[CanBus.POWERTRAIN]
+      ret.experimentalLongitudinalAvailable = candidate not in (CC_ONLY_CAR | ASCM_INT | SDGM_CAR) or 0x2FF in fingerprint[CAN.POWERTRAIN]
       ret.networkLocation = NetworkLocation.fwdCamera
-      ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
+      ret.radarUnavailable = 0x460 not in fingerprint[CAN.OBSTACLE]
       ret.pcmCruise = True
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
       if candidate in SDGM_CAR:
         ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_SDGM
         # Use C9 brake bit only on SDGM variants that lack 0xBE (ECMAcceleratorPos)
-        if ACCELERATOR_POS_MSG not in fingerprint[CanBus.POWERTRAIN]:
+        if ACCELERATOR_POS_MSG not in fingerprint[CAN.POWERTRAIN]:
           ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_FORCE_BRAKE_C9
           ret.flags |= GMFlags.FORCE_BRAKE_C9.value
         ret.minEnableSpeed = -1.  # engage speed is decided by pcm
@@ -180,7 +186,7 @@ class CarInterface(CarInterfaceBase):
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long
       ret.networkLocation = NetworkLocation.gateway
-      ret.radarUnavailable = RADAR_HEADER_MSG not in fingerprint[CanBus.OBSTACLE] and not docs
+      ret.radarUnavailable = RADAR_HEADER_MSG not in fingerprint[CAN.OBSTACLE] and not docs
       ret.pcmCruise = False  # stock non-adaptive cruise control is kept off
       # supports stop and go, but initial engage must (conservatively) be above 18mph
       ret.minEnableSpeed = 18 * CV.MPH_TO_MS
@@ -382,11 +388,11 @@ class CarInterface(CarInterfaceBase):
       ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_NO_ACC
 
     # Exception for flashed cars, or cars whose camera was removed
-    if (ret.networkLocation == NetworkLocation.fwdCamera or candidate in CC_ONLY_CAR) and CAM_MSG not in fingerprint[CanBus.CAMERA] and not candidate in (SDGM_CAR | ASCM_INT):
+    if (ret.networkLocation == NetworkLocation.fwdCamera or candidate in CC_ONLY_CAR) and CAM_MSG not in fingerprint[CAN.CAMERA] and not candidate in (SDGM_CAR | ASCM_INT):
       ret.flags |= GMFlags.NO_CAMERA.value
       ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_NO_CAMERA
 
-    if ACCELERATOR_POS_MSG not in fingerprint[CanBus.POWERTRAIN]:
+    if ACCELERATOR_POS_MSG not in fingerprint[CAN.POWERTRAIN]:
       ret.flags |= GMFlags.NO_ACCELERATOR_POS_MSG.value
 
     return ret
