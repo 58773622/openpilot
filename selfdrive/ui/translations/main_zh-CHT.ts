@@ -4742,6 +4742,14 @@ Developer - 為資深愛好者提供高度自訂的設定</translation>
         <source>Disengage to Reboot</source>
         <translation type="unfinished">請先取消控車才能重新啟動</translation>
     </message>
+    <message>
+        <source>GM Stop-and-Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>InputDialog</name>

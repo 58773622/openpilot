@@ -173,6 +173,9 @@ class CarInterface(CarInterfaceBase):
         ret.pcmCruise = False
         ret.openpilotLongitudinalControl = True
         ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
+        if getattr(frogpilot_toggles, "gm_stop_and_go", False):
+          ret.autoResumeSng = True
+          ret.startingState = True
 
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long

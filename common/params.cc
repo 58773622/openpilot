@@ -577,6 +577,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"UseActiveTheme", CLEAR_ON_MANAGER_START},
     {"UseKonikServer", PERSISTENT},
     {"UseRedPanda", PERSISTENT},
+    {"GMStopAndGo", PERSISTENT},
     {"UseSI", PERSISTENT},
     {"UseVienna", PERSISTENT},
     {"VEgoStarting", PERSISTENT},

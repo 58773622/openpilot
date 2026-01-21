@@ -217,6 +217,17 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
                                         this);
   addItem(use_red_panda);
 
+  auto gm_stop_and_go = new ParamControl("GMStopAndGo",
+                                         tr("GM Stop-and-Go"),
+                                         tr("<b>Enable GM stop-and-go for following and restart in traffic.</b> Requires openpilot longitudinal control (alpha)."),
+                                         "",
+                                         this);
+
+  Params params;
+  bool show_gm_sng = params.getBool("ExperimentalLongitudinalEnabled");
+  gm_stop_and_go->setVisible(show_gm_sng);
+  addItem(gm_stop_and_go);
+
   QObject::connect(use_red_panda, &ToggleControl::toggleFlipped, [this](bool state) {
     Q_UNUSED(state);
 

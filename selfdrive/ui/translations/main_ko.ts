@@ -4741,6 +4741,14 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
         <source>Disengage to Reboot</source>
         <translation type="unfinished">재부팅하려면 연결을 해제하세요</translation>
     </message>
+    <message>
+        <source>GM Stop-and-Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>InputDialog</name>

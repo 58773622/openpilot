@@ -235,6 +235,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("FullMap", "0", 2, "0"),
   ("GasRegenCmd", "1", 2, "0"),
   ("GMPedalLongitudinal", "1", 2, "1"),
+  ("GMStopAndGo", "0", 2, "0"),
   ("GithubSshKeys", "", 0, ""),
   ("GithubUsername", "", 0, ""),
   ("GoatScream", "0", 1, "0"),
@@ -1012,6 +1013,7 @@ class FrogPilotVariables:
     toggle.volt_sng = toggle.car_model in volt_models and (params.get_bool("VoltSNG") if tuning_level >= level["VoltSNG"] else default.get_bool("VoltSNG"))
 
     toggle.gm_pedal_longitudinal = params.get_bool("GMPedalLongitudinal") if tuning_level >= level["GMPedalLongitudinal"] else default.get_bool("GMPedalLongitudinal")
+    toggle.gm_stop_and_go = params.get_bool("GMStopAndGo") if tuning_level >= level["GMStopAndGo"] else default.get_bool("GMStopAndGo")
 
     params_memory.put("FrogPilotToggles", json.dumps(toggle.__dict__))
     params_memory.remove("FrogPilotTogglesUpdated")

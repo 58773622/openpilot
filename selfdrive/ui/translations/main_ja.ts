@@ -4740,6 +4740,14 @@ Developer - こだわりのある上級者向けの高度にカスタマイズ�
         <source>Disengage to Reboot</source>
         <translation type="unfinished">openpilot をキャンセルして再起動ができます</translation>
     </message>
+    <message>
+        <source>GM Stop-and-Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>InputDialog</name>

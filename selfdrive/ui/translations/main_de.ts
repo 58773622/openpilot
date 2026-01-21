@@ -4742,6 +4742,14 @@ Entwickler – Hochgradig anpassbare Einstellungen für versierte Enthusiasten</
         <source>Disengage to Reboot</source>
         <translation type="unfinished">Für Neustart deaktivieren</translation>
     </message>
+    <message>
+        <source>GM Stop-and-Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>InputDialog</name>
