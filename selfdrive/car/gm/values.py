@@ -3,8 +3,7 @@ from enum import IntFlag
 
 from cereal import car
 from openpilot.common.numpy_fast import interp
-from openpilot.common.params import Params
-from openpilot.selfdrive.car import dbc_dict, PlatformConfig, DbcDict, Platforms, CarSpecs, CanBusBase
+from openpilot.selfdrive.car import dbc_dict, PlatformConfig, DbcDict, Platforms, CarSpecs
 from openpilot.selfdrive.car.docs_definitions import CarHarness, CarDocs, CarParts
 from openpilot.selfdrive.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
 
@@ -259,7 +258,7 @@ class CAR(Platforms):
   )
   CHEVROLET_MALIBU_CC = GMPlatformConfig(
     [GMCarDocs("Chevrolet Malibu 2023 - No-ACC")],
-    CarSpecs(mass=1450, wheelbase=2.8, steerRatio=18.25, centerToFrontRatio=0.4, tireStiffnessFactor=0.997),
+    CarSpecs(mass=1450, wheelbase=2.8, steerRatio=15.8, centerToFrontRatio=0.4),
   )
   CHEVROLET_MALIBU_HYBRID_CC = GMPlatformConfig(
     [GMCarDocs("Chevrolet Malibu Hybrid 2017 - No-ACC")],
@@ -293,41 +292,13 @@ class AccState:
   FAULTED = 3
   STANDSTILL = 4
 
-class CanBus(CanBusBase):
-
-  def __init__(self, CP=None, fingerprint=None) -> None:
-    super().__init__(CP, fingerprint)
-
-    self._powertrain = 0 + self.offset
-    self._obstacle = 1 + self.offset
-    self._camera = 2 + self.offset
-    self._chassis = 2 + self.offset
-    self._loopback = 128 + self.offset
-    self._dropped = 192 + self.offset
-
-  @property
-  def POWERTRAIN(self) -> int:
-    return self._powertrain
-
-  @property
-  def OBSTACLE(self) -> int:
-    return self._obstacle
-
-  @property
-  def CAMERA(self) -> int:
-    return self._camera
-
-  @property
-  def CHASSIS(self) -> int:
-    return self._chassis
-
-  @property
-  def LOOPBACK(self) -> int:
-    return self._loopback
-
-  @property
-  def DROPPED(self) -> int:
-    return self._dropped
+class CanBus:
+  POWERTRAIN = 4
+  OBSTACLE = 5
+  CAMERA = 6
+  CHASSIS = 6
+  LOOPBACK = 132
+  DROPPED = 196
 
 class GMFlags(IntFlag):
   PEDAL_LONG = 1
@@ -402,4 +373,5 @@ CAMERA_ACC_CAR.update({CAR.CHEVROLET_VOLT_CC, CAR.CHEVROLET_BOLT_CC, CAR.CHEVROL
 # CAMERA_ACC_CAR.update(CC_ONLY_CAR)
 
 STEER_THRESHOLD = 1.0
+
 DBC = CAR.create_dbc_map()

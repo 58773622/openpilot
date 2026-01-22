@@ -49,19 +49,12 @@ class CarController(CarControllerBase):
 
     self.params = CarControllerParams(self.CP)
     self.is_volt = self.CP.carFingerprint in (CAR.CHEVROLET_VOLT, CAR.CHEVROLET_VOLT_2019, CAR.CHEVROLET_VOLT_ASCM, CAR.CHEVROLET_VOLT_CAMERA, CAR.CHEVROLET_VOLT_CC)
-    # Malibu Hybrid CC pedal voltages are slightly higher than Bolt; scale down
-    self.pedal_scale = 0.96 if self.CP.carFingerprint == CAR.CHEVROLET_MALIBU_HYBRID_CC else 1.0
     self.mass = CP.mass
     self.tireRadius = 0.075 * CP.wheelbase + 0.1453
     self.frontalArea = 1.05 * CP.wheelbase + 0.0679
     self.coeffDrag = 0.30
     self.airDensity = 1.225
     self.params_ = Params()
-    self.malibu_cancel_phase = 0
-    self.malibu_cancel_last_ts = 0.0
-    self.malibu_cancel_frame = 0
-
-    self.CAN = CanBus(self.CP, None)
 
     self.packer_pt = CANPacker(DBC[self.CP.carFingerprint]['pt'])
     self.packer_obj = CANPacker(DBC[self.CP.carFingerprint]['radar'])
@@ -95,7 +88,6 @@ class CarController(CarControllerBase):
     hud_v_cruise = hud_control.setSpeed
     if hud_v_cruise > 70:
       hud_v_cruise = 0
-    now_sec = now_nanos * 1e-9
 
     # Send CAN commands.
     can_sends = []
@@ -134,7 +126,7 @@ class CarController(CarControllerBase):
       self.last_steer_frame = self.frame
       self.apply_steer_last = apply_steer
       idx = self.lka_steering_cmd_counter % 4
-      can_sends.append(gmcan.create_steering_control(self.packer_pt, self.CAN.POWERTRAIN, apply_steer, idx, CC.latActive))
+      can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
 
     if self.CP.openpilotLongitudinalControl:
       # Gas/regen, brakes, and UI commands - all at 25Hz
@@ -220,7 +212,6 @@ class CarController(CarControllerBase):
           if self.CP.carFingerprint in CC_ONLY_CAR:
             # gas interceptor only used for full long control on cars without ACC
             interceptor_gas_cmd = self.calc_pedal_command(actuators.accel, CC.longActive)
-            interceptor_gas_cmd = clip(interceptor_gas_cmd * self.pedal_scale, 0., 1.)
 
         if self.CP.enableGasInterceptor and self.apply_gas > self.params.INACTIVE_REGEN and CS.out.cruiseState.standstill:
           # "Tap" the accelerator pedal to re-engage ACC
@@ -236,21 +227,18 @@ class CarController(CarControllerBase):
             can_sends.extend(gmcan.create_gm_cc_spam_command(self.packer_pt, self, CS, actuators, frogpilot_toggles))
           elif (CS.out.cruiseState.enabled and CC.enabled and self.frame % 52 == 0 and
                 CS.cruise_buttons == CruiseButtons.UNPRESS and CS.out.gasPressed and CS.out.cruiseState.speed < CS.out.vEgo < hud_v_cruise):
-            if self.CP.carFingerprint == CAR.CHEVROLET_MALIBU_HYBRID_CC:
-              can_sends.append(gmcan.create_buttons(self.packer_pt, self.CAN.POWERTRAIN, 0, CruiseButtons.DECEL_SET))
-            else:
-              can_sends.append(gmcan.create_buttons(self.packer_pt, self.CAN.POWERTRAIN, (CS.buttons_counter + 1) % 4, CruiseButtons.DECEL_SET))
+            can_sends.append(gmcan.create_buttons(self.packer_pt, CanBus.POWERTRAIN, (CS.buttons_counter + 1) % 4, CruiseButtons.DECEL_SET))
         if self.CP.enableGasInterceptor:
           can_sends.append(create_gas_interceptor_command(self.packer_pt, interceptor_gas_cmd, idx))
         if self.CP.carFingerprint not in CC_ONLY_CAR:
-          friction_brake_bus = self.CAN.CHASSIS
+          friction_brake_bus = CanBus.CHASSIS
           # GM Camera exceptions
           # TODO: can we always check the longControlState?
           if self.CP.networkLocation == NetworkLocation.fwdCamera and self.CP.carFingerprint not in CC_ONLY_CAR:
             at_full_stop = at_full_stop and stopping
-            friction_brake_bus = self.CAN.POWERTRAIN
+            friction_brake_bus = CanBus.POWERTRAIN
             if self.CP.carFingerprint in SDGM_CAR:
-              friction_brake_bus = self.CAN.CAMERA
+              friction_brake_bus = CanBus.CAMERA
 
           if self.CP.autoResumeSng:
             resume = actuators.longControlState != LongCtrlState.starting or CC.cruiseControl.resume
@@ -262,13 +250,13 @@ class CarController(CarControllerBase):
             acc_engaged = CC.enabled
 
           # GasRegenCmdActive needs to be 1 to avoid cruise faults. It describes the ACC state, not actuation
-          can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, self.CAN.POWERTRAIN, self.apply_gas, idx, acc_engaged, at_full_stop))
+          can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, CanBus.POWERTRAIN, self.apply_gas, idx, acc_engaged, at_full_stop))
           can_sends.append(gmcan.create_friction_brake_command(self.packer_ch, friction_brake_bus, self.apply_brake,
                                                              idx, CC.enabled, near_stop, at_full_stop, self.CP))
 
           # Send dashboard UI commands (ACC status)
           send_fcw = hud_alert == VisualAlert.fcw
-          can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, self.CAN.POWERTRAIN, CC.enabled,
+          can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, CanBus.POWERTRAIN, CC.enabled,
                                                               hud_v_cruise * CV.MS_TO_KPH, hud_control, send_fcw))
       else:
         # to keep accel steady for logs when not sending gas
@@ -281,37 +269,26 @@ class CarController(CarControllerBase):
         time_and_headlights_step = 10
         if self.frame % time_and_headlights_step == 0:
           idx = (self.frame // time_and_headlights_step) % 4
-          can_sends.append(gmcan.create_adas_time_status(self.CAN.OBSTACLE, int((tt - self.start_time) * 60), idx))
-          can_sends.append(gmcan.create_adas_headlights_status(self.packer_obj, self.CAN.OBSTACLE))
+          can_sends.append(gmcan.create_adas_time_status(CanBus.OBSTACLE, int((tt - self.start_time) * 60), idx))
+          can_sends.append(gmcan.create_adas_headlights_status(self.packer_obj, CanBus.OBSTACLE))
 
         speed_and_accelerometer_step = 2
         if self.frame % speed_and_accelerometer_step == 0:
           idx = (self.frame // speed_and_accelerometer_step) % 4
-          can_sends.append(gmcan.create_adas_steering_status(self.CAN.OBSTACLE, idx))
-          can_sends.append(gmcan.create_adas_accelerometer_speed_status(self.CAN.OBSTACLE, CS.out.vEgo, idx))
+          can_sends.append(gmcan.create_adas_steering_status(CanBus.OBSTACLE, idx))
+          can_sends.append(gmcan.create_adas_accelerometer_speed_status(CanBus.OBSTACLE, CS.out.vEgo, idx))
 
       if self.CP.networkLocation == NetworkLocation.gateway and self.frame % self.params.ADAS_KEEPALIVE_STEP == 0:
-        can_sends += gmcan.create_adas_keepalive(self.CAN.POWERTRAIN)
+        can_sends += gmcan.create_adas_keepalive(CanBus.POWERTRAIN)
 
       # TODO: integrate this with the code block below?
       if (
           (self.CP.flags & GMFlags.PEDAL_LONG.value)  # Always cancel stock CC when using pedal interceptor
           or (self.CP.flags & GMFlags.CC_LONG.value and not CC.enabled)  # Cancel stock CC if OP is not active
       ) and CS.out.cruiseState.enabled:
-        if self.CP.carFingerprint == CAR.CHEVROLET_MALIBU_HYBRID_CC:
-          # Match 33 Hz cadence (every 3 frames) and align phase to the last seen checksum.
-          if self.malibu_cancel_frame % 3 == 0:
-            phase_map = {175: 0, 1438: 1, 2701: 2, 3964: 3}
-            if CS.steering_button_checksum in phase_map:
-              self.malibu_cancel_phase = (phase_map[CS.steering_button_checksum] + 1) % 4
-            else:
-              self.malibu_cancel_phase = (self.malibu_cancel_phase + 1) % 4
-            can_sends.append(gmcan.create_buttons_malibu_cancel(self.CAN.POWERTRAIN, self.malibu_cancel_phase))
-          self.malibu_cancel_frame += 1
-        else:
-          if (self.frame - self.last_button_frame) * DT_CTRL > 0.04:
-            self.last_button_frame = self.frame
-            can_sends.append(gmcan.create_buttons(self.packer_pt, self.CAN.POWERTRAIN, (CS.buttons_counter + 1) % 4, CruiseButtons.CANCEL))
+        if (self.frame - self.last_button_frame) * DT_CTRL > 0.04:
+          self.last_button_frame = self.frame
+          can_sends.append(gmcan.create_buttons(self.packer_pt, CanBus.POWERTRAIN, (CS.buttons_counter + 1) % 4, CruiseButtons.CANCEL))
 
     else:
       # While car is braking, cancel button causes ECM to enter a soft disable state with a fault status.
@@ -319,25 +296,15 @@ class CarController(CarControllerBase):
       self.cancel_counter = self.cancel_counter + 1 if CC.cruiseControl.cancel else 0
 
       # Stock longitudinal, integrated at camera
-      if self.cancel_counter > CAMERA_CANCEL_DELAY_FRAMES:
-        if self.CP.carFingerprint == CAR.CHEVROLET_MALIBU_HYBRID_CC:
-          if self.malibu_cancel_frame % 3 == 0:
-            phase_map = {175: 0, 1438: 1, 2701: 2, 3964: 3}
-            if CS.steering_button_checksum in phase_map:
-              self.malibu_cancel_phase = (phase_map[CS.steering_button_checksum] + 1) % 4
-            else:
-              self.malibu_cancel_phase = (self.malibu_cancel_phase + 1) % 4
-            can_sends.append(gmcan.create_buttons_malibu_cancel(self.CAN.POWERTRAIN, self.malibu_cancel_phase))
-          self.malibu_cancel_frame += 1
-        else:
-          if (self.frame - self.last_button_frame) * DT_CTRL > 0.04:
-            self.last_button_frame = self.frame
-            can_sends.append(gmcan.create_buttons(self.packer_pt, self.CAN.CAMERA, CS.buttons_counter, CruiseButtons.CANCEL))
+      if (self.frame - self.last_button_frame) * DT_CTRL > 0.04:
+        if self.cancel_counter > CAMERA_CANCEL_DELAY_FRAMES:
+          self.last_button_frame = self.frame
+          can_sends.append(gmcan.create_buttons(self.packer_pt, CanBus.CAMERA, CS.buttons_counter, CruiseButtons.CANCEL))
 
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       # Silence "Take Steering" alert sent by camera, forward PSCMStatus with HandsOffSWlDetectionStatus=1
       if self.frame % 10 == 0:
-        can_sends.append(gmcan.create_pscm_status(self.packer_pt, self.CAN.CAMERA, CS.pscm_status))
+        can_sends.append(gmcan.create_pscm_status(self.packer_pt, CanBus.CAMERA, CS.pscm_status))
 
     new_actuators = actuators.as_builder()
     new_actuators.accel = accel

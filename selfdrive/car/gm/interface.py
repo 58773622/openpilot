@@ -5,7 +5,6 @@ import numpy as np
 from panda import Panda
 
 from openpilot.common.conversions import Conversions as CV
-from openpilot.common.params import Params
 from openpilot.selfdrive.car import create_button_events, get_safety_config
 from openpilot.selfdrive.car.gm.radar_interface import RADAR_HEADER_MSG
 from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CarControllerParams, EV_CAR, CAMERA_ACC_CAR, CanBus, GMFlags, CC_ONLY_CAR, SDGM_CAR, ASCM_INT
@@ -109,32 +108,19 @@ class CarInterface(CarInterfaceBase):
 
   @staticmethod
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long, docs, frogpilot_toggles):
-    CAN = CanBus(None, fingerprint)
-
-    external_auto = CAN.POWERTRAIN >= 4
-    external_forced = Params().get_bool("UseRedPanda")
-    external_mode = external_auto or external_forced
-
     ret.carName = "gm"
-    if external_mode:
-      ret.safetyConfigs = [
-        get_safety_config(car.CarParams.SafetyModel.noOutput),
-        get_safety_config(car.CarParams.SafetyModel.gm),
-      ]
-      safety_config_index = -1
-    else:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
-      safety_config_index = 0
+    ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
+                         get_safety_config(car.CarParams.SafetyModel.gm)]
     ret.autoResumeSng = False
-    ret.enableBsm = 0x142 in fingerprint[CAN.POWERTRAIN]
+    ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
 
     # Detect Beartech SASCM allows openpilot longitudinal control on SDGM and ASCM_INT vehicles
-    if 0x2FF in fingerprint[CAN.POWERTRAIN]:
+    if 0x2FF in fingerprint[0]:
       ret.flags |= GMFlags.SASCM.value
 
-    if PEDAL_MSG in fingerprint[CAN.POWERTRAIN]:
+    if PEDAL_MSG in fingerprint[0]:
       ret.enableGasInterceptor = True
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_GAS_INTERCEPTOR
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_GAS_INTERCEPTOR
       # When a pedal interceptor is present, always use normal longitudinal (block stock cruise)
       experimental_long = False
 
@@ -146,26 +132,26 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiBP = [5., 35.]
 
     if candidate in (CAMERA_ACC_CAR | SDGM_CAR | ASCM_INT) or candidate == CAR.CHEVROLET_VOLT_CAMERA:
-      ret.experimentalLongitudinalAvailable = candidate not in (CC_ONLY_CAR | ASCM_INT | SDGM_CAR) or 0x2FF in fingerprint[CAN.POWERTRAIN]
+      ret.experimentalLongitudinalAvailable = candidate not in (CC_ONLY_CAR | ASCM_INT | SDGM_CAR) or 0x2FF in fingerprint[CanBus.POWERTRAIN]
       ret.networkLocation = NetworkLocation.fwdCamera
-      ret.radarUnavailable = 0x460 not in fingerprint[CAN.OBSTACLE]
+      ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
       ret.pcmCruise = True
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
       if candidate in SDGM_CAR:
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_SDGM
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_SDGM
         # Use C9 brake bit only on SDGM variants that lack 0xBE (ECMAcceleratorPos)
-        if ACCELERATOR_POS_MSG not in fingerprint[CAN.POWERTRAIN]:
-          ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_FORCE_BRAKE_C9
+        if ACCELERATOR_POS_MSG not in fingerprint[CanBus.POWERTRAIN]:
+          ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_FORCE_BRAKE_C9
           ret.flags |= GMFlags.FORCE_BRAKE_C9.value
         ret.minEnableSpeed = -1.  # engage speed is decided by pcm
         ret.minSteerSpeed = 7 * CV.MPH_TO_MS
       elif candidate in ASCM_INT:
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
         ret.minSteerSpeed = 7 * CV.MPH_TO_MS
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_ASCM_INT
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_ASCM_INT
       else:
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
 
       # Tuning for experimental long
       ret.longitudinalTuning.kiV = [0.5, 0.5]
@@ -178,15 +164,12 @@ class CarInterface(CarInterfaceBase):
       if ret.experimentalLongitudinalAvailable and experimental_long:
         ret.pcmCruise = False
         ret.openpilotLongitudinalControl = True
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
-        if getattr(frogpilot_toggles, "gm_stop_and_go", False):
-          ret.autoResumeSng = True
-          ret.startingState = True
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
 
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long
       ret.networkLocation = NetworkLocation.gateway
-      ret.radarUnavailable = RADAR_HEADER_MSG not in fingerprint[CAN.OBSTACLE] and not docs
+      ret.radarUnavailable = RADAR_HEADER_MSG not in fingerprint[CanBus.OBSTACLE] and not docs
       ret.pcmCruise = False  # stock non-adaptive cruise control is kept off
       # supports stop and go, but initial engage must (conservatively) be above 18mph
       ret.minEnableSpeed = 18 * CV.MPH_TO_MS
@@ -201,7 +184,7 @@ class CarInterface(CarInterfaceBase):
 
       if ret.enableGasInterceptor:
         # Need to set ASCM long limits when using pedal interceptor, instead of camera ACC long limits
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_ASCM_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_ASCM_LONG
 
     # Start with a baseline tuning for all GM vehicles. Override tuning as needed in each model section below.
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
@@ -224,8 +207,6 @@ class CarInterface(CarInterfaceBase):
     if candidate in VOLT_LIKE_CARS:
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
       ret.steerActuatorDelay = 0.2
-      if candidate == CAR.CHEVROLET_MALIBU_HYBRID_CC and ret.enableGasInterceptor:
-        ret.flags |= GMFlags.PEDAL_LONG.value
 
     elif candidate == CAR.GMC_ACADIA:
       ret.minEnableSpeed = -1.  # engage speed is decided by pcm
@@ -325,7 +306,7 @@ class CarInterface(CarInterfaceBase):
 
     if ret.enableGasInterceptor and frogpilot_toggles.gm_pedal_longitudinal:
       ret.networkLocation = NetworkLocation.fwdCamera
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
       ret.minEnableSpeed = -1
       ret.pcmCruise = False
       ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long
@@ -334,7 +315,7 @@ class CarInterface(CarInterfaceBase):
 
       if candidate in CC_ONLY_CAR:
         ret.flags |= GMFlags.PEDAL_LONG.value
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_PEDAL_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_PEDAL_LONG
         # Note: Low speed, stop and go not tested. Should be fairly smooth on highway
         ret.longitudinalTuning.kiBP = [0.0, 5., 35.]
         ret.longitudinalTuning.kiV = [0.0, 0.35, 0.5]
@@ -344,26 +325,15 @@ class CarInterface(CarInterfaceBase):
         ret.pcmCruise = False
         ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long
       else:  # Pedal used for SNG, ACC for longitudinal control otherwise
-        ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
         ret.startingState = True
         ret.vEgoStopping = 0.25
         ret.vEgoStarting = 0.25
 
-    if ret.enableGasInterceptor and candidate == CAR.CHEVROLET_MALIBU_HYBRID_CC:
-      ret.flags |= GMFlags.PEDAL_LONG.value
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_PEDAL_LONG
-      ret.longitudinalTuning.kiBP = [0.0, 5., 35.]
-      ret.longitudinalTuning.kiV = [0.0, 0.35, 0.5]
-      ret.longitudinalTuning.kfDEPRECATED = 0.15
-      ret.stoppingDecelRate = 0.8
-      ret.minEnableSpeed = -1
-      ret.pcmCruise = False
-      ret.openpilotLongitudinalControl = not frogpilot_toggles.disable_openpilot_long
-
 
     elif candidate in CC_ONLY_CAR:
       ret.flags |= GMFlags.CC_LONG.value
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_CC_LONG
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_CC_LONG
       ret.radarUnavailable = True
       ret.experimentalLongitudinalAvailable = False
       ret.minEnableSpeed = 24 * CV.MPH_TO_MS
@@ -385,14 +355,14 @@ class CarInterface(CarInterfaceBase):
         ret.longitudinalTuning.kiV = [0.1]
 
     if candidate in CC_ONLY_CAR:
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_NO_ACC
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_NO_ACC
 
     # Exception for flashed cars, or cars whose camera was removed
-    if (ret.networkLocation == NetworkLocation.fwdCamera or candidate in CC_ONLY_CAR) and CAM_MSG not in fingerprint[CAN.CAMERA] and not candidate in (SDGM_CAR | ASCM_INT):
+    if (ret.networkLocation == NetworkLocation.fwdCamera or candidate in CC_ONLY_CAR) and CAM_MSG not in fingerprint[CanBus.CAMERA] and not candidate in (SDGM_CAR | ASCM_INT):
       ret.flags |= GMFlags.NO_CAMERA.value
-      ret.safetyConfigs[safety_config_index].safetyParam |= Panda.FLAG_GM_NO_CAMERA
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_NO_CAMERA
 
-    if ACCELERATOR_POS_MSG not in fingerprint[CAN.POWERTRAIN]:
+    if ACCELERATOR_POS_MSG not in fingerprint[CanBus.POWERTRAIN]:
       ret.flags |= GMFlags.NO_ACCELERATOR_POS_MSG.value
 
     return ret
@@ -438,7 +408,6 @@ class CarInterface(CarInterfaceBase):
 
     if (self.CP.flags & GMFlags.PEDAL_LONG.value) and \
       self.CP.transmissionType == TransmissionType.direct and \
-      self.CP.carFingerprint != CAR.CHEVROLET_MALIBU_HYBRID_CC and \
       not self.CS.single_pedal_mode and \
       c.longActive:
       events.add(FrogPilotEventName.pedalInterceptorNoBrake)

@@ -4,7 +4,7 @@ from cereal import log
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.realtime import DT_CTRL
 from openpilot.selfdrive.car import make_can_msg
-from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons
+from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CanBus
 
 
 def create_buttons(packer, bus, idx, button):
@@ -22,19 +22,6 @@ def create_buttons(packer, bus, idx, button):
 
   values["SteeringButtonChecksum"] = checksum
   return packer.make_can_msg("ASCMSteeringButton", bus, values)
-
-
-def create_buttons_malibu_cancel(bus, phase):
-  # Malibu Hybrid CC cancel frames use a 4-value pattern in the last 2 bytes.
-  data = bytearray(7)
-  data[3] = 0x01  # ACCAlwaysOne
-  data[4] = 0x00
-  # Observed cancel payloads (bus 0/130): 00 00 00 01 00 60 AF / 65 9E / 6A 8D / 6F 7C
-  cancel_bytes = (0x60, 0xAF, 0x65, 0x9E, 0x6A, 0x8D, 0x6F, 0x7C)
-  idx = (phase % 4) * 2
-  data[5] = cancel_bytes[idx]
-  data[6] = cancel_bytes[idx + 1]
-  return make_can_msg(0x1e1, bytes(data), bus)
 
 
 def create_pscm_status(packer, bus, pscm_status):
@@ -229,6 +216,6 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators, frogpilot_toggl
   if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
     controller.last_button_frame = controller.frame
     idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
-    return [create_buttons(packer, controller.CAN.POWERTRAIN, idx, cruiseBtn)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, idx, cruiseBtn)]
   else:
     return []
