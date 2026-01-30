@@ -1,3 +1,4 @@
+
 import time
 import numpy as np
 from openpilot.common.swaglog import cloudlog
@@ -33,7 +34,7 @@ PITCH_DOWNHILL_THRESHOLD = -0.030
 # --- 3. 動態 TTC (碰撞時間) 安全設定 ---
 # 速度 [36kph, 108kph] -> TTC [2.0s, 3.0s] 平滑過渡
 TTC_BP = [10., 30.]
-TTC_V  = [2.0, 3.0]
+TTC_V  = [1.5, 2.0]
 
 # --- 4. 緊急狀況閾值 ---
 EMERGENCY_TTC = 2.0
