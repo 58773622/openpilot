@@ -138,6 +138,11 @@ class CarInterface(CarInterfaceBase):
           ret.safetyConfigs[0].safetyParam |= Panda.FLAG_FORCE_BRAKE_C9
           ret.flags |= GMFlags.FORCE_BRAKE_C9.value
 
+    # 标记 SASCM 模式：SDGM 车型且 PT 总线存在 0x2FF 时，说明通过外挂 SASCM 打开了
+    # openpilot 纵向控制的试验箱模式。后续所有 GM+SASCM 的特例统一用 GMFlags.SASCM 判断。
+    if candidate in SDGM_CAR and 0x2FF in fingerprint[CanBus.POWERTRAIN]:
+      ret.flags |= GMFlags.SASCM.value
+
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = not disable_openpilot_long
       ret.networkLocation = NetworkLocation.gateway
@@ -337,10 +342,18 @@ class CarInterface(CarInterfaceBase):
                               {1: FrogPilotButtonType.lkas}),
       ]
 
-    # The ECM allows enabling on falling edge of set, but only rising edge of resume
+    # The ECM allows enabling on falling edge of set, but only rising edge of resume.
+    # 对于 GM + SASCM + openpilot 纵向，在 20 km/h 以下禁止通过 RES-（decelCruise）触发 enable，
+    # 以避免 SASCM 在极低车速下报巡航故障；RES+ 仍可启用。
+    enable_buttons = (ButtonType.decelCruise,)
+    if (self.CP.carName == "gm" and self.CP.openpilotLongitudinalControl and
+        bool(self.CP.flags & GMFlags.SASCM.value) and
+        ret.vEgo < 20 * CV.KPH_TO_MS):
+      enable_buttons = tuple()
+
     events = self.create_common_events(ret, extra_gears=[GearShifter.sport, GearShifter.low,
                                                          GearShifter.eco, GearShifter.manumatic],
-                                       pcm_enable=self.CP.pcmCruise, enable_buttons=(ButtonType.decelCruise,))
+                                       pcm_enable=self.CP.pcmCruise, enable_buttons=enable_buttons)
     if not self.CP.pcmCruise:
       if any(b.type == ButtonType.accelCruise and b.pressed for b in ret.buttonEvents):
         events.add(EventName.buttonEnable)

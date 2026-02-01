@@ -140,6 +140,10 @@ class CarState(CarStateBase):
       ret.cruiseState.speed = pt_cp.vl["ECMCruiseControl"]["CruiseSetSpeed"] * CV.KPH_TO_MS
       ret.cruiseState.enabled = pt_cp.vl["ECMCruiseControl"]["CruiseActive"] != 0
 
+    # GM + SASCM + openpilot 纵向：忽略 accFaulted，避免 SASCM 的轻微 FAULT 状态导致频繁 Cruise Fault 弹窗。
+    if self.CP.openpilotLongitudinalControl and bool(self.CP.flags & GMFlags.SASCM.value):
+      ret.accFaulted = False
+
     if self.CP.enableBsm:
       ret.leftBlindspot = pt_cp.vl["BCMBlindSpotMonitor"]["LeftBSM"] == 1
       ret.rightBlindspot = pt_cp.vl["BCMBlindSpotMonitor"]["RightBSM"] == 1

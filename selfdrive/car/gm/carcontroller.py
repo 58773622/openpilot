@@ -195,6 +195,12 @@ class CarController(CarControllerBase):
           else:
             acc_engaged = CC.enabled
 
+          # 对于带 SASCM 的 SDGM 车型，为了避免与 OEM ACC 状态机不一致导致的巡航故障，
+          # 当我们认为 ACC 已经启用时，用 OEM 的 cruiseState.enabled 对齐 GasRegenCmdActive；
+          # 其它情况下保持原有 ACC 状态逻辑不变。
+          if acc_engaged and bool(self.CP.flags & GMFlags.SASCM.value):
+            acc_engaged = CS.out.cruiseState.enabled
+
           # GasRegenCmdActive needs to be 1 to avoid cruise faults. It describes the ACC state, not actuation
           can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, CanBus.POWERTRAIN, self.apply_gas, idx, acc_engaged, at_full_stop))
           can_sends.append(gmcan.create_friction_brake_command(self.packer_ch, friction_brake_bus, self.apply_brake,
