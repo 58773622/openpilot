@@ -456,7 +456,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
     {tr("FrogPilot"), frogpilotSettingsWindow},
-    {tr("GM Settings"), frogpilotSettingsWindow},
+    {tr("GM 设置"), frogpilotSettingsWindow},
   };
 
   nav_btns = new QButtonGroup(this);
@@ -489,7 +489,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
 
-    const bool isGMNav = (name == tr("GM Settings"));
+    const bool isGMNav = (name == tr("GM 设置"));
 
     QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
       if (w->widget() == frogpilotSettingsWindow) {

@@ -158,7 +158,6 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     {"GMToggles", tr("General Motors Settings"), tr("Settings specific to <b>General Motors</b> vehicles."), ""},
     {"ExperimentalGMTune", tr("FrogsGoMoo's Experimental Tune"), tr("<b>FrogsGoMoo's</b> experimental <b>General Motors</b> tune that aims to smoothen out stopping and takeoff control based on nothing but guesswork. Use at your own risk!"), ""},
     {"LongPitch", tr("Smooth Pedal Response on Hills"), tr("Smoothen the acceleration and braking when driving uphill or downhill."), ""},
-    {"VoltSNG", tr("Stop and Go Hack"), tr("Force stop and go on the <b>2017 Chevy Volt</b>."), ""},
     {"GMDisableGps", tr("\u5c4f\u853d GPS / \u4f4e\u901f\u8f6c\u5411\u544a\u8b66"), tr("\u5173\u95ed\u4e0e GPS \u76f8\u5173\u7684\u6a21\u5757\uff0c\u5e76\u5c4f\u853d \"GPS \u4fe1\u53f7\u4e0d\u4f73\" \u4ee5\u53ca \"\u4f4e\u901f\u8f6c\u5411\u4e0d\u53ef\u7528\" \u7684\u63d0\u793a\u3002\u4ec5\u5728\u5b8c\u5168\u4e0d\u9700\u8981\u5bfc\u822a / \u901f\u5ea6\u9650\u5236\u7b49 GPS \u529f\u80fd\u65f6\u542f\u7528\u3002"), ""},
     {"GMDisableLowSpeedRes", tr("25 km/h \u4ee5\u4e0b\u7981\u6b62\u4f7f\u7528 RES- \u8bbe\u7f6e\u5e76\u7ebf"), tr("\u5f53\u8f66\u901f\u4f4e\u4e8e 25 km/h \u65f6\uff0c\u7981\u6b62\u901a\u8fc7 RES- \u6309\u94ae\u542f\u7528\u6216\u8bbe\u7f6e/\u6062\u590d\u5e76\u7ebf\uff0c\u4ee5\u51cf\u5c11\u4f4e\u901f\u4e0b ACC / SASCM \u76f8\u5173\u6545\u969c\u3002"), ""},
     {"GMStopAndGo", tr("\u961f\u5217\u8ddf\u8f66\u8d77\u6b65"), tr("\u5728\u62e5\u5835\u961f\u5217\u4e2d\uff0c\u5f53\u8f66\u8f86\u5b8c\u5168\u505c\u6ede\u4e14\u524d\u8f66\u8d77\u6b65\u65f6\uff0c\u5141\u8bb8 openpilot \u5728 0 km/h \u81ea\u52a8\u8d77\u6b65\u5e76\u8ddf\u8f66\u3002"), ""},
@@ -273,7 +272,9 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     }).detach();
   });
 
-  QObject::connect(parent, &FrogPilotSettingsWindow::closeParentToggle, [vehiclesLayout, vehiclesPanel] {vehiclesLayout->setCurrentWidget(vehiclesPanel);});
+  QObject::connect(parent, &FrogPilotSettingsWindow::closeParentToggle, [this, vehiclesPanel]() {
+    vehiclesLayout->setCurrentWidget(vehiclesPanel);
+  });
   QObject::connect(uiState(), &UIState::uiUpdate, this, &FrogPilotVehiclesPanel::updateState);
 }
 
@@ -308,6 +309,7 @@ void FrogPilotVehiclesPanel::openGMSection() {
   }
 }
 
+void FrogPilotVehiclesPanel::updateToggles() {
   for (auto &[key, toggle] : toggles) {
     if (parentKeys.find(key) != parentKeys.end()) {
       toggle->setVisible(false);

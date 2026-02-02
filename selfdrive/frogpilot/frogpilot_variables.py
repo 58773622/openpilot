@@ -850,7 +850,15 @@ class FrogPilotVariables:
     toggle.lock_doors = toyota_doors and (params.get_bool("LockDoors") if tuning_level >= level["LockDoors"] else default.get_bool("LockDoors"))
     toggle.unlock_doors = toyota_doors and (params.get_bool("UnlockDoors") if tuning_level >= level["UnlockDoors"] else default.get_bool("UnlockDoors"))
 
-    toggle.volt_sng = car_model == "CHEVROLET_VOLT" and (params.get_bool("VoltSNG") if tuning_level >= level["VoltSNG"] else default.get_bool("VoltSNG"))
+    # On Chevy Volt, treat the Volt-specific stop-and-go hack as part of the
+    # generic GM queue-follow toggle so users don't have to manage two
+    # separate switches for effectively the same behavior.
+    if car_model == "CHEVROLET_VOLT":
+      gm_sng = params.get_bool("GMStopAndGo") if tuning_level >= level["GMStopAndGo"] else default.get_bool("GMStopAndGo")
+      volt_sng_param = params.get_bool("VoltSNG") if tuning_level >= level["VoltSNG"] else default.get_bool("VoltSNG")
+      toggle.volt_sng = gm_sng or volt_sng_param
+    else:
+      toggle.volt_sng = False
 
     params_memory.put("FrogPilotToggles", json.dumps(toggle.__dict__))
     params_memory.remove("FrogPilotTogglesUpdated")

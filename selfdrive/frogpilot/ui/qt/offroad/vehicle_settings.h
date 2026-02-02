@@ -46,9 +46,9 @@ private:
   QStackedLayout *vehiclesLayout;
   ScrollView *gmPanel;
 
-  std::set<QString> gmKeys = {"ExperimentalGMTune", "LongPitch", "VoltSNG", "GMDisableGps", "GMDisableLowSpeedRes", "GMStopAndGo", "GMExternalPanda", "DisableDriverMonitoring"};
+  std::set<QString> gmKeys = {"ExperimentalGMTune", "LongPitch", "GMDisableGps", "GMDisableLowSpeedRes", "GMStopAndGo", "GMExternalPanda", "DisableDriverMonitoring"};
   std::set<QString> hkgKeys = {"NewLongAPI"};
-  std::set<QString> longitudinalKeys = {"ExperimentalGMTune", "FrogsGoMoosTweak", "LongPitch", "NewLongAPI", "SNGHack", "VoltSNG", "GMDisableLowSpeedRes", "GMStopAndGo"};
+  std::set<QString> longitudinalKeys = {"ExperimentalGMTune", "FrogsGoMoosTweak", "LongPitch", "NewLongAPI", "SNGHack", "GMDisableLowSpeedRes", "GMStopAndGo"};
   std::set<QString> toyotaKeys = {"ClusterOffset", "FrogsGoMoosTweak", "LockDoorsTimer", "SNGHack", "ToyotaDoors"};
 
   std::set<QString> parentKeys;
