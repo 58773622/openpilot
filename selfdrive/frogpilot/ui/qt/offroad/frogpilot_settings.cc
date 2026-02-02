@@ -288,15 +288,5 @@ void FrogPilotSettingsWindow::updateVariables() {
 
   isC3 = util::read_file("/sys/firmware/devicetree/base/model").find("tici") != std::string::npos;
 
-  // Always expose the main FrogPilot sections so users don't "lose" entire
-  // categories of settings when changing the Tuning Level. Detailed options
-  // inside each section are still gated individually by tuning level.
-  drivingPanelButtons->setVisibleButton(0, true);
-  drivingPanelButtons->setVisibleButton(1, hasOpenpilotLongitudinal);
-
-  systemPanelButtons->setVisibleButton(1, true);
-
-  vehiclePanelButtons->setVisibleButton(1, true);
-
   update();
 }
