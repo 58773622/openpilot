@@ -12,6 +12,7 @@ public:
   explicit FrogPilotSettingsWindow(SettingsWindow *parent);
 
   void updateVariables();
+  void openHome();
   void openGMSettings();
 
   bool hasAutoTune = true;

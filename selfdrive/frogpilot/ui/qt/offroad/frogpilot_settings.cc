@@ -206,6 +206,13 @@ void FrogPilotSettingsWindow::updateState() {
   scene.frogpilot_panel_active = panelOpen && keepScreenOn;
 }
 
+void FrogPilotSettingsWindow::openHome() {
+  if (frogpilotPanel != nullptr) {
+    mainLayout->setCurrentWidget(frogpilotPanel);
+    panelOpen = false;
+  }
+}
+
 void FrogPilotSettingsWindow::openGMSettings() {
 	// Ensure the FrogPilot "Vehicle Controls" panel is visible, then jump into
 	// the GM-specific section inside FrogPilotVehiclesPanel.

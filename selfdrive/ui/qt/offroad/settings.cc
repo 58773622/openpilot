@@ -489,6 +489,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
 
+    const bool isFrogPilotNav = (name == tr("FrogPilot"));
     const bool isGMNav = (name == tr("GM 设置"));
 
     QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
@@ -549,11 +550,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       btn->setChecked(true);
       panel_widget->setCurrentWidget(w);
 
-      // When the dedicated GM Settings entry is used, open the FrogPilot
-      // vehicle settings panel directly to the GM-specific section.
-      if (isGMNav) {
-        auto *fp = qobject_cast<FrogPilotSettingsWindow *>(w->widget());
-        if (fp != nullptr) {
+      auto *fp = qobject_cast<FrogPilotSettingsWindow *>(w->widget());
+      if (fp != nullptr) {
+        // The main "FrogPilot" entry should always show the FrogPilot home
+        // screen with all section cards. The dedicated "GM 设置" entry
+        // jumps directly into the GM-specific vehicle settings section.
+        if (isFrogPilotNav) {
+          fp->openHome();
+        } else if (isGMNav) {
           fp->openGMSettings();
         }
       }
