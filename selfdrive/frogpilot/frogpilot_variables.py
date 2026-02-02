@@ -152,7 +152,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int]] = [
   ("GMDisableGps", "1", 2),
   ("GMDisableLowSpeedRes", "1", 2),
   ("GMStopAndGo", "0", 2),
-  ("GMExternalPanda", "0", 2),
+  ("GMExternalPanda", "1", 2),
   ("ExperimentalLongitudinalEnabled", "1", 0),
   ("ExperimentalMode", "0", 0),
   ("ExperimentalModeConfirmed", "0", 0),

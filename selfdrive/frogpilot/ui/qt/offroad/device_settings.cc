@@ -30,6 +30,7 @@ FrogPilotDevicePanel::FrogPilotDevicePanel(FrogPilotSettingsWindow *parent) : Fr
     {"NoLogging", tr("Disable Data Logging"), QString("<b>%1</b><br><br>%2").arg(tr("WARNING: This will prevent your drives from being recorded and all data will be unobtainable!")).arg(tr("Disable all data logging to improve privacy.")), ""},
     {"NoUploads", tr("Disable Data Uploads"), QString("<b>%1</b><br><br>%2").arg(tr("WARNING: This will prevent your drives from appearing on <b>comma connect</b> which may impact debugging and support!")).arg(tr("Prevent the device from sending any data to <b>comma</b>'s servers.")), ""},
     {"OfflineMode", tr("Disable Internet Requirement"), tr("Allow the device to work indefinitely without an internet connection."), ""},
+    {"DisableDriverMonitoring", tr("Disable Driver Monitoring"), QString("<b>%1</b><br><br>%2").arg(tr("WARNING: This will significantly reduce safety as the system may not detect driver inattentiveness!")), ""},
     {"IncreaseThermalLimits", tr("Increase Thermal Safety Limit"), QString("<b>%1</b><br><br>%2").arg(tr("WARNING: This can damage your device by exceeding safe temperature limits!")).arg(tr("Allow the device to run hotter than comma recommended limit.")), ""},
 
     {"ScreenManagement", tr("Screen Settings"), tr("Settings that control screen behavior."), "../frogpilot/assets/toggle_icons/icon_light.png"},
