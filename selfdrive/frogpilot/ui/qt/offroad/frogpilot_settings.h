@@ -3,6 +3,8 @@
 #include "selfdrive/ui/qt/offroad/settings.h"
 #include "selfdrive/ui/qt/widgets/scrollview.h"
 
+class FrogPilotVehiclesPanel;
+
 class FrogPilotSettingsWindow : public QFrame {
   Q_OBJECT
 
@@ -10,6 +12,7 @@ public:
   explicit FrogPilotSettingsWindow(SettingsWindow *parent);
 
   void updateVariables();
+  void openGMSettings();
 
   bool hasAutoTune = true;
   bool hasBSM = true;
@@ -72,4 +75,7 @@ private:
   QStackedLayout *mainLayout;
 
   ScrollView *frogpilotPanel;
+
+  FrogPilotVehiclesPanel *frogpilotVehiclesPanel = nullptr;
+  QWidget *vehiclePanelWidget = nullptr;
 };

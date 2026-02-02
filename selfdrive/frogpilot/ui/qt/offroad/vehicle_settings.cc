@@ -1,5 +1,6 @@
 #include <QRegularExpression>
 #include <QTextStream>
+#include <QStackedLayout>
 
 #include "selfdrive/frogpilot/ui/qt/offroad/vehicle_settings.h"
 
@@ -80,7 +81,7 @@ QStringList getCarNames(const QString &carMake, QMap<QString, QString> &carModel
 }
 
 FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) : FrogPilotListWidget(parent), parent(parent) {
-  QStackedLayout *vehiclesLayout = new QStackedLayout();
+  vehiclesLayout = new QStackedLayout();
   addItem(vehiclesLayout);
 
   FrogPilotListWidget *settingsList = new FrogPilotListWidget(this);
@@ -145,7 +146,7 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
   FrogPilotListWidget *hkgList = new FrogPilotListWidget(this);
   FrogPilotListWidget *toyotaList = new FrogPilotListWidget(this);
 
-  ScrollView *gmPanel = new ScrollView(gmList, this);
+  gmPanel = new ScrollView(gmList, this);
   ScrollView *hkgPanel = new ScrollView(hkgList, this);
   ScrollView *toyotaPanel = new ScrollView(toyotaList, this);
 
@@ -178,21 +179,21 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
 
     if (param == "GMToggles") {
       ButtonControl *gmToggle = new ButtonControl(title, tr("MANAGE"), desc);
-      QObject::connect(gmToggle, &ButtonControl::clicked, [vehiclesLayout, gmPanel]() {
+      QObject::connect(gmToggle, &ButtonControl::clicked, [this]() {
         vehiclesLayout->setCurrentWidget(gmPanel);
       });
       vehicleToggle = gmToggle;
 
     } else if (param == "HKGToggles") {
       ButtonControl *hkgToggle = new ButtonControl(title, tr("MANAGE"), desc);
-      QObject::connect(hkgToggle, &ButtonControl::clicked, [vehiclesLayout, hkgPanel]() {
+      QObject::connect(hkgToggle, &ButtonControl::clicked, [this, hkgPanel]() {
         vehiclesLayout->setCurrentWidget(hkgPanel);
       });
       vehicleToggle = hkgToggle;
 
     } else if (param == "ToyotaToggles") {
       ButtonControl *toyotaToggle = new ButtonControl(title, tr("MANAGE"), desc);
-      QObject::connect(toyotaToggle, &ButtonControl::clicked, [vehiclesLayout, toyotaPanel]() {
+      QObject::connect(toyotaToggle, &ButtonControl::clicked, [this, toyotaPanel]() {
         vehiclesLayout->setCurrentWidget(toyotaPanel);
       });
       vehicleToggle = toyotaToggle;
@@ -242,17 +243,27 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     });
   }
 
-  static_cast<FrogPilotParamValueControl*>(toggles["LockDoorsTimer"])->setWarning("<b>Warning:</b> openpilot can't detect if keys are still inside the car, so ensure you have a spare key to prevent accidental lockouts!");
+  auto lock_timer_it = toggles.find("LockDoorsTimer");
+  if (lock_timer_it != toggles.end()) {
+    if (auto *lock_timer = qobject_cast<FrogPilotParamValueControl*>(lock_timer_it->second)) {
+      lock_timer->setWarning("<b>Warning:</b> openpilot can't detect if keys are still inside the car, so ensure you have a spare key to prevent accidental lockouts!");
+    }
+  }
 
   std::set<QString> rebootKeys = {"NewLongAPI", "GMExternalPanda"};
   for (const QString &key : rebootKeys) {
-    QObject::connect(static_cast<ToggleControl*>(toggles[key]), &ToggleControl::toggleFlipped, [this]() {
-      if (started) {
-        if (FrogPilotConfirmationDialog::toggleReboot(this)) {
-          Hardware::reboot();
+    auto it = toggles.find(key);
+    if (it == toggles.end()) continue;
+
+    if (auto *reboot_toggle = qobject_cast<ToggleControl*>(it->second)) {
+      QObject::connect(reboot_toggle, &ToggleControl::toggleFlipped, [this]() {
+        if (started) {
+          if (FrogPilotConfirmationDialog::toggleReboot(this)) {
+            Hardware::reboot();
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   QObject::connect(uiState(), &UIState::offroadTransition, [this, selectMakeButton, selectModelButton]() {
@@ -290,7 +301,13 @@ void FrogPilotVehiclesPanel::updateState(const UIState &s) {
   started = s.scene.started;
 }
 
-void FrogPilotVehiclesPanel::updateToggles() {
+void FrogPilotVehiclesPanel::openGMSection() {
+  if (vehiclesLayout && gmPanel) {
+    vehiclesLayout->setCurrentWidget(gmPanel);
+    emit openParentToggle();
+  }
+}
+
   for (auto &[key, toggle] : toggles) {
     if (parentKeys.find(key) != parentKeys.end()) {
       toggle->setVisible(false);
@@ -302,7 +319,9 @@ void FrogPilotVehiclesPanel::updateToggles() {
       continue;
     }
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    // GM-specific toggles are always visible regardless of Tuning Level.
+    double requiredLevel = frogpilotToggleLevels.value(key).toDouble(0);
+    bool setVisible = gmKeys.find(key) != gmKeys.end() ? true : tuningLevel >= requiredLevel;
 
     if (hkgKeys.find(key) != hkgKeys.end()) {
       setVisible &= isHKG;

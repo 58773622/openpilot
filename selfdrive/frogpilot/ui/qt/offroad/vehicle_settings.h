@@ -4,11 +4,19 @@
 
 #include "selfdrive/frogpilot/ui/qt/offroad/frogpilot_settings.h"
 
+class QStackedLayout;
+class ScrollView;
+
 class FrogPilotVehiclesPanel : public FrogPilotListWidget {
   Q_OBJECT
 
 public:
   explicit FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent);
+
+  // Allow external callers (e.g. SettingsWindow) to jump directly into the
+  // GM-specific vehicle settings section without going through the parent
+  // "General Motors Settings" manage button.
+  void openGMSection();
 
 signals:
   void openParentToggle();
@@ -34,6 +42,9 @@ private:
   int tuningLevel;
 
   std::map<QString, AbstractControl*> toggles;
+
+  QStackedLayout *vehiclesLayout;
+  ScrollView *gmPanel;
 
   std::set<QString> gmKeys = {"ExperimentalGMTune", "LongPitch", "VoltSNG", "GMDisableGps", "GMDisableLowSpeedRes", "GMStopAndGo", "GMExternalPanda", "DisableDriverMonitoring"};
   std::set<QString> hkgKeys = {"NewLongAPI"};

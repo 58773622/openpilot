@@ -456,6 +456,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
     {tr("FrogPilot"), frogpilotSettingsWindow},
+    {tr("GM Settings"), frogpilotSettingsWindow},
   };
 
   nav_btns = new QButtonGroup(this);
@@ -487,6 +488,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
 
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
+
+    const bool isGMNav = (name == tr("GM Settings"));
 
     QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
       if (w->widget() == frogpilotSettingsWindow) {
@@ -545,6 +548,15 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       }
       btn->setChecked(true);
       panel_widget->setCurrentWidget(w);
+
+      // When the dedicated GM Settings entry is used, open the FrogPilot
+      // vehicle settings panel directly to the GM-specific section.
+      if (isGMNav) {
+        auto *fp = qobject_cast<FrogPilotSettingsWindow *>(w->widget());
+        if (fp != nullptr) {
+          fp->openGMSettings();
+        }
+      }
     });
   }
   sidebar_layout->setContentsMargins(50, 50, 100, 50);

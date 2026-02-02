@@ -41,7 +41,7 @@ void FrogPilotSettingsWindow::createPanelButtons(FrogPilotListWidget *list) {
   FrogPilotNavigationPanel *frogpilotNavigationPanel = new FrogPilotNavigationPanel(this);
   FrogPilotSoundsPanel *frogpilotSoundsPanel = new FrogPilotSoundsPanel(this);
   FrogPilotThemesPanel *frogpilotThemesPanel = new FrogPilotThemesPanel(this);
-  FrogPilotVehiclesPanel *frogpilotVehiclesPanel = new FrogPilotVehiclesPanel(this);
+  frogpilotVehiclesPanel = new FrogPilotVehiclesPanel(this);
   FrogPilotVisualsPanel *frogpilotVisualsPanel = new FrogPilotVisualsPanel(this);
   FrogPilotWheelPanel *frogpilotWheelPanel = new FrogPilotWheelPanel(this);
 
@@ -82,6 +82,10 @@ void FrogPilotSettingsWindow::createPanelButtons(FrogPilotListWidget *list) {
       ScrollView *panelFrame = new ScrollView(panel, this);
       mainLayout->addWidget(panelFrame);
       widgets.push_back(panelFrame);
+
+      if (panel == frogpilotVehiclesPanel) {
+        vehiclePanelWidget = panelFrame;
+      }
     }
 
     FrogPilotButtonsControl *panelButton = new FrogPilotButtonsControl(title, description, icon, labels);
@@ -140,9 +144,9 @@ FrogPilotSettingsWindow::FrogPilotSettingsWindow(SettingsWindow *parent) : QFram
                                           "../frogpilot/assets/toggle_icons/icon_customization.png",
                                           togglePresets, true);
 
-  int timeTo100FPHours = 100 - (paramsTracking.getInt("FrogPilotMinutes") / 60);
-  int timeTo250OPHours = 250 - (params.getInt("openpilotMinutes") / 60);
-  togglePreset->setEnabledButtons(3, timeTo100FPHours <= 0 || timeTo250OPHours <= 0);
+  // Allow selecting the Developer preset at any time without requiring a minimum
+  // number of FrogPilot/openpilot driving hours.
+  togglePreset->setEnabledButtons(3, true);
 
   QObject::connect(togglePreset, &FrogPilotButtonsControl::buttonClicked, [this](int id) {
     tuningLevel = id;
@@ -200,6 +204,18 @@ void FrogPilotSettingsWindow::updateState() {
   UIScene &scene = s->scene;
 
   scene.frogpilot_panel_active = panelOpen && keepScreenOn;
+}
+
+void FrogPilotSettingsWindow::openGMSettings() {
+	// Ensure the FrogPilot "Vehicle Controls" panel is visible, then jump into
+	// the GM-specific section inside FrogPilotVehiclesPanel.
+	if (vehiclePanelWidget != nullptr) {
+		mainLayout->setCurrentWidget(vehiclePanelWidget);
+		panelOpen = true;
+	}
+	if (frogpilotVehiclesPanel != nullptr) {
+		frogpilotVehiclesPanel->openGMSection();
+	}
 }
 
 void FrogPilotSettingsWindow::updateVariables() {
