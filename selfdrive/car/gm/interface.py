@@ -99,18 +99,14 @@ class CarInterface(CarInterfaceBase):
   def _get_params(ret, candidate, fingerprint, car_fw, disable_openpilot_long, experimental_long, docs):
     ret.carName = "gm"
 
+    # Configure logical GM CAN buses based on whether an external Red Panda is in use.
+    # This mirrors the reference UseRedPanda implementation via CanBus.checkPanda(),
+    # but uses the GMExternalPanda parameter under FrogPilot.
+    CanBus.checkPanda()
+
     # External Red Panda switch: when enabled, run a noOutput safety config first,
     # then the GM safety config. All GM safety flags are applied to the last config.
     external_panda = params.get_bool("GMExternalPanda")
-
-    # Dynamic CAN bus mapping: when using external Panda, shift all logical GM buses by +4
-    bus_shift = 4 if external_panda else 0
-    CanBus.POWERTRAIN = 0 + bus_shift
-    CanBus.OBSTACLE = 1 + bus_shift
-    CanBus.CAMERA = 2 + bus_shift
-    CanBus.CHASSIS = 2 + bus_shift
-    CanBus.LOOPBACK = 128 + bus_shift
-    CanBus.DROPPED = 192 + bus_shift
 
     if external_panda:
       ret.safetyConfigs = [

@@ -244,7 +244,7 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
 
   static_cast<FrogPilotParamValueControl*>(toggles["LockDoorsTimer"])->setWarning("<b>Warning:</b> openpilot can't detect if keys are still inside the car, so ensure you have a spare key to prevent accidental lockouts!");
 
-  std::set<QString> rebootKeys = {"NewLongAPI"};
+  std::set<QString> rebootKeys = {"NewLongAPI", "GMExternalPanda"};
   for (const QString &key : rebootKeys) {
     QObject::connect(static_cast<ToggleControl*>(toggles[key]), &ToggleControl::toggleFlipped, [this]() {
       if (started) {
@@ -304,9 +304,7 @@ void FrogPilotVehiclesPanel::updateToggles() {
 
     bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
 
-    if (gmKeys.find(key) != gmKeys.end()) {
-      setVisible &= isGM;
-    } else if (hkgKeys.find(key) != hkgKeys.end()) {
+    if (hkgKeys.find(key) != hkgKeys.end()) {
       setVisible &= isHKG;
     } else if (toyotaKeys.find(key) != toyotaKeys.end()) {
       setVisible &= isToyota;

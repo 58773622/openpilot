@@ -3,6 +3,7 @@ from enum import IntFlag
 
 from cereal import car
 from openpilot.common.numpy_fast import interp
+from openpilot.common.params import Params
 from openpilot.selfdrive.car import dbc_dict, PlatformConfig, DbcDict, Platforms, CarSpecs
 from openpilot.selfdrive.car.docs_definitions import CarHarness, CarDocs, CarParts
 from openpilot.selfdrive.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
@@ -260,6 +261,35 @@ class CanBus:
   CHASSIS = 2
   LOOPBACK = 128
   DROPPED = 192
+
+  @staticmethod
+  def checkPanda() -> None:
+    """Configure GM logical CAN bus indices based on whether an external Red Panda is in use.
+
+    When using an external Panda for GM (GMExternalPanda == true), the car's powertrain,
+    obstacle, and camera buses are expected on the second Panda. In openpilot's multi-Panda
+    layout, the second Panda's buses are offset by +4 (0/1/2/3 -> 4/5/6/7).
+
+    This mirrors the behaviour of the reference "UseRedPanda" implementation while using the
+    GMExternalPanda parameter name.
+    """
+
+    use_external_panda = Params().get_bool("GMExternalPanda")
+
+    if use_external_panda:
+      CanBus.POWERTRAIN = 0 + 4
+      CanBus.OBSTACLE = 1 + 4
+      CanBus.CAMERA = 2 + 4
+      CanBus.CHASSIS = 2 + 4
+      CanBus.LOOPBACK = 128 + 4
+      CanBus.DROPPED = 192 + 4
+    else:
+      CanBus.POWERTRAIN = 0
+      CanBus.OBSTACLE = 1
+      CanBus.CAMERA = 2
+      CanBus.CHASSIS = 2
+      CanBus.LOOPBACK = 128
+      CanBus.DROPPED = 192
 
 class GMFlags(IntFlag):
   PEDAL_LONG = 1
