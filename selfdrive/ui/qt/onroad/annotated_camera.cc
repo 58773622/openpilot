@@ -2,6 +2,11 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QDir>
+#include <QFileInfo>
+#include <QMovie>
+#include <QTimer>
+#include <QTransform>
 #include <algorithm>
 #include <cmath>
 
@@ -1067,6 +1072,153 @@ void AnnotatedCameraWidget::updateSNGStatus(const UIState *s, const cereal::Rada
   }
 }
 
+void AnnotatedCameraWidget::drawGMStopAndGoStatus(QPainter &p) {
+  if (sngState == 0) return;
+
+  QString statusText;
+  QColor borderColor;
+
+  switch (sngState) {
+    case 1:
+      statusText = tr("前车停止");
+      borderColor = yellowColor();
+      break;
+    case 2:
+      statusText = tr("前车起步");
+      borderColor = orangeColor();
+      break;
+    case 3:
+      statusText = tr("开始跟车");
+      borderColor = greenColor();
+      break;
+    default:
+      return;
+  }
+
+  QFont font = InterFont(48, QFont::DemiBold);
+  QFontMetrics metrics(font);
+  int textWidth = metrics.horizontalAdvance(statusText);
+  int textHeight = metrics.height();
+
+  const int paddingH = 60;
+  const int paddingV = 30;
+  int boxWidth = textWidth + paddingH;
+  int boxHeight = textHeight + paddingV;
+
+  int x = (width() - boxWidth) / 2;
+  int y = rect().bottom() - alertHeight - boxHeight - 40;  // 顶部预留 alert 区域，再往上 40px
+  QRect boxRect(x, y, boxWidth, boxHeight);
+
+  p.save();
+  p.setBrush(blackColor(166));
+  p.setOpacity(1.0);
+  p.setPen(QPen(borderColor, 10));
+  p.drawRoundedRect(boxRect, 24, 24);
+
+  p.setFont(font);
+  p.setPen(QPen(whiteColor(), 6));
+  p.drawText(boxRect, Qt::AlignCenter, statusText);
+  p.restore();
+}
+
+void AnnotatedCameraWidget::initializeFrogPilotWidgets() {
+  distance_btn = new DistanceButton(this);
+  main_layout->addWidget(distance_btn, 0, Qt::AlignBottom | Qt::AlignLeft);
+
+  chillModeIcon = loadPixmap("../frogpilot/assets/other_images/chill_mode_icon.png", {img_size / 2, img_size / 2});
+  curveIcon = loadPixmap("../frogpilot/assets/other_images/curve_icon.png", {img_size / 2, img_size / 2});
+  curveSpeedLeftIcon = loadPixmap("../frogpilot/assets/other_images/curve_speed_left.png", {img_size, img_size});
+  curveSpeedRightIcon = loadPixmap("../frogpilot/assets/other_images/curve_speed_right.png", {img_size, img_size});
+  dashboardIcon = loadPixmap("../frogpilot/assets/other_images/dashboard_icon.png", {img_size / 2, img_size / 2});
+  experimentalModeIcon = loadPixmap("../assets/img_experimental.svg", {img_size / 2, img_size / 2});
+  leadIcon = loadPixmap("../frogpilot/assets/other_images/lead_icon.png", {img_size / 2, img_size / 2});
+  lightIcon = loadPixmap("../frogpilot/assets/other_images/light_icon.png", {img_size / 2, img_size / 2});
+  mapDataIcon = loadPixmap("../frogpilot/assets/other_images/offline_maps_icon.png", {img_size / 2, img_size / 2});
+  navigationIcon = loadPixmap("../frogpilot/assets/other_images/navigation_icon.png", {img_size / 2, img_size / 2});
+  pausedIcon = loadPixmap("../frogpilot/assets/other_images/paused_icon.png", {img_size / 2, img_size / 2});
+  speedIcon = loadPixmap("../frogpilot/assets/other_images/speed_icon.png", {img_size / 2, img_size / 2});
+  stopSignImg = loadPixmap("../frogpilot/assets/other_images/stop_sign.png", {img_size, img_size});
+  turnIcon = loadPixmap("../frogpilot/assets/other_images/turn_icon.png", {img_size / 2, img_size / 2});
+  upcomingMapsIcon = loadPixmap("../frogpilot/assets/other_images/upcoming_maps_icon.png", {img_size / 2, img_size / 2});
+
+  animationTimer = new QTimer(this);
+  QObject::connect(animationTimer, &QTimer::timeout, [this] {
+    animationFrameIndex = (animationFrameIndex + 1) % totalFrames;
+  });
+}
+
+void AnnotatedCameraWidget::updateSignals() {
+  blindspotImages.clear();
+  signalImages.clear();
+
+  QDir directory("../frogpilot/assets/active_theme/signals/");
+  QFileInfoList allFiles = directory.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+
+  bool isGif = false;
+
+  for (const QFileInfo &fileInfo : allFiles) {
+    if (fileInfo.fileName().endsWith(".gif", Qt::CaseInsensitive)) {
+      QMovie movie(fileInfo.absoluteFilePath());
+      movie.start();
+      for (int frameIndex = 0; frameIndex < movie.frameCount(); ++frameIndex) {
+        movie.jumpToFrame(frameIndex);
+        QPixmap currentFrame = movie.currentPixmap();
+        signalImages.push_back(currentFrame);
+        signalImages.push_back(currentFrame.transformed(QTransform().scale(-1, 1)));
+      }
+
+      movie.stop();
+      isGif = true;
+
+    } else if (fileInfo.fileName().endsWith(".png", Qt::CaseInsensitive)) {
+      QVector<QPixmap> *targetList = fileInfo.fileName().contains("blindspot") ? &blindspotImages : &signalImages;
+      QPixmap pixmap(fileInfo.absoluteFilePath());
+      targetList->push_back(pixmap);
+      targetList->push_back(pixmap.transformed(QTransform().scale(-1, 1)));
+    }
+
+    if (!isGif && !fileInfo.fileName().contains('_')) {
+      signalStyle = "static";
+      signalAnimationLength = 500;
+    } else {
+      QStringList parts = fileInfo.fileName().split('_');
+      if (parts.size() == 2) {
+        signalStyle = parts[0];
+        signalAnimationLength = parts[1].toInt();
+      }
+    }
+  }
+
+  if (!signalImages.empty()) {
+    QPixmap &firstImage = signalImages.front();
+    signalWidth = firstImage.width();
+    signalHeight = firstImage.height();
+    totalFrames = signalImages.size() / 2;
+    turnSignalAnimation = true;
+
+    if (isGif && signalStyle == "traditional") {
+      signalMovement = (this->size().width() + (signalWidth * 2)) / totalFrames;
+      signalStyle = "traditional_gif";
+    } else {
+      signalMovement = 0;
+    }
+  } else {
+    turnSignalAnimation = false;
+  }
+}
+
+void AnnotatedCameraWidget::showEvent(QShowEvent *event) {
+  CameraWidget::showEvent(event);
+
+  ui_update_params(uiState());
+  prev_draw_t = millis_since_boot();
+
+  // FrogPilot variables
+  distance_btn->updateIcon();
+  experimental_btn->updateIcon();
+  updateSignals();
+}
+
 void AnnotatedCameraWidget::paintFrogPilotWidgets(QPainter &painter) {
   if (cemStatus && !hideBottomIcons) {
     drawCEMStatus(painter);
@@ -1239,6 +1391,8 @@ void PedalIcons::updateState(const UIScene &scene) {
 }
 
 void PedalIcons::paintEvent(QPaintEvent *event) {
+  Q_UNUSED(event);
+
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
 
