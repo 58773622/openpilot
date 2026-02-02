@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QFrame>
+#include <QLabel>
 #include <QStackedLayout>
 #include <QWidget>
 
@@ -24,4 +25,11 @@ private:
 
 protected:
   QStackedLayout *stack;
+  QLabel *title_label;
+  QLabel *status_label;
+  QLabel *desc1_label;
+  QLabel *desc2_label;
+  QLabel *mem_label;
+  QLabel *cpu_label;
+  QLabel *space_label;
 };
