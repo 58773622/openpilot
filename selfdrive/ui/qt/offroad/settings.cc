@@ -456,10 +456,10 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
     {tr("FrogPilot"), frogpilotSettingsWindow},
-    {tr("GM 设置"), frogpilotSettingsWindow},
   };
 
   nav_btns = new QButtonGroup(this);
+  ScrollView *frogpilot_frame = nullptr;
   for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
     btn->setCheckable(true);
@@ -489,8 +489,9 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
 
-    const bool isFrogPilotNav = (name == tr("FrogPilot"));
-    const bool isGMNav = (name == tr("GM 设置"));
+    if (panel == frogpilotSettingsWindow) {
+      frogpilot_frame = panel_frame;
+    }
 
     QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
       if (w->widget() == frogpilotSettingsWindow) {
@@ -553,16 +554,99 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       auto *fp = qobject_cast<FrogPilotSettingsWindow *>(w->widget());
       if (fp != nullptr) {
         // The main "FrogPilot" entry should always show the FrogPilot home
-        // screen with all section cards. The dedicated "GM 设置" entry
-        // jumps directly into the GM-specific vehicle settings section.
-        if (isFrogPilotNav) {
-          fp->openHome();
-        } else if (isGMNav) {
-          fp->openGMSettings();
-        }
+        // screen with all section cards.
+        fp->openHome();
       }
     });
   }
+  // Add a dedicated "GM 设置" navigation button that reuses the same
+  // FrogPilotSettingsWindow panel but jumps directly into the GM-specific
+  // vehicle settings section. This avoids reparenting the same widget into
+  // two different ScrollViews, which caused the FrogPilot page to appear
+  // blank.
+  QPushButton *gm_btn = new QPushButton(tr("GM 设置"));
+  gm_btn->setCheckable(true);
+  gm_btn->setStyleSheet(R"(
+      QPushButton {
+        color: grey;
+        border: none;
+        background: none;
+        font-size: 65px;
+        font-weight: 500;
+      }
+      QPushButton:checked {
+        color: white;
+      }
+      QPushButton:pressed {
+        color: #ADADAD;
+      }
+    )");
+  gm_btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+  nav_btns->addButton(gm_btn);
+  sidebar_layout->addWidget(gm_btn, 0, Qt::AlignRight);
+
+  QObject::connect(gm_btn, &QPushButton::clicked, [=]() {
+    bool tuningLevelConfirmed = params.getBool("TuningLevelConfirmed");
+
+    if (!tuningLevelConfirmed) {
+      int frogpilotHours = paramsTracking.getInt("FrogPilotMinutes") / 60;
+      int openpilotHours = params.getInt("openpilotMinutes") / 60;
+
+      if (frogpilotHours < 1 && openpilotHours < 100) {
+        if (ConfirmationDialog::alert(tr("Welcome to FrogPilot! Since you're new to FrogPilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the 'Tuning Level' button!"), this, true)) {
+          params.putBool("TuningLevelConfirmed", true);
+          params.putInt("TuningLevel", 0);
+        }
+      } else if (frogpilotHours < 50 && openpilotHours < 100) {
+        if (ConfirmationDialog::alert(tr("Since you're fairly new to FrogPilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the 'Tuning Level' button!"), this, true)) {
+          params.putBool("TuningLevelConfirmed", true);
+          params.putInt("TuningLevel", 0);
+        }
+      } else if (frogpilotHours < 100) {
+        if (openpilotHours >= 100) {
+          if (ConfirmationDialog::alert(tr("Since you're experienced with openpilot, the \"Standard\" toggle preset has been applied, but you can change this at any time via the 'Tuning Level' button!"), this, true)) {
+            params.putBool("TuningLevelConfirmed", true);
+            params.putInt("TuningLevel", 1);
+          }
+        } else {
+          if (ConfirmationDialog::alert(tr("Since you're experienced with FrogPilot, the \"Standard\" toggle preset has been applied, but you can change this at any time via the 'Tuning Level' button!"), this, true)) {
+            params.putBool("TuningLevelConfirmed", true);
+            params.putInt("TuningLevel", 1);
+          }
+        }
+      } else if (frogpilotHours >= 100) {
+        if (ConfirmationDialog::alert(tr("Since you're very experienced with FrogPilot, the \"Advanced\" toggle preset has been applied, but you can change this at any time via the 'Tuning Level' button!"), this, true)) {
+          params.putBool("TuningLevelConfirmed", true);
+          params.putInt("TuningLevel", 2);
+        }
+      }
+    }
+
+    if (mapboxInstructionsOpen) {
+      closeMapBoxInstructions();
+      mapboxInstructionsOpen = false;
+    }
+    if (mapSelectionOpen) {
+      closeMapSelection();
+      mapSelectionOpen = false;
+    }
+    if (panelOpen) {
+      closePanel();
+      panelOpen = false;
+    }
+    if (parentToggleOpen) {
+      closeParentToggle();
+      parentToggleOpen = false;
+    }
+
+    gm_btn->setChecked(true);
+
+    if (frogpilot_frame != nullptr) {
+      panel_widget->setCurrentWidget(frogpilot_frame);
+    }
+
+    frogpilotSettingsWindow->openGMSettings();
+  });
   sidebar_layout->setContentsMargins(50, 50, 100, 50);
 
   // main settings layout, sidebar + main panel
