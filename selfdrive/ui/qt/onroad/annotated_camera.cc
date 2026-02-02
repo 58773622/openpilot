@@ -856,6 +856,11 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
       auto lead_two = radar_state.getLeadTwo();
       auto lead_left = radar_state.getLeadLeft();
       auto lead_right = radar_state.getLeadRight();
+
+      // GM Stop-and-Go SNG state update based on primary lead
+      const auto lead_sng = lead_two.getStatus() ? lead_two : lead_one;
+      updateSNGStatus(s, lead_sng, v_ego);
+
       if (lead_two.getStatus()) {
         drawLead(painter, lead_two, s->scene.lead_vertices[1], v_ego, s->scene.lead_marker_color);
       } else if (lead_one.getStatus()) {
@@ -899,111 +904,9 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
   paintFrogPilotWidgets(painter);
 }
 
-void AnnotatedCameraWidget::showEvent(QShowEvent *event) {
-  CameraWidget::showEvent(event);
-
-  ui_update_params(uiState());
-  prev_draw_t = millis_since_boot();
-
-  // FrogPilot variables
-  distance_btn->updateIcon();
-  experimental_btn->updateIcon();
-  updateSignals();
-}
-
-// FrogPilot widgets
-void AnnotatedCameraWidget::updateSignals() {
-  blindspotImages.clear();
-  signalImages.clear();
-
-  QDir directory("../frogpilot/assets/active_theme/signals/");
-  QFileInfoList allFiles = directory.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-
-  bool isGif = false;
-  for (QFileInfo &fileInfo : allFiles) {
-    if (fileInfo.fileName().endsWith(".gif", Qt::CaseInsensitive)) {
-      QMovie movie(fileInfo.absoluteFilePath());
-      movie.start();
-
-      for (int frameIndex = 0; frameIndex < movie.frameCount(); ++frameIndex) {
-        movie.jumpToFrame(frameIndex);
-        QPixmap currentFrame = movie.currentPixmap();
-        signalImages.push_back(currentFrame);
-        signalImages.push_back(currentFrame.transformed(QTransform().scale(-1, 1)));
-      }
-
-      movie.stop();
-      isGif = true;
-
-    } else if (fileInfo.fileName().endsWith(".png", Qt::CaseInsensitive)) {
-      QVector<QPixmap> *targetList = fileInfo.fileName().contains("blindspot") ? &blindspotImages : &signalImages;
-      QPixmap pixmap(fileInfo.absoluteFilePath());
-      targetList->push_back(pixmap);
-      targetList->push_back(pixmap.transformed(QTransform().scale(-1, 1)));
-
-    } else {
-      QStringList parts = fileInfo.fileName().split('_');
-      if (parts.size() == 2) {
-        signalStyle = parts[0];
-        signalAnimationLength = parts[1].toInt();
-      }
-    }
-  }
-
-  if (!signalImages.empty()) {
-    QPixmap &firstImage = signalImages.front();
-    signalWidth = firstImage.width();
-    signalHeight = firstImage.height();
-    totalFrames = signalImages.size() / 2;
-    turnSignalAnimation = true;
-
-    if (isGif && signalStyle == "traditional") {
-      signalMovement = (this->size().width() + (signalWidth * 2)) / totalFrames;
-      signalStyle = "traditional_gif";
-    } else {
-      signalMovement = 0;
-    }
-  } else {
-    signalWidth = 0;
-    signalHeight = 0;
-    totalFrames = 0;
-    turnSignalAnimation = false;
-  }
-}
-
-void AnnotatedCameraWidget::initializeFrogPilotWidgets() {
-  distance_btn = new DistanceButton(this);
-  main_layout->addWidget(distance_btn, 0, Qt::AlignBottom | Qt::AlignLeft);
-
-  chillModeIcon = loadPixmap("../frogpilot/assets/other_images/chill_mode_icon.png", {img_size / 2, img_size / 2});
-  curveIcon = loadPixmap("../frogpilot/assets/other_images/curve_icon.png", {img_size / 2, img_size / 2});
-  curveSpeedLeftIcon = loadPixmap("../frogpilot/assets/other_images/curve_speed_left.png", {img_size, img_size});
-  curveSpeedRightIcon = loadPixmap("../frogpilot/assets/other_images/curve_speed_right.png", {img_size, img_size});
-  dashboardIcon = loadPixmap("../frogpilot/assets/other_images/dashboard_icon.png", {img_size / 2, img_size / 2});
-  experimentalModeIcon = loadPixmap("../assets/img_experimental.svg", {img_size / 2, img_size / 2});
-  leadIcon = loadPixmap("../frogpilot/assets/other_images/lead_icon.png", {img_size / 2, img_size / 2});
-  lightIcon = loadPixmap("../frogpilot/assets/other_images/light_icon.png", {img_size / 2, img_size / 2});
-  mapDataIcon = loadPixmap("../frogpilot/assets/other_images/offline_maps_icon.png", {img_size / 2, img_size / 2});
-  navigationIcon = loadPixmap("../frogpilot/assets/other_images/navigation_icon.png", {img_size / 2, img_size / 2});
-  pausedIcon = loadPixmap("../frogpilot/assets/other_images/paused_icon.png", {img_size / 2, img_size / 2});
-  speedIcon = loadPixmap("../frogpilot/assets/other_images/speed_icon.png", {img_size / 2, img_size / 2});
-  stopSignImg = loadPixmap("../frogpilot/assets/other_images/stop_sign.png", {img_size, img_size});
-  turnIcon = loadPixmap("../frogpilot/assets/other_images/turn_icon.png", {img_size / 2, img_size / 2});
-  upcomingMapsIcon = loadPixmap("../frogpilot/assets/other_images/upcoming_maps_icon.png", {img_size / 2, img_size / 2});
-
-  animationTimer = new QTimer(this);
-  QObject::connect(animationTimer, &QTimer::timeout, [this] {
-    animationFrameIndex = (animationFrameIndex + 1) % totalFrames;
-  });
-
-  QObject::connect(uiState(), &UIState::themeUpdated, this, &AnnotatedCameraWidget::updateSignals);
-  QObject::connect(uiState(), &UIState::themeUpdated, distance_btn, &DistanceButton::updateIcon);
-  QObject::connect(uiState(), &UIState::themeUpdated, experimental_btn, &ExperimentalButton::updateIcon);
-}
-
 void AnnotatedCameraWidget::updateFrogPilotVariables(int alert_height, const UIScene &scene) {
   if (is_metric || useSI) {
-    accelerationUnit = tr("m/s²");
+    accelerationUnit = tr("m/s虏");
     leadDistanceUnit = tr(mapOpen ? "m" : "meters");
     leadSpeedUnit = useSI ? tr("m/s") : tr("km/h");
 
@@ -1012,7 +915,7 @@ void AnnotatedCameraWidget::updateFrogPilotVariables(int alert_height, const UIS
     speedConversion = is_metric ? MS_TO_KPH : MS_TO_MPH;
     speedConversionMetrics = useSI ? 1.0f : MS_TO_KPH;
   } else {
-    accelerationUnit = tr("ft/s²");
+    accelerationUnit = tr("ft/s虏");
     leadDistanceUnit = tr(mapOpen ? "ft" : "feet");
     leadSpeedUnit = tr("mph");
 
@@ -1121,6 +1024,47 @@ void AnnotatedCameraWidget::updateFrogPilotVariables(int alert_height, const UIS
   vtscControllingCurve = scene.vtsc_controlling_curve;
   vtscEnabled = scene.vtsc_enabled;
   vtscSpeed = vtscEnabled ? scene.vtsc_speed * speedConversion : setSpeed;
+
+  // GM Stop-and-Go toggle state
+  gmStopAndGo = scene.gm_stop_and_go;
+}
+
+void AnnotatedCameraWidget::updateSNGStatus(const UIState *s, const cereal::RadarState::LeadData::Reader &lead_one, float v_ego) {
+  const UIScene &scene = s->scene;
+
+  // Only show SNG status when GM Stop-and-Go is enabled and longitudinal control is active
+  if (!gmStopAndGo || !scene.longitudinal_control) {
+    sngState = 0;
+    return;
+  }
+
+  // Clear status when no valid lead or speed exceeds 15 km/h
+  const float CLEAR_SPEED_MPS = 15.0f / 3.6f;
+  if (!lead_one.getStatus() || v_ego > CLEAR_SPEED_MPS) {
+    sngState = 0;
+    return;
+  }
+
+  // Approximate lead speed from relative speed and ego speed (all in m/s)
+  const float v_rel = lead_one.getVRel();
+  const float v_lead = v_rel + v_ego;
+
+  const float STOP_THRESH = 0.2f;       // ~0.7 km/h
+  const float START_THRESH = 0.4f;      // lead considered starting
+  const float EGO_START_THRESH = 0.4f;  // our car considered starting
+
+  if (v_ego < STOP_THRESH && v_lead < STOP_THRESH) {
+    // Both cars effectively stopped
+    sngState = 1;  // 前车停止
+  } else if (v_ego < EGO_START_THRESH && v_lead >= START_THRESH) {
+    // Lead has started moving, we are still stopped
+    sngState = 2;  // 前车起步
+  } else if (v_ego >= EGO_START_THRESH && v_ego <= CLEAR_SPEED_MPS) {
+    // We are starting to move and still within SNG speed range
+    sngState = 3;  // 开始跟车
+  } else {
+    sngState = 0;
+  }
 }
 
 void AnnotatedCameraWidget::paintFrogPilotWidgets(QPainter &painter) {
@@ -1148,6 +1092,11 @@ void AnnotatedCameraWidget::paintFrogPilotWidgets(QPainter &painter) {
 
   if (roadNameUI && !bigMapOpen) {
     drawRoadName(painter);
+  }
+
+  // GM Stop-and-Go queue-following status messages
+  if (gmStopAndGo && sngState != 0 && !bigMapOpen && !mapOpen && !hideBottomIcons) {
+    drawGMStopAndGoStatus(painter);
   }
 
   if (turnSignalAnimation && (turnSignalLeft || turnSignalRight) && !bigMapOpen && ((!mapOpen && standstillDuration == 0) || signalStyle != "static")) {

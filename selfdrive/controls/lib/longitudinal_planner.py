@@ -176,9 +176,6 @@ class LongitudinalPlanner:
     self.j_desired_trajectory = np.zeros(CONTROL_N)
     self.solverExecutionTime = 0.0
 
-    # GM-specific stop-and-go (SNG) fallback timer
-    self.gm_sng_fallback_timer = 0.0
-
   @staticmethod
   def parse_model(model_msg, model_error, v_ego, taco_tune):
     if (len(model_msg.position.x) == ModelConstants.IDX_N and
@@ -321,66 +318,9 @@ class LongitudinalPlanner:
       action_t = self.CP.longitudinalActuatorDelay + DT_MDL
       a_target, should_stop = get_accel_from_plan(longitudinalPlan.speeds, longitudinalPlan.accels,
                                                   action_t=action_t, vEgoStopping=frogpilot_toggles.vEgoStopping)
-
-    # GM stop-and-go fallback: when stopped behind a lead that has clearly moved away,
-    # release the stop condition and apply a gentle but decisive acceleration kick.
-    a_target, should_stop = self._apply_gm_sng_fallback(sm, a_target, should_stop)
-
     longitudinalPlan.aTarget = a_target
     longitudinalPlan.shouldStop = should_stop
     longitudinalPlan.allowBrake = True
     longitudinalPlan.allowThrottle = self.allow_throttle
 
     pm.send('longitudinalPlan', plan_send)
-
-  def _apply_gm_sng_fallback(self, sm, a_target: float, should_stop: bool) -> tuple[float, bool]:
-    # Only apply to GM with openpilot longitudinal control
-    if getattr(self.CP, "carName", "") != "gm" or not self.CP.openpilotLongitudinalControl:
-      return a_target, should_stop
-
-    # Need valid carState to reason about v_ego
-    if not sm.valid.get('carState', False):
-      self.gm_sng_fallback_timer = 0.0
-      return a_target, should_stop
-
-    v_ego = sm['carState'].vEgo
-
-    lead = self.lead_one
-    if not getattr(lead, 'status', False):
-      self.gm_sng_fallback_timer = 0.0
-      return a_target, should_stop
-
-    # Earlier and more responsive follow-start logic when the lead has clearly moved away.
-    dist_thresh = 8.0
-    v_ego_thresh = 0.3
-
-    dist = float(getattr(lead, 'dRel', 0.0))
-    # Prefer filtered vLeadK when available, otherwise fall back to vLead
-    lead_speed = float(getattr(lead, 'vLeadK', getattr(lead, 'vLead', 0.0)))
-    lead_moving = lead_speed > 0.5
-
-    cond = (v_ego < v_ego_thresh and should_stop and dist > dist_thresh and lead_moving)
-
-    if cond:
-      self.gm_sng_fallback_timer += self.dt
-    else:
-      self.gm_sng_fallback_timer = 0.0
-
-    # After a short delay with a moving lead and a sufficient gap, release the
-    # stop condition and ensure a decisive but still comfortable acceleration.
-    if self.gm_sng_fallback_timer > 0.4 and getattr(lead, 'status', False):
-      should_stop = False
-
-      # Extra gap beyond the threshold; larger gaps justify a stronger kick.
-      gap_extra = max(0.0, dist - dist_thresh)
-      # Base kick around 0.9 m/s^2 at the threshold, up to ~1.3 m/s^2 for very large gaps.
-      kick = float(interp(gap_extra, [0.0, 10.0], [0.9, 1.3]))
-
-      # If the lead is only creeping, keep the kick more gentle.
-      if lead_speed < 1.0:
-        kick = min(kick, 1.0)
-
-      if a_target < kick:
-        a_target = kick
-
-    return a_target, should_stop

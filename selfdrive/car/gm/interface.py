@@ -98,12 +98,32 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def _get_params(ret, candidate, fingerprint, car_fw, disable_openpilot_long, experimental_long, docs):
     ret.carName = "gm"
-    ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
+
+    # External Red Panda switch: when enabled, run a noOutput safety config first,
+    # then the GM safety config. All GM safety flags are applied to the last config.
+    external_panda = params.get_bool("GMExternalPanda")
+
+    # Dynamic CAN bus mapping: when using external Panda, shift all logical GM buses by +4
+    bus_shift = 4 if external_panda else 0
+    CanBus.POWERTRAIN = 0 + bus_shift
+    CanBus.OBSTACLE = 1 + bus_shift
+    CanBus.CAMERA = 2 + bus_shift
+    CanBus.CHASSIS = 2 + bus_shift
+    CanBus.LOOPBACK = 128 + bus_shift
+    CanBus.DROPPED = 192 + bus_shift
+
+    if external_panda:
+      ret.safetyConfigs = [
+        get_safety_config(car.CarParams.SafetyModel.noOutput),
+        get_safety_config(car.CarParams.SafetyModel.gm),
+      ]
+    else:
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
     ret.autoResumeSng = False
     ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
-    if PEDAL_MSG in fingerprint[0]:
+    if PEDAL_MSG in fingerprint[CanBus.POWERTRAIN]:
       ret.enableGasInterceptor = True
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_GAS_INTERCEPTOR
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_GAS_INTERCEPTOR
 
     if candidate in EV_CAR:
       ret.transmissionType = TransmissionType.direct
@@ -117,7 +137,7 @@ class CarInterface(CarInterfaceBase):
       ret.networkLocation = NetworkLocation.fwdCamera
       ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
       ret.pcmCruise = True
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_HW_CAM
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
 
@@ -133,15 +153,10 @@ class CarInterface(CarInterfaceBase):
       if experimental_long:
         ret.pcmCruise = False
         ret.openpilotLongitudinalControl = True
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
         if candidate in SDGM_CAR:
-          ret.safetyConfigs[0].safetyParam |= Panda.FLAG_FORCE_BRAKE_C9
+          ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_FORCE_BRAKE_C9
           ret.flags |= GMFlags.FORCE_BRAKE_C9.value
-
-    # 标记 SASCM 模式：SDGM 车型且 PT 总线存在 0x2FF 时，说明通过外挂 SASCM 打开了
-    # openpilot 纵向控制的试验箱模式。后续所有 GM+SASCM 的特例统一用 GMFlags.SASCM 判断。
-    if candidate in SDGM_CAR and 0x2FF in fingerprint[CanBus.POWERTRAIN]:
-      ret.flags |= GMFlags.SASCM.value
 
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = not disable_openpilot_long
@@ -157,7 +172,7 @@ class CarInterface(CarInterfaceBase):
 
       if ret.enableGasInterceptor:
         # Need to set ASCM long limits when using pedal interceptor, instead of camera ACC long limits
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_HW_ASCM_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_ASCM_LONG
 
     # Start with a baseline tuning for all GM vehicles. Override tuning as needed in each model section below.
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
@@ -273,7 +288,7 @@ class CarInterface(CarInterfaceBase):
 
     if ret.enableGasInterceptor:
       ret.networkLocation = NetworkLocation.fwdCamera
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_HW_CAM
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
       ret.minEnableSpeed = -1
       ret.pcmCruise = False
       ret.openpilotLongitudinalControl = not disable_openpilot_long
@@ -282,21 +297,21 @@ class CarInterface(CarInterfaceBase):
 
       if candidate in CC_ONLY_CAR:
         ret.flags |= GMFlags.PEDAL_LONG.value
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_PEDAL_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_PEDAL_LONG
         # Note: Low speed, stop and go not tested. Should be fairly smooth on highway
         ret.longitudinalTuning.kiBP = [0.0, 5., 35.]
         ret.longitudinalTuning.kiV = [0.0, 0.35, 0.5]
         ret.longitudinalTuning.kf = 0.15
         ret.stoppingDecelRate = 0.8
       else:  # Pedal used for SNG, ACC for longitudinal control otherwise
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
+        ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM_LONG
         ret.startingState = True
         ret.vEgoStopping = 0.25
         ret.vEgoStarting = 0.25
 
     elif candidate in CC_ONLY_CAR:
       ret.flags |= GMFlags.CC_LONG.value
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_CC_LONG
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_CC_LONG
       ret.radarUnavailable = True
       ret.experimentalLongitudinalAvailable = False
       ret.minEnableSpeed = 24 * CV.MPH_TO_MS
@@ -315,12 +330,12 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kiV = [0.1]
 
     if candidate in CC_ONLY_CAR:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_NO_ACC
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_NO_ACC
 
     # Exception for flashed cars, or cars whose camera was removed
     if (ret.networkLocation == NetworkLocation.fwdCamera or candidate in CC_ONLY_CAR) and CAM_MSG not in fingerprint[CanBus.CAMERA] and not candidate in SDGM_CAR:
       ret.flags |= GMFlags.NO_CAMERA.value
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_GM_NO_CAMERA
+      ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_NO_CAMERA
 
     if ACCELERATOR_POS_MSG not in fingerprint[CanBus.POWERTRAIN]:
       ret.flags |= GMFlags.NO_ACCELERATOR_POS_MSG.value
@@ -343,12 +358,14 @@ class CarInterface(CarInterfaceBase):
       ]
 
     # The ECM allows enabling on falling edge of set, but only rising edge of resume.
-    # 对于 GM + SASCM + openpilot 纵向，在 20 km/h 以下禁止通过 RES-（decelCruise）触发 enable，
-    # 以避免 SASCM 在极低车速下报巡航故障；RES+ 仍可启用。
     enable_buttons = (ButtonType.decelCruise,)
+
+    # 对于 GM + openpilot 纵向，可以在设置中选择：
+    # - 是否在低速下禁止通过 RES-（decelCruise）触发 enable/设置巡航。
+    low_speed_res_threshold_kph = 25.0 if getattr(frogpilot_toggles, "gm_disable_low_speed_res", False) else 0.0
     if (self.CP.carName == "gm" and self.CP.openpilotLongitudinalControl and
-        bool(self.CP.flags & GMFlags.SASCM.value) and
-        ret.vEgo < 20 * CV.KPH_TO_MS):
+        low_speed_res_threshold_kph > 0.0 and
+        ret.vEgo < low_speed_res_threshold_kph * CV.KPH_TO_MS):
       enable_buttons = tuple()
 
     events = self.create_common_events(ret, extra_gears=[GearShifter.sport, GearShifter.low,

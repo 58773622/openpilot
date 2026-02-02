@@ -94,8 +94,11 @@ class Controls:
     self.car_state_sock = messaging.sub_sock('carState', timeout=20)
 
     ignore = self.sensor_packets + ['testJoystick']
+    # C3 Lite 兼容：设备没有驾驶员监控相机和相关进程时，忽略这些通道的存活/频率检查，
+    # 避免因为 driverCameraState / driverMonitoringState / managerState 缺失导致控制进程报错。
+    ignore += ['driverCameraState', 'managerState', 'driverMonitoringState']
     if SIMULATION:
-      ignore += ['driverCameraState', 'managerState']
+      pass
     if REPLAY:
       # no vipc in replay will make them ignored anyways
       ignore += ['roadCameraState', 'wideRoadCameraState']
@@ -413,7 +416,10 @@ class Controls:
     # TODO: fix simulator
     if not SIMULATION or REPLAY:
       # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
-      if not self.sm['liveLocationKalman'].gpsOK and self.sm['liveLocationKalman'].inputsOK and (self.distance_traveled > 1500):
+      gm_disable_gps_alerts = (self.CP.carName == "gm" and getattr(self.frogpilot_toggles, "gm_disable_gps", False))
+      if (not gm_disable_gps_alerts and
+          not self.sm['liveLocationKalman'].gpsOK and self.sm['liveLocationKalman'].inputsOK and
+          (self.distance_traveled > 1500)):
         self.events.add(EventName.noGps)
       if self.sm['liveLocationKalman'].gpsOK:
         self.distance_traveled = 0

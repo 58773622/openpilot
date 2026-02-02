@@ -148,6 +148,10 @@ frogpilot_default_params: list[tuple[str, str | bytes, int]] = [
   ("DynamicPedalsOnUI", "1", 2),
   ("EngageVolume", "101", 2),
   ("ExperimentalGMTune", "0", 2),
+  ("GMDisableGps", "1", 2),
+  ("GMDisableLowSpeedRes", "1", 2),
+  ("GMStopAndGo", "0", 2),
+  ("GMExternalPanda", "0", 2),
   ("ExperimentalLongitudinalEnabled", "1", 0),
   ("ExperimentalMode", "0", 0),
   ("ExperimentalModeConfirmed", "0", 0),
@@ -539,6 +543,12 @@ class FrogPilotVariables:
     toggle.loud_blindspot_alert = has_bsm and toggle.custom_alerts and (params.get_bool("LoudBlindspotAlert") if tuning_level >= level["LoudBlindspotAlert"] else default.get_bool("LoudBlindspotAlert"))
     toggle.speed_limit_changed_alert = toggle.custom_alerts and (params.get_bool("SpeedLimitChangedAlert") if tuning_level >= level["SpeedLimitChangedAlert"] else default.get_bool("SpeedLimitChangedAlert"))
 
+    # GM-specific toggles
+    toggle.gm_disable_gps = isGM and (params.get_bool("GMDisableGps") if tuning_level >= level["GMDisableGps"] else default.get_bool("GMDisableGps"))
+    toggle.gm_disable_low_speed_res = isGM and (params.get_bool("GMDisableLowSpeedRes") if tuning_level >= level["GMDisableLowSpeedRes"] else default.get_bool("GMDisableLowSpeedRes"))
+    toggle.gm_stop_and_go = isGM and (params.get_bool("GMStopAndGo") if tuning_level >= level["GMStopAndGo"] else default.get_bool("GMStopAndGo"))
+    toggle.gm_external_panda = isGM and (params.get_bool("GMExternalPanda") if tuning_level >= level["GMExternalPanda"] else default.get_bool("GMExternalPanda"))
+
     toggle.custom_personalities = openpilot_longitudinal and params.get_bool("CustomPersonalities") if tuning_level >= level["CustomPersonalities"] else default.get_bool("CustomPersonalities")
     aggressive_profile = toggle.custom_personalities and (params.get_bool("AggressivePersonalityProfile") if tuning_level >= level["AggressivePersonalityProfile"] else default.get_bool("AggressivePersonalityProfile"))
     toggle.aggressive_jerk_acceleration = np.clip(params.get_int("AggressiveJerkAcceleration") / 100, 0.01, 5) if aggressive_profile and tuning_level >= level["AggressiveJerkAcceleration"] else np.clip(default.get_int("AggressiveJerkAcceleration") / 100, 0.01, 5)
@@ -613,6 +623,7 @@ class FrogPilotVariables:
     toggle.no_uploads = (device_management and (params.get_bool("NoUploads") if tuning_level >= level["NoUploads"] else default.get_bool("NoUploads")) or self.development_branch or self.not_vetted) and not self.vetting_branch
     toggle.no_onroad_uploads = toggle.no_uploads and (params.get_bool("DisableOnroadUploads") if tuning_level >= level["DisableOnroadUploads"] else default.get_bool("DisableOnroadUploads"))
     toggle.offline_mode = device_management and (params.get_bool("OfflineMode") if tuning_level >= level["OfflineMode"] else default.get_bool("OfflineMode"))
+    toggle.disable_driver_monitoring = device_management and (params.get_bool("DisableDriverMonitoring") if tuning_level >= level["DisableDriverMonitoring"] else default.get_bool("DisableDriverMonitoring"))
 
     distance_button_control = params.get_int("DistanceButtonControl") if tuning_level >= level["DistanceButtonControl"] else default.get_int("DistanceButtonControl")
     toggle.experimental_mode_via_distance = openpilot_longitudinal and distance_button_control == self.button_functions["EXPERIMENTAL_MODE"]

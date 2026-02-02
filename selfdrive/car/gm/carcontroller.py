@@ -186,7 +186,9 @@ class CarController(CarControllerBase):
             if self.CP.carFingerprint in SDGM_CAR:
               friction_brake_bus = CanBus.CAMERA
 
-          if self.CP.autoResumeSng:
+          # GM stop-and-go queue following: allow auto-resume from 0 km/h when enabled
+          auto_resume = self.CP.autoResumeSng or getattr(frogpilot_toggles, "gm_stop_and_go", False)
+          if auto_resume:
             resume = actuators.longControlState != LongCtrlState.starting or CC.cruiseControl.resume
             at_full_stop = at_full_stop and not resume
 
@@ -194,12 +196,6 @@ class CarController(CarControllerBase):
             acc_engaged = False
           else:
             acc_engaged = CC.enabled
-
-          # 对于带 SASCM 的 SDGM 车型，为了避免与 OEM ACC 状态机不一致导致的巡航故障，
-          # 当我们认为 ACC 已经启用时，用 OEM 的 cruiseState.enabled 对齐 GasRegenCmdActive；
-          # 其它情况下保持原有 ACC 状态逻辑不变。
-          if acc_engaged and bool(self.CP.flags & GMFlags.SASCM.value):
-            acc_engaged = CS.out.cruiseState.enabled
 
           # GasRegenCmdActive needs to be 1 to avoid cruise faults. It describes the ACC state, not actuation
           can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, CanBus.POWERTRAIN, self.apply_gas, idx, acc_engaged, at_full_stop))

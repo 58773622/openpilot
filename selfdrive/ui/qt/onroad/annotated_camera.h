@@ -157,6 +157,7 @@ private:
   bool useVienna;
   bool vtscControllingCurve;
   bool vtscEnabled;
+  bool gmStopAndGo;
 
   float dashboardSpeedLimit;
   float distanceConversion;
@@ -185,6 +186,7 @@ private:
   int signalWidth;
   int standstillDuration;
   int totalFrames;
+  int sngState = 0;
 
   QColor blueColor(int alpha = 255) { return QColor(0, 0, 255, alpha); }
   QColor greenColor(int alpha = 242) { return QColor(23, 134, 68, alpha); }
@@ -203,6 +205,7 @@ protected:
   void drawLead(QPainter &painter, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd, float v_ego, const QColor &lead_marker_color, bool adjacent = false);
   void drawHud(QPainter &p);
   void drawDriverState(QPainter &painter, const UIState *s);
+  void drawGMStopAndGoStatus(QPainter &p);
   void paintEvent(QPaintEvent *event) override;
   inline QColor redColor(int alpha = 255) { return QColor(201, 34, 49, alpha); }
   inline QColor whiteColor(int alpha = 255) { return QColor(255, 255, 255, alpha); }
@@ -210,4 +213,6 @@ protected:
 
   double prev_draw_t = 0;
   FirstOrderFilter fps_filter;
+
+  void updateSNGStatus(const UIState *s, const cereal::RadarState::LeadData::Reader &lead_one, float v_ego);
 };

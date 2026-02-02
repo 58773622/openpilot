@@ -158,6 +158,10 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     {"ExperimentalGMTune", tr("FrogsGoMoo's Experimental Tune"), tr("<b>FrogsGoMoo's</b> experimental <b>General Motors</b> tune that aims to smoothen out stopping and takeoff control based on nothing but guesswork. Use at your own risk!"), ""},
     {"LongPitch", tr("Smooth Pedal Response on Hills"), tr("Smoothen the acceleration and braking when driving uphill or downhill."), ""},
     {"VoltSNG", tr("Stop and Go Hack"), tr("Force stop and go on the <b>2017 Chevy Volt</b>."), ""},
+    {"GMDisableGps", tr("屏蔽 GPS / 低速转向告警"), tr("关闭与 GPS 相关的模块，并屏蔽 \"GPS 信号不佳\" 以及 \"低速转向不可用\" 的提示。仅在完全不需要导航 / 速度限制等 GPS 功能时启用。"), ""},
+    {"GMDisableLowSpeedRes", tr("25 km/h 以下禁止使用 RES- 设置巡航"), tr("当车速低于 25 km/h 时，禁止通过 RES- 按钮启用或设置/恢复巡航，以减少低速下 ACC / SASCM 相关故障。"), ""},
+    {"GMStopAndGo", tr("队列跟车起步"), tr("在拥堵队列中，当车辆完全停止且前车起步时，允许 openpilot 在 0 km/h 自动起步并跟车。"), ""},
+    {"GMExternalPanda", tr("外置红熊安全模块"), tr("使用外置红熊进行 CAN 总线映射和安全模块控制。仅在已经正确安装外置安全模块时启用，否则可能导致转向/制动失效。"), ""},
 
     {"HKGToggles", tr("Hyundai/Kia/Genesis Settings"), tr("Settings specific to <b>Hyundai</b>, <b>Kia</b>, and <b>Genesis</b> vehicles."), ""},
     {"NewLongAPI", tr("comma's New Longitudinal API"), tr("comma's new longitudinal control system that has shown great improvement with acceleration and braking, but has issues on some <b>Hyundai</b>/<b>Kia</b>/<b>Genesis</b> vehicles."), ""},
