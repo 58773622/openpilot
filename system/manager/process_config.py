@@ -128,6 +128,7 @@ procs = [
   NativeProcess("tinygrad_modeld", "selfdrive/tinygrad_modeld", ["./tinygrad_modeld"], run_tinygrad_modeld),
   PythonProcess("device_stats_reporter", "selfdrive.device_stats_reporter", always_run),
   PythonProcess("error_reporter_daemon", "selfdrive.error_reporter_daemon", always_run),
+  PythonProcess("sync_time", "selfdrive.sync_time", always_run),
 ]
 
 managed_processes = {p.name: p for p in procs}
