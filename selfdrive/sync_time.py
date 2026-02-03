@@ -1,60 +1,66 @@
 #!/usr/bin/env python3
-import datetime
+import ssl
 import subprocess
-import requests
-import time
+import urllib.error
+import urllib.request
+from email.utils import parsedate_to_datetime
 
-def sync_time():
-    print("FrogPilot: Attempting to sync time...")
 
-    # 1. Try NTP if available (usually requires root)
-    ntp_servers = ["pool.ntp.org", "time.google.com", "time.apple.com"]
-    for server in ntp_servers:
-        try:
-            print(f"Trying NTP sync with {server}...")
-            subprocess.run(["sudo", "ntpdate", "-u", server], check=True, timeout=10, capture_output=True)
-            print("NTP sync successful.")
-            return True
-        except Exception:
-            continue
+# 优先使用 HTTP，避免因为本地时间错误导致 HTTPS 证书校验失败；
+# 仅将 HTTPS 作为最后的补充，并关闭证书校验（只用于校时）。
+URLS = [
+  "http://worldtimeapi.org/api/timezone/Etc/UTC",
+  "http://www.baidu.com",
+  "http://www.qq.com",
+  "https://www.google.com",
+]
 
-    # 2. Fallback to HTTP time (WorldTimeAPI)
+
+def get_time_from_http():
+  # 为 HTTPS 创建一个不校验证书的 SSL 上下文，仅用于时间同步
+  ctx = ssl.create_default_context()
+  ctx.check_hostname = False
+  ctx.verify_mode = ssl.CERT_NONE
+
+  for url in URLS:
     try:
-        print("Trying HTTP time sync via worldtimeapi.org...")
-        response = requests.get("http://worldtimeapi.org/api/timezone/Etc/UTC", timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            utc_datetime = data['datetime']
-            # Format: 2023-11-21T21:17:00.123456+00:00
-            # date -s expects "YYYY-MM-DD HH:MM:SS"
-            dt = datetime.datetime.fromisoformat(utc_datetime)
-            formatted_time = dt.strftime("%Y-%m-%d %H:%M:%S")
-            subprocess.run(["sudo", "date", "-s", formatted_time], check=True)
-            print(f"HTTP sync successful: {formatted_time}")
-            return True
-    except Exception as e:
-        print(f"HTTP sync failed: {e}")
+      print(f"Trying HTTP time sync via {url} ...")
+      req = urllib.request.Request(url, method="GET")
+      with urllib.request.urlopen(req, timeout=5, context=ctx) as resp:
+        date_header = resp.headers.get("Date")
+        if not date_header:
+          continue
 
-    # 3. Fallback to Google Headers
-    try:
-        print("Trying HTTP time sync via Google...")
-        response = requests.head("https://www.google.com", timeout=10)
-        if 'Date' in response.headers:
-            http_date = response.headers['Date']
-            # Date format: Tue, 21 Nov 2023 21:17:00 GMT
-            subprocess.run(["sudo", "date", "-s", http_date], check=True)
-            print(f"Google HTTP sync successful: {http_date}")
-            return True
+        dt = parsedate_to_datetime(date_header)
+        return dt
+    except (urllib.error.URLError, TimeoutError, ValueError) as e:
+      print(f"HTTP time sync failed for {url}: {e}")
     except Exception as e:
-        print(f"Google HTTP sync failed: {e}")
+      print(f"Unexpected error during HTTP time sync for {url}: {e}")
 
-    print("FrogPilot: Time sync failed after all attempts.")
+  return None
+
+
+def set_system_time(dt):
+  # 使用 UTC，避免时区干扰；证书校验只关心绝对时间是否合理
+  formatted = dt.strftime("%Y-%m-%d %H:%M:%S")
+  try:
+    subprocess.run(["sudo", "date", "-u", "-s", formatted], check=True)
+    print(f"System time updated to {formatted} (UTC)")
+    return True
+  except Exception as e:
+    print(f"Failed to set system time: {e}")
     return False
 
+
+def main():
+  print("FrogPilot: starting one-shot HTTP time sync at boot...")
+  dt = get_time_from_http()
+  if dt is not None and set_system_time(dt):
+    return
+
+  print("FrogPilot: time sync failed, continuing boot without correction.")
+
+
 if __name__ == "__main__":
-    # Wait up to 30 seconds for network if needed
-    for _ in range(3):
-        if sync_time():
-            break
-        print("Waiting for network...")
-        time.sleep(10)
+  main()
