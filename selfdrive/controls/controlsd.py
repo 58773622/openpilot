@@ -240,7 +240,7 @@ class Controls:
     if not self.CP.pcmCruise and not self.v_cruise_helper.v_cruise_initialized and resume_pressed:
       self.events.add(EventName.resumeBlocked)
 
-    if not self.CP.notCar:
+    if not self.CP.notCar and not self.frogpilot_toggles.disable_driver_monitoring:
       self.events.add_from_msg(self.sm['driverMonitoringState'].events)
 
     # Add car events, ignore if CAN isn't valid
@@ -815,7 +815,11 @@ class Controls:
       else:
         self.steer_limited = abs(CC.actuators.steer - CO.actuatorsOutput.steer) > 1e-2
 
-    force_decel = (self.sm['driverMonitoringState'].awarenessStatus < 0.) or \
+    dm_awareness = self.sm['driverMonitoringState'].awarenessStatus
+    if self.frogpilot_toggles.disable_driver_monitoring:
+      dm_awareness = 1.
+
+    force_decel = (dm_awareness < 0.) or \
                   (self.state == State.softDisabling) or \
                   self.sm['frogpilotCarState'].forceCoast
 

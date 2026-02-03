@@ -628,10 +628,7 @@ class FrogPilotVariables:
     toggle.no_onroad_uploads = toggle.no_uploads and (params.get_bool("DisableOnroadUploads") if tuning_level >= level["DisableOnroadUploads"] else default.get_bool("DisableOnroadUploads"))
     toggle.offline_mode = device_management and (params.get_bool("OfflineMode") if tuning_level >= level["OfflineMode"] else default.get_bool("OfflineMode"))
 
-    if device_management and "DisableDriverMonitoring" in level and tuning_level >= level["DisableDriverMonitoring"]:
-      toggle.disable_driver_monitoring = params.get_bool("DisableDriverMonitoring")
-    else:
-      toggle.disable_driver_monitoring = False
+    toggle.disable_driver_monitoring = params.get_bool("DisableDriverMonitoring")
 
     distance_button_control = params.get_int("DistanceButtonControl") if tuning_level >= level["DistanceButtonControl"] else default.get_int("DistanceButtonControl")
     toggle.experimental_mode_via_distance = openpilot_longitudinal and distance_button_control == self.button_functions["EXPERIMENTAL_MODE"]
