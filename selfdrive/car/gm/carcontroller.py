@@ -28,6 +28,8 @@ PITCH_DEADZONE = 0.01  # [radians] 0.01 ≈ 1% grade
 BRAKE_PITCH_FACTOR_BP = [5., 10.]  # [m/s] smoothly revert to planned accel at low speeds
 BRAKE_PITCH_FACTOR_V = [0., 1.]  # [unitless in [0,1]]; don't touch
 
+ACCEL_SNG_THRESHOLD = 0.2
+
 class CarController(CarControllerBase):
   def __init__(self, dbc_name, CP, VM):
     self.CP = CP
@@ -189,7 +191,8 @@ class CarController(CarControllerBase):
           # GM stop-and-go queue following: allow auto-resume from 0 km/h when enabled
           auto_resume = self.CP.autoResumeSng or getattr(frogpilot_toggles, "gm_stop_and_go", False)
           if auto_resume:
-            resume = actuators.longControlState != LongCtrlState.starting or CC.cruiseControl.resume
+            want_to_start = CC.longActive and CS.out.standstill and (actuators.accel > ACCEL_SNG_THRESHOLD)
+            resume = want_to_start or (actuators.longControlState != LongCtrlState.starting) or CC.cruiseControl.resume
             at_full_stop = at_full_stop and not resume
 
           if CC.cruiseControl.resume and CS.pcm_acc_status == AccState.STANDSTILL and frogpilot_toggles.volt_sng:
