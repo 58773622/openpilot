@@ -138,7 +138,7 @@ class CarInterface(CarInterfaceBase):
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
 
-      if candidate in SDGM_CAR:
+      if candidate in SDGM_CAR and hasattr(Panda, 'FLAG_GM_HW_SDGM'):
         ret.safetyConfigs[gm_safety_idx].safetyParam |= Panda.FLAG_GM_HW_SDGM
 
       # Tuning for experimental long
