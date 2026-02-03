@@ -711,7 +711,7 @@ void FrogPilotThemesPanel::updateToggles() {
       continue;
     }
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "CustomDistanceIcons") {
       setVisible &= params.getBool("QOLVisuals") && params.getBool("OnroadDistanceButton");

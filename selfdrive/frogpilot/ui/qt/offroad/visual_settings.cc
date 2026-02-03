@@ -395,7 +395,7 @@ void FrogPilotVisualsPanel::updateToggles() {
       continue;
     }
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "AccelerationPath") {
       setVisible &= hasOpenpilotLongitudinal;
@@ -462,7 +462,7 @@ void FrogPilotVisualsPanel::updateToggles() {
 
   borderMetricsBtn->setVisibleButton(0, hasBSM);
   lateralMetricsBtn->setVisibleButton(1, hasAutoTune);
-  longitudinalMetricsBtn->setVisibleButton(1, tuningLevel >= frogpilotToggleLevels["JerkInfo"].toDouble());
+  longitudinalMetricsBtn->setVisibleButton(1, true);
 
   update();
 }

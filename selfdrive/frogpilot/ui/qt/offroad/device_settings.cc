@@ -179,7 +179,7 @@ void FrogPilotDevicePanel::updateToggles() {
       continue;
     }
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     toggle->setVisible(setVisible);
 

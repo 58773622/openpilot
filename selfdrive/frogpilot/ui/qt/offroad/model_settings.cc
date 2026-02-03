@@ -374,7 +374,7 @@ void FrogPilotModelPanel::updateModelLabels(FrogPilotListWidget *labelsList) {
 
 void FrogPilotModelPanel::updateToggles() {
   for (auto &[key, toggle] : toggles) {
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "ManageBlacklistedModels" || key == "ManageScores") {
       setVisible &= params.getBool("ModelRandomizer");

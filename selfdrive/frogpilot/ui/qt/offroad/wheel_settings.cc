@@ -66,7 +66,7 @@ void FrogPilotWheelPanel::showEvent(QShowEvent *event) {
 
 void FrogPilotWheelPanel::updateToggles() {
   for (auto &[key, toggle] : toggles) {
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "LKASButtonControl") {
       setVisible &= !isSubaru;

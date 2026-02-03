@@ -747,7 +747,7 @@ void FrogPilotLongitudinalPanel::updateToggles() {
       continue;
     }
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "CurveSensitivity" || key == "TurnAggressiveness") {
       setVisible &= params.getBool("MapTurnControl") || params.getBool("VisionTurnControl");

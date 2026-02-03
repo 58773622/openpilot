@@ -325,7 +325,7 @@ void FrogPilotLateralPanel::updateToggles() {
     bool forcingAutoTuneOff = hasAutoTune && params.getBool("ForceAutoTuneOff");
     bool usingNNFF = hasNNFFLog && params.getBool("LateralTune") && params.getBool("NNFF");
 
-    bool setVisible = tuningLevel >= frogpilotToggleLevels[key].toDouble();
+    bool setVisible = true;
 
     if (key == "AlwaysOnLateralLKAS") {
       setVisible &= isHKGCanFd;
