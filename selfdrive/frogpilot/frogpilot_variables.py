@@ -550,7 +550,7 @@ class FrogPilotVariables:
     # GM-specific toggles
     toggle.gm_disable_gps = isGM and (params.get_bool("GMDisableGps") if tuning_level >= level["GMDisableGps"] else default.get_bool("GMDisableGps"))
     toggle.gm_disable_low_speed_res = isGM and (params.get_bool("GMDisableLowSpeedRes") if tuning_level >= level["GMDisableLowSpeedRes"] else default.get_bool("GMDisableLowSpeedRes"))
-    toggle.gm_stop_and_go = isGM and (params.get_bool("GMStopAndGo") if tuning_level >= level["GMStopAndGo"] else default.get_bool("GMStopAndGo"))
+    toggle.gm_stop_and_go = isGM and params.get_bool("GMStopAndGo")
     toggle.gm_external_panda = isGM and (params.get_bool("GMExternalPanda") if tuning_level >= level["GMExternalPanda"] else default.get_bool("GMExternalPanda"))
 
     toggle.custom_personalities = openpilot_longitudinal and params.get_bool("CustomPersonalities") if tuning_level >= level["CustomPersonalities"] else default.get_bool("CustomPersonalities")

@@ -98,10 +98,14 @@ void AnnotatedCameraWidget::updateState(int alert_height, const UIState &s) {
   // update engageability/experimental mode button
   experimental_btn->updateState(s);
 
-  // update DM icon
-  auto dm_state = sm["driverMonitoringState"].getDriverMonitoringState();
-  dmActive = dm_state.getIsActiveMode();
-  rightHandDM = dm_state.getIsRHD();
+  // update DM icon (only when driver monitoring is enabled)
+  if (!s.scene.disable_driver_monitoring && (sm.rcv_frame("driverMonitoringState") > s.scene.started_frame)) {
+    auto dm_state = sm["driverMonitoringState"].getDriverMonitoringState();
+    dmActive = dm_state.getIsActiveMode();
+    rightHandDM = dm_state.getIsRHD();
+  } else {
+    dmActive = false;
+  }
   // DM icon transition
   dm_fade_state = std::clamp(dm_fade_state+0.2*(0.5-dmActive), 0.0, 1.0);
 
@@ -882,8 +886,9 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
     }
   }
 
-  // DMoji
-  if (!hideBottomIcons && (sm.rcv_frame("driverStateV2") > s->scene.started_frame)) {
+  // DMoji (hidden when driver monitoring is disabled)
+  if (!hideBottomIcons && !s->scene.disable_driver_monitoring &&
+      (sm.rcv_frame("driverStateV2") > s->scene.started_frame)) {
     update_dmonitoring(s, sm["driverStateV2"].getDriverStateV2(), dm_fade_state, rightHandDM);
     drawDriverState(painter, s);
   }

@@ -468,6 +468,7 @@ void ui_update_frogpilot_params(UIState *s) {
   scene.use_wheel_speed = scene.frogpilot_toggles.value("use_wheel_speed").toBool();
   scene.vtsc_enabled = scene.frogpilot_toggles.value("vision_turn_speed_controller").toBool();
   scene.gm_stop_and_go = scene.frogpilot_toggles.value("gm_stop_and_go").toBool();
+  scene.disable_driver_monitoring = scene.frogpilot_toggles.value("disable_driver_monitoring").toBool();
 
   if (scene.tethering_config == 1) {
     s->wifi->setTetheringEnabled(true);

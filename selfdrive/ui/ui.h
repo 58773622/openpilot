@@ -223,6 +223,7 @@ typedef struct UIScene {
   bool vtsc_enabled;
   bool wake_up_screen;
   bool gm_stop_and_go;
+  bool disable_driver_monitoring;
 
   double fps;
 
