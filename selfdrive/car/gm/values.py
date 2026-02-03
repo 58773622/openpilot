@@ -291,6 +291,8 @@ class CanBus:
       CanBus.LOOPBACK = 128
       CanBus.DROPPED = 192
 
+CanBus.checkPanda()
+
 class GMFlags(IntFlag):
   PEDAL_LONG = 1
   CC_LONG = 2
