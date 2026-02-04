@@ -270,6 +270,13 @@ SETTINGS = [
         "description": lambda: tr("Disable Comma connect service if you do not wish to upload / being tracked by the service."),
       },
 
+      {
+        "key": "GMExternalPanda",
+        "type": "toggle_item",
+        "title": lambda: tr("Use External Red Panda (GM)"),
+        "description": lambda: tr("Use an external Red Panda for GM vehicles. Only enable this if you have wired a second safety Panda on CAN buses 4/5/6."),
+      },
+
     ],
   },
 ]

@@ -85,15 +85,32 @@ class CarInterface(CarInterfaceBase):
       return self.lateral_accel_from_torque_linear
 
   @staticmethod
-  def _get_params(ret: structs.CarParams, candidate, fingerprint, car_fw, alpha_long, is_release, docs) -> structs.CarParams:
+  def _get_params(ret: structs.CarParams, candidate, fingerprint, car_fw, alpha_long, is_release, dp_params, docs) -> structs.CarParams:
     ret.brand = "gm"
-    ret.safetyConfigs = [get_safety_config(structs.CarParams.SafetyModel.gm)]
+
+    # External Red Panda support: when enabled via DPFlags.GmExternalPanda, run a noOutput
+    # safety config on the first Panda and the GM safety config on the second Panda.
+    # All GM safety flags are applied to the GM safety config entry. When not using
+    # an external Panda, the GM safety config is at index 0; when using an external
+    # Panda, it is the last entry (index -1).
+    external_panda = bool(getattr(structs.DPFlags, "GmExternalPanda", 0) & dp_params)
+
+    if external_panda:
+      ret.safetyConfigs = [
+        get_safety_config(structs.CarParams.SafetyModel.noOutput),
+        get_safety_config(structs.CarParams.SafetyModel.gm),
+      ]
+    else:
+      ret.safetyConfigs = [get_safety_config(structs.CarParams.SafetyModel.gm)]
+
+    gm_safety_idx = -1 if external_panda else 0
+
     ret.autoResumeSng = False
     ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
 
     if candidate in EV_CAR:
       ret.transmissionType = TransmissionType.direct
-      ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.EV.value
+      ret.safetyConfigs[gm_safety_idx].safetyParam |= GMSafetyFlags.EV.value
     else:
       ret.transmissionType = TransmissionType.automatic
 
@@ -104,7 +121,7 @@ class CarInterface(CarInterfaceBase):
       ret.networkLocation = NetworkLocation.fwdCamera
       ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
       ret.pcmCruise = True
-      ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.HW_CAM.value
+      ret.safetyConfigs[gm_safety_idx].safetyParam |= GMSafetyFlags.HW_CAM.value
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
 
@@ -118,7 +135,7 @@ class CarInterface(CarInterfaceBase):
       if alpha_long:
         ret.pcmCruise = False
         ret.openpilotLongitudinalControl = True
-        ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.HW_CAM_LONG.value
+        ret.safetyConfigs[gm_safety_idx].safetyParam |= GMSafetyFlags.HW_CAM_LONG.value
 
       if candidate in ALT_ACCS:
         ret.alphaLongitudinalAvailable = False
@@ -126,7 +143,7 @@ class CarInterface(CarInterfaceBase):
         ret.minEnableSpeed = -1.  # engage speed is decided by PCM
 
       if candidate in SDGM_CAR:
-          ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.HW_SDGM.value
+          ret.safetyConfigs[gm_safety_idx].safetyParam |= GMSafetyFlags.HW_SDGM.value
           if not ret.openpilotLongitudinalControl:
             ret.minEnableSpeed = -1.  # engage speed is decided by pcm
 

@@ -28,4 +28,5 @@ class DPFlags:
   VagA0SnG = 2 ** 5
   VAGPQSteeringPatch = 2 ** 6
   VagAvoidEPSLockout = 2 ** 7
+  GmExternalPanda = 2 ** 8
   pass

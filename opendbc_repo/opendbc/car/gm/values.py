@@ -5,6 +5,10 @@ from opendbc.car import Bus, PlatformConfig, DbcDict, Platforms, CarSpecs
 from opendbc.car.structs import CarParams
 from opendbc.car.docs_definitions import CarDocs, CarFootnote, CarHarness, CarParts, Column
 from opendbc.car.fw_query_definitions import FwQueryConfig, Request, StdQueries
+try:
+  from openpilot.common.params import Params
+except ImportError:
+  Params = None
 
 Ecu = CarParams.Ecu
 
@@ -223,6 +227,33 @@ class CanBus:
   CHASSIS = 2
   LOOPBACK = 128
   DROPPED = 192
+
+  @staticmethod
+  def checkPanda() -> None:
+    use_external_panda = False
+    if Params is not None:
+      try:
+        use_external_panda = Params().get_bool("GMExternalPanda")
+      except Exception:
+        use_external_panda = False
+
+    if use_external_panda:
+      CanBus.POWERTRAIN = 0 + 4
+      CanBus.OBSTACLE = 1 + 4
+      CanBus.CAMERA = 2 + 4
+      CanBus.CHASSIS = 2 + 4
+      CanBus.LOOPBACK = 128 + 4
+      CanBus.DROPPED = 192 + 4
+    else:
+      CanBus.POWERTRAIN = 0
+      CanBus.OBSTACLE = 1
+      CanBus.CAMERA = 2
+      CanBus.CHASSIS = 2
+      CanBus.LOOPBACK = 128
+      CanBus.DROPPED = 192
+
+
+CanBus.checkPanda()
 
 
 # In a Data Module, an identifier is a string used to recognize an object,
