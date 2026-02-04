@@ -40,6 +40,7 @@ class CarControllerParams:
       self.MAX_GAS = 1346.0
       self.MAX_ACC_REGEN = -540.0
       self.INACTIVE_REGEN = -500.0
+      self.BRAKE_SWITCH_MAX = self.MAX_ACC_REGEN if CP.carFingerprint in EV_CAR else 0
       # Camera ACC vehicles have no regen while enabled.
       # Camera transitions to MAX_ACC_REGEN from zero gas and uses friction brakes instantly
       max_regen_acceleration = 0.
@@ -50,19 +51,20 @@ class CarControllerParams:
       self.INACTIVE_REGEN = -650.0
       # ICE has much less engine braking force compared to regen in EVs,
       # lower threshold removes some braking deadzone
-      max_regen_acceleration = -1. if CP.carFingerprint in EV_CAR else -0.1
+      self.BRAKE_SWITCH_MAX = self.MAX_ACC_REGEN if CP.carFingerprint in EV_CAR else 0
 
-    self.GAS_LOOKUP_BP = [max_regen_acceleration, 0., self.ACCEL_MAX]
-    self.GAS_LOOKUP_V = [self.MAX_ACC_REGEN, 0., self.MAX_GAS]
-
-    self.BRAKE_LOOKUP_BP = [self.ACCEL_MIN, max_regen_acceleration]
+    self.BRAKE_LOOKUP_BP = [self.ACCEL_MIN, 0.]
     self.BRAKE_LOOKUP_V = [self.MAX_BRAKE, 0.]
+
+    self.BRAKE_SWITCH_LOOKUP_BP = [0.5, 10]
+    self.BRAKE_SWITCH_LOOKUP_V = [0, self.BRAKE_SWITCH_MAX]
 
 
 class GMSafetyFlags(IntFlag):
   HW_CAM = 1
   HW_CAM_LONG = 2
   EV = 4
+  HW_SDGM = 8
 
 
 class Footnote(Enum):
@@ -193,7 +195,10 @@ class CAR(Platforms):
     [GMCarDocs("GMC Yukon 2019-20", "Adaptive Cruise Control (ACC) & LKAS")],
     GMCarSpecs(mass=2490, wheelbase=2.94, steerRatio=17.3, centerToFrontRatio=0.5, tireStiffnessFactor=1.0),
   )
-
+  BUICK_BABYENCLAVE = GMSDGMPlatformConfig(
+    [GMCarDocs("Buick Baby Enclave 2020-23", "Driver Assist Package")],
+    GMCarSpecs(mass=2050, wheelbase=2.86, steerRatio=16.0, centerToFrontRatio=0.5),
+  )
 
 class CruiseButtons:
   INIT = 0
@@ -279,7 +284,7 @@ CAMERA_ACC_CAR = {CAR.CHEVROLET_BOLT_EUV, CAR.CHEVROLET_SILVERADO, CAR.CHEVROLET
 ALT_ACCS = {CAR.GMC_YUKON}
 
 # We're integrated at the Safety Data Gateway Module on these cars
-SDGM_CAR = {CAR.CADILLAC_XT4, CAR.CHEVROLET_VOLT_2019, CAR.CHEVROLET_TRAVERSE}
+SDGM_CAR = {CAR.CADILLAC_XT4, CAR.CHEVROLET_VOLT_2019, CAR.CHEVROLET_TRAVERSE, CAR.BUICK_BABYENCLAVE}
 
 STEER_THRESHOLD = 1.0
 

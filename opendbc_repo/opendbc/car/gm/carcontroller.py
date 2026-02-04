@@ -1,15 +1,18 @@
 import numpy as np
+import math
 from opendbc.can import CANPacker
 from opendbc.car import Bus, DT_CTRL, structs
 from opendbc.car.lateral import apply_driver_steer_torque_limits
 from opendbc.car.gm import gmcan
 from opendbc.car.common.conversions import Conversions as CV
-from opendbc.car.gm.values import DBC, CanBus, CarControllerParams, CruiseButtons
+from opendbc.car.gm.values import DBC, CanBus, CarControllerParams, CruiseButtons, SDGM_CAR
 from opendbc.car.interfaces import CarControllerBase
 
 VisualAlert = structs.CarControl.HUDControl.VisualAlert
 NetworkLocation = structs.CarParams.NetworkLocation
 LongCtrlState = structs.CarControl.Actuators.LongControlState
+
+ACCELERATION_DUE_TO_GRAVITY = 9.81  # m/s^2
 
 # Camera cancels up to 0.1s after brake is pressed, ECM allows 0.5s
 CAMERA_CANCEL_DELAY_FRAMES = 10
@@ -32,6 +35,12 @@ class CarController(CarControllerBase):
     self.lka_icon_status_last = (False, False)
 
     self.params = CarControllerParams(self.CP)
+
+    self.mass = CP.mass
+    self.tireRadius = 0.075 * CP.wheelbase + 0.1453
+    self.frontalArea = 1.05 * CP.wheelbase + 0.0679
+    self.coeffDrag = 0.30
+    self.airDensity = 1.225
 
     self.packer_pt = CANPacker(DBC[self.CP.carFingerprint][Bus.pt])
     self.packer_obj = CANPacker(DBC[self.CP.carFingerprint][Bus.radar])
@@ -90,8 +99,23 @@ class CarController(CarControllerBase):
           self.apply_gas = self.params.INACTIVE_REGEN
           self.apply_brake = 0
         else:
-          self.apply_gas = float(np.interp(actuators.accel, self.params.GAS_LOOKUP_BP, self.params.GAS_LOOKUP_V))
-          self.apply_brake = int(round(np.interp(actuators.accel, self.params.BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
+          if len(CC.orientationNED) == 3 and CS.out.vEgo > self.CP.vEgoStopping:
+            accel_due_to_pitch = math.sin(CC.orientationNED[1]) * ACCELERATION_DUE_TO_GRAVITY
+          else:
+            accel_due_to_pitch = 0.0
+
+          accel = np.clip(actuators.accel + accel_due_to_pitch, self.params.ACCEL_MIN, self.params.ACCEL_MAX)
+
+          torque = self.tireRadius * ((self.mass*accel) + (0.5*self.coeffDrag*self.frontalArea*self.airDensity*CS.out.vEgo**2))
+          apply_gas_torque = np.clip(torque, self.params.MAX_ACC_REGEN, self.params.MAX_GAS)
+          BRAKE_SWITCH = int(round(np.interp(CS.out.vEgo, self.params.BRAKE_SWITCH_LOOKUP_BP, self.params.BRAKE_SWITCH_LOOKUP_V)))
+          brake_accel = min((torque - BRAKE_SWITCH)/(self.tireRadius*self.mass), 0)
+
+          self.apply_gas = int(round(apply_gas_torque))
+          self.apply_brake = int(round(np.interp(brake_accel, self.params.BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
+          if self.apply_brake > 0:
+            self.apply_gas = self.params.INACTIVE_REGEN
+
           # Don't allow any gas above inactive regen while stopping
           # FIXME: brakes aren't applied immediately when enabling at a stop
           if stopping:
@@ -107,6 +131,8 @@ class CarController(CarControllerBase):
         if self.CP.networkLocation == NetworkLocation.fwdCamera:
           at_full_stop = at_full_stop and stopping
           friction_brake_bus = CanBus.POWERTRAIN
+          if self.CP.carFingerprint in SDGM_CAR:
+            friction_brake_bus = CanBus.CAMERA
 
         # GasRegenCmdActive needs to be 1 to avoid cruise faults. It describes the ACC state, not actuation
         can_sends.append(gmcan.create_gas_regen_command(self.packer_pt, CanBus.POWERTRAIN, self.apply_gas, idx, CC.enabled, at_full_stop))
@@ -120,7 +146,7 @@ class CarController(CarControllerBase):
 
       # Radar needs to know current speed and yaw rate (50hz),
       # and that ADAS is alive (10hz)
-      if not self.CP.radarUnavailable:
+      if not self.CP.radarUnavailable and self.CP.carFingerprint not in SDGM_CAR:
         tt = self.frame * DT_CTRL
         time_and_headlights_step = 10
         if self.frame % time_and_headlights_step == 0:

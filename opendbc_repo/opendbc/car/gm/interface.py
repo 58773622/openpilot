@@ -25,6 +25,9 @@ class CarInterface(CarInterfaceBase):
   CarController = CarController
   RadarInterface = RadarInterface
 
+  DRIVABLE_GEARS = (structs.CarState.GearShifter.sport, structs.CarState.GearShifter.low,
+                    structs.CarState.GearShifter.eco, structs.CarState.GearShifter.manumatic)
+
   @staticmethod
   def get_pid_accel_limits(CP, current_speed, cruise_speed):
     return CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX
@@ -82,7 +85,7 @@ class CarInterface(CarInterfaceBase):
       return self.lateral_accel_from_torque_linear
 
   @staticmethod
-  def _get_params(ret: structs.CarParams, candidate, fingerprint, car_fw, alpha_long, is_release, dp_params, docs) -> structs.CarParams:
+  def _get_params(ret: structs.CarParams, candidate, fingerprint, car_fw, alpha_long, is_release, docs) -> structs.CarParams:
     ret.brand = "gm"
     ret.safetyConfigs = [get_safety_config(structs.CarParams.SafetyModel.gm)]
     ret.autoResumeSng = False
@@ -97,19 +100,20 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiBP = [5., 35.]
 
     if candidate in (CAMERA_ACC_CAR | SDGM_CAR):
-      ret.alphaLongitudinalAvailable = candidate not in SDGM_CAR
+      ret.alphaLongitudinalAvailable = candidate not in SDGM_CAR or 0x2FF in fingerprint[CanBus.POWERTRAIN]
       ret.networkLocation = NetworkLocation.fwdCamera
-      ret.radarUnavailable = True  # no radar
+      ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
       ret.pcmCruise = True
       ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.HW_CAM.value
-      ret.minEnableSpeed = -1 if candidate in SDGM_CAR else 5 * CV.KPH_TO_MS
+      ret.minEnableSpeed = 5 * CV.KPH_TO_MS
       ret.minSteerSpeed = 10 * CV.KPH_TO_MS
 
       # Tuning for experimental long
-      ret.longitudinalTuning.kiV = [2.0, 1.5]
-      ret.stoppingDecelRate = 2.0  # reach brake quickly after enabling
+      ret.longitudinalTuning.kiV = [0.5, 0.5]
+      ret.stoppingDecelRate = 1.0
       ret.vEgoStopping = 0.25
       ret.vEgoStarting = 0.25
+      ret.stopAccel = -0.25
 
       if alpha_long:
         ret.pcmCruise = False
@@ -120,6 +124,11 @@ class CarInterface(CarInterfaceBase):
         ret.alphaLongitudinalAvailable = False
         ret.openpilotLongitudinalControl = False
         ret.minEnableSpeed = -1.  # engage speed is decided by PCM
+
+      if candidate in SDGM_CAR:
+          ret.safetyConfigs[0].safetyParam |= GMSafetyFlags.HW_SDGM.value
+          if not ret.openpilotLongitudinalControl:
+            ret.minEnableSpeed = -1.  # engage speed is decided by pcm
 
     else:  # ASCM, OBD-II harness
       ret.openpilotLongitudinalControl = True
@@ -132,13 +141,13 @@ class CarInterface(CarInterfaceBase):
       ret.minSteerSpeed = 7 * CV.MPH_TO_MS
 
       # Tuning
-      ret.longitudinalTuning.kiV = [2.4, 1.5]
+      ret.longitudinalTuning.kiV = [0.5, 0.5]
 
     # These cars have been put into dashcam only due to both a lack of users and test coverage.
     # These cars likely still work fine. Once a user confirms each car works and a test route is
     # added to opendbc/car/tests/routes.py, we can remove it from this list.
-    ret.dashcamOnly = candidate in {CAR.CADILLAC_ATS, CAR.HOLDEN_ASTRA, CAR.CHEVROLET_MALIBU, CAR.BUICK_REGAL} or \
-                      (ret.networkLocation == NetworkLocation.gateway and ret.radarUnavailable)
+    # ret.dashcamOnly = candidate in {CAR.CADILLAC_ATS, CAR.HOLDEN_ASTRA, CAR.CHEVROLET_MALIBU, CAR.BUICK_REGAL} or \
+    #                   (ret.networkLocation == NetworkLocation.gateway and ret.radarUnavailable)
 
     # Start with a baseline tuning for all GM vehicles. Override tuning as needed in each model section below.
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
@@ -203,6 +212,10 @@ class CarInterface(CarInterfaceBase):
       ret.steerActuatorDelay = 0.2
       ret.minSteerSpeed = 30 * CV.MPH_TO_MS
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
+    elif candidate == CAR.BUICK_BABYENCLAVE:
+      ret.steerActuatorDelay = 0.2
+      ret.minSteerSpeed = 0 * CV.MPH_TO_MS
+      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
 
     elif candidate == CAR.CHEVROLET_VOLT_2019:
       ret.steerActuatorDelay = 0.2
@@ -215,6 +228,6 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.GMC_YUKON:
       ret.steerActuatorDelay = 0.5
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
-      ret.dashcamOnly = True  # Needs steerRatio, tireStiffness, and lat accel factor tuning
+      # ret.dashcamOnly = True  # Needs steerRatio, tireStiffness, and lat accel factor tuning
 
     return ret
