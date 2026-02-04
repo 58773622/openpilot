@@ -401,7 +401,8 @@ class CarInterfaceBase(ABC):
     for b in cs_out.buttonEvents:
       # Enable OP long on falling edge of enable buttons (defaults to accelCruise and decelCruise, overridable per-port)
       if not self.CP.pcmCruise and (b.type in enable_buttons and not b.pressed):
-        events.add(EventName.buttonEnable)
+        if not (b.type == ButtonType.decelCruise and cs_out.vEgo < 20.0 * CV.KPH_TO_MS):
+          events.add(EventName.buttonEnable)
       # Disable on rising and falling edge of cancel for both stock and OP long
       if b.type == ButtonType.cancel:
         events.add(EventName.buttonCancel)
