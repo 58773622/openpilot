@@ -188,7 +188,8 @@ function launch {
 
   # write tmux scrollback to a file
   tmux capture-pane -pq -S-1000 > /tmp/launch_log
-
+  # FrogPilot: sync system time once on boot (blocking, max ~20s)
+  python3 selfdrive/sync_time.py
   # start manager
   cd system/manager
   if [ ! -f $DIR/prebuilt ]; then
