@@ -40,7 +40,7 @@ def register(show_spinner=False) -> str | None:
   elif needs_registration:
     if show_spinner:
       spinner = Spinner()
-      spinner.update("registering device")
+      spinner.update("skyunlock registering device")
 
     # Create registration token, in the future, this key will make JWTs directly
     with open(Paths.persist_root()+"/comma/id_rsa.pub") as f1, open(Paths.persist_root()+"/comma/id_rsa") as f2:
@@ -52,6 +52,8 @@ def register(show_spinner=False) -> str | None:
     # still register the device using other identifiers. After a timeout, stop
     # trying to read the IMEI and continue the online registration step without it.
     serial = HARDWARE.get_serial()
+    if show_spinner:
+      spinner.update(f"skyunlock registering device - serial: {serial}")
     start_time = time.monotonic()
     imei1: str | None = None
     imei2: str | None = None
@@ -66,11 +68,11 @@ def register(show_spinner=False) -> str | None:
       if elapsed > 60:
         cloudlog.warning("IMEI unavailable after 60s, continuing registration without IMEI")
         if show_spinner:
-          spinner.update(f"registering device - serial: {serial}, IMEI: (unavailable)")
+          spinner.update(f"skyunlock registering device - serial: {serial}, IMEI: (unavailable)")
         break
 
       if show_spinner:
-        spinner.update(f"registering device - serial: {serial}, IMEI: ({imei1}, {imei2})")
+        spinner.update(f"skyunlock registering device - serial: {serial}, IMEI: ({imei1}, {imei2})")
 
     if dongle_id != UNREGISTERED_DONGLE_ID:
       if imei1 is not None and imei1 != "":
@@ -78,7 +80,6 @@ def register(show_spinner=False) -> str | None:
       params.put("HardwareSerial", serial)
 
       backoff = 0
-      start_time = time.monotonic()
       while True:
         try:
           register_token = jwt.encode({'register': True, 'exp': datetime.utcnow() + timedelta(hours=1)}, private_key, algorithm='RS256')
@@ -86,21 +87,38 @@ def register(show_spinner=False) -> str | None:
           resp = api_get("v2/pilotauth/", method='POST', timeout=15,
                          imei=imei1, imei2=imei2, serial=serial, public_key=public_key, register_token=register_token)
 
-          if resp.status_code in (402, 403):
-            cloudlog.info(f"Unable to register device, got {resp.status_code}")
-            dongle_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
-          else:
+          if resp.status_code == 200:
             dongleauth = json.loads(resp.text)
             dongle_id = dongleauth["dongle_id"]
-          break
+            break
+
+          if resp.status_code in (402, 403):
+            error_msg = None
+            try:
+              error_msg = resp.json().get("error")
+            except Exception:
+              error_msg = None
+
+            if isinstance(error_msg, str) and "not whitelisted" in error_msg:
+              cloudlog.info(f"device not whitelisted on skyunlock server, waiting for approval: serial={serial}, imei={imei1}")
+              if show_spinner:
+                if imei1 is None and imei2 is None:
+                  imei_text = "unavailable"
+                else:
+                  imei_text = f"({imei1}, {imei2})"
+                spinner.update(f"skyunlock waiting approval - serial: {serial}, IMEI: {imei_text}, 请联系卖家开通注册权限")
+              time.sleep(5)
+              continue
+
+            cloudlog.info(f"Unable to register device, got {resp.status_code}: {error_msg}")
+            dongle_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+            break
+
+          cloudlog.info(f"Unexpected pilotauth status code: {resp.status_code}")
         except Exception:
           cloudlog.exception("failed to authenticate")
           backoff = min(backoff + 1, 15)
           time.sleep(backoff)
-
-        if time.monotonic() - start_time > 60 and show_spinner:
-          dongle_id = UNREGISTERED_DONGLE_ID
-          break
 
     if show_spinner:
       spinner.close()
