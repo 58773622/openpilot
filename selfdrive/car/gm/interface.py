@@ -99,15 +99,11 @@ class CarInterface(CarInterfaceBase):
   def _get_params(ret, candidate, fingerprint, car_fw, disable_openpilot_long, experimental_long, docs):
     ret.carName = "gm"
 
-    # External Red Panda switch (GMExternalPanda): when enabled, run a noOutput
-    # safety config first, then the GM safety config. The CAN bus remapping
-    # itself is handled globally in gm/values.py via CanBus.checkPanda().
+    # External Red Panda switch: when enabled, run a noOutput safety config
+    # first, then the GM safety config. All GM safety flags are applied to the
+    # GM safetyConfig entry. When not using an external Panda, this is index 0;
+    # when using an external Panda, this is the last entry (index -1).
     external_panda = params.get_bool("GMExternalPanda")
-
-    # User preference: when not using an external Red Panda, treat
-    # safetyConfigs[0] as the active GM safety config. When using an external
-    # Red Panda, treat safetyConfigs[-1] as the active GM safety config.
-    gm_safety_idx = -1 if external_panda else 0
 
     if external_panda:
       ret.safetyConfigs = [
@@ -116,6 +112,9 @@ class CarInterface(CarInterfaceBase):
       ]
     else:
       ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
+
+    gm_safety_idx = -1 if external_panda else 0
+
     ret.autoResumeSng = False
     ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
     if PEDAL_MSG in fingerprint[CanBus.POWERTRAIN]:
