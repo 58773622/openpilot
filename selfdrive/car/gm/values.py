@@ -226,6 +226,10 @@ class CAR(Platforms):
     [GMCarDocs("Buick Baby Enclave 2020-23", "Driver Assist Package")],
     CarSpecs(mass=2050, wheelbase=2.86, steerRatio=16.0, centerToFrontRatio=0.5),
   )
+  CHEVROLET_MALIBU_XL = GMPlatformConfig(
+    [GMCarDocs("Chevrolet Malibu XL 2022-23", "Driver Assist Package")],
+    CarSpecs(mass=1525, wheelbase=2.829, steerRatio=15.8, centerToFrontRatio=0.4),
+)
   CHEVROLET_MALIBU_CC = GMPlatformConfig(
     [GMCarDocs("Chevrolet Malibu 2023 - No-ACC")],
     CarSpecs(mass=1450, wheelbase=2.8, steerRatio=15.8, centerToFrontRatio=0.4),

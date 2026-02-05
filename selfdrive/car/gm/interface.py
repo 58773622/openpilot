@@ -268,7 +268,11 @@ class CarInterface(CarInterfaceBase):
       if not ret.openpilotLongitudinalControl:
         ret.minEnableSpeed = -1.  # engage speed is decided by pcm
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
-
+    elif candidate == CAR.CHEVROLET_MALIBU_XL:
+      ret.steerActuatorDelay = 0.2
+      if not ret.openpilotLongitudinalControl:
+        ret.minEnableSpeed = -1.  # engage speed is decided by pcm
+      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
     elif candidate == CAR.CADILLAC_CT6_CC:
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
 
