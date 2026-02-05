@@ -185,8 +185,7 @@ class CarState(CarStateBase):
                               unpressed_btn=CruiseButtons.INIT)
       ]
 
-    if ret.vEgo < self.CP.minSteerSpeed:
-      ret.lowSpeedAlert = True
+    self.lkas_on = ret.cruiseState.available
 
     return ret
 
