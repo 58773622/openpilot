@@ -73,8 +73,15 @@ static void gm_rx_hook(const CANPacket_t *msg) {
       brake_pressed = msg->data[1] >= 8U;
     }
 
-    if ((msg->addr == 0xC9U) && ((gm_hw == GM_CAM) && !gm_sdgm)) {
-      brake_pressed = GET_BIT(msg, 40U);
+    if (msg->addr == 0xC9U) {
+      if ((gm_hw == GM_CAM) && !gm_sdgm) {
+        brake_pressed = GET_BIT(msg, 40U);
+      }
+
+      if (alka_allowed && ((alternative_experience & ALT_EXP_ALKA) != 0)) {
+        acc_main_on = GET_BIT(msg, 29U);
+        lkas_on = acc_main_on;
+      }
     }
 
     if (msg->addr == 0x1C4U) {
@@ -160,6 +167,8 @@ static safety_config gm_init(uint16_t param) {
   const uint16_t GM_PARAM_HW_CAM = 1;
   const uint16_t GM_PARAM_EV = 4;
   const uint16_t GM_PARAM_HW_SDGM = 8;
+
+  alka_allowed = true;
 
   // common safety checks assume unscaled integer values
   static const int GM_GAS_TO_CAN = 8;  // 1 / 0.125

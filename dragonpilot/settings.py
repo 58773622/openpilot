@@ -66,7 +66,7 @@ SETTINGS = [
         "type": "toggle_item",
         "title": lambda: tr("Always-on Lane Keeping Assist (ALKA)"),
         "description": lambda: tr("Enable lateral control even when ACC/cruise is disengaged, using ACC Main or LKAS button to toggle. Vehicle must be moving."),
-        "brands": ["toyota", "hyundai", "honda", "volkswagen", "subaru", "mazda", "nissan", "ford"],
+        "brands": ["toyota", "hyundai", "honda", "volkswagen", "subaru", "mazda", "nissan", "ford", "gm"],
       },
       {
         "key": "dp_lat_lca_speed",
