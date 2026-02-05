@@ -11,9 +11,21 @@ NetworkLocation = structs.CarParams.NetworkLocation
 
 STANDSTILL_THRESHOLD = 10 * 0.0311
 
-BUTTONS_DICT = {CruiseButtons.RES_ACCEL: ButtonType.accelCruise, CruiseButtons.DECEL_SET: ButtonType.decelCruise,
-                CruiseButtons.MAIN: ButtonType.mainCruise, CruiseButtons.CANCEL: ButtonType.cancel}
-HARD_BUTTONS_DICT = {CruiseButtons.RES_ACCEL: ButtonType.accelHardCruise, CruiseButtons.DECEL_SET: ButtonType.decelHardCruise}
+# dp103 ButtonEvent.Type 里并没有 accelHardCruise/decelHardCruise 这两个枚举，
+# 这里沿用普通的 accelCruise/decelCruise 类型，通过单独的 hard_cruise_buttons 状态
+# 来区分是否为“重按”逻辑，避免枚举不存在导致 import 失败。
+BUTTONS_DICT = {
+  CruiseButtons.RES_ACCEL: ButtonType.accelCruise,
+  CruiseButtons.DECEL_SET: ButtonType.decelCruise,
+  CruiseButtons.MAIN: ButtonType.mainCruise,
+  CruiseButtons.CANCEL: ButtonType.cancel,
+}
+# 对于硬按事件，仍然使用 accelCruise/decelCruise 类型，由上层根据当前 hard_cruise_buttons
+# 状态做进一步区分，而不是依赖不存在的 ButtonType 成员。
+HARD_BUTTONS_DICT = {
+  CruiseButtons.RES_ACCEL: ButtonType.accelCruise,
+  CruiseButtons.DECEL_SET: ButtonType.decelCruise,
+}
 
 
 class CarState(CarStateBase):
@@ -60,7 +72,7 @@ class CarState(CarStateBase):
     self.buttons_counter = pt_cp.vl["ASCMSteeringButton"]["RollingCounter"]
     self.pscm_status = copy.copy(pt_cp.vl["PSCMStatus"])
 
-    # When button is pressed hard, normal press still stays active. This resets the normal press to unpress 
+    # When button is pressed hard, normal press still stays active. This resets the normal press to unpress
     # until another button is pressed or cruise button is released.
     if self.hard_cruise_buttons != CruiseButtons.INIT and self.cruise_buttons in self.normal_cruise_buttons:
       self.force_reset_cruise_buttons = True
