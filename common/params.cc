@@ -346,6 +346,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"IconToDownload", CLEAR_ON_MANAGER_START},
     {"IncreasedStoppedDistance", PERSISTENT},
     {"IncreaseThermalLimits", PERSISTENT},
+    {"QuietFan", PERSISTENT},
     {"IssueReported", CLEAR_ON_MANAGER_START},
     {"JerkInfo", PERSISTENT},
     {"LaneChangeCustomizations", PERSISTENT},
