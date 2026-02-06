@@ -80,6 +80,9 @@ def register(show_spinner=False) -> str | None:
       params.put("HardwareSerial", serial)
 
       backoff = 0
+      # overall timeout for online registration attempts (to avoid blocking forever when there's no internet)
+      reg_start_time = time.monotonic()
+      max_offline_time_s = 60
       while True:
         try:
           register_token = jwt.encode({'register': True, 'exp': datetime.utcnow() + timedelta(hours=1)}, private_key, algorithm='RS256')
@@ -118,6 +121,12 @@ def register(show_spinner=False) -> str | None:
         except Exception:
           cloudlog.exception("failed to authenticate")
           backoff = min(backoff + 1, 15)
+          # if we've been failing due to network issues for too long, fall back to an unregistered device ID
+          elapsed = time.monotonic() - reg_start_time
+          if elapsed > max_offline_time_s:
+            cloudlog.warning(f"registration network timeout after {elapsed:.0f}s, using UNREGISTERED_DONGLE_ID and continuing offline")
+            dongle_id = UNREGISTERED_DONGLE_ID
+            break
           time.sleep(backoff)
 
     if show_spinner:
