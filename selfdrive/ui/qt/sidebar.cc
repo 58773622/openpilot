@@ -119,7 +119,11 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
   static int showMemory = 0;
   static int showTemp = 0;
 
-  if (cpuRect.contains(pos) && isSidebarMetrics) {
+  // Always allow cycling CPU/GPU metrics when the user taps the middle tile,
+  // regardless of whether the "sidebar metrics" feature is enabled. This
+  // restores the legacy behavior where tapping this area rotated between
+  // different performance views.
+  if (cpuRect.contains(pos)) {
     showChip = (showChip + 1) % 3;
 
     isCPU = (showChip == 1);
@@ -135,7 +139,8 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
     return;
   }
 
-  if (memoryRect.contains(pos) && isSidebarMetrics) {
+  // Likewise, always allow cycling memory/storage/connection status on tap.
+  if (memoryRect.contains(pos)) {
     showMemory = (showMemory + 1) % 4;
 
     isMemoryUsage = (showMemory == 1);
@@ -154,7 +159,8 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
     return;
   }
 
-  if (tempRect.contains(pos) && isSidebarMetrics) {
+  // And always allow cycling the temperature display (icon/number, °C/°F).
+  if (tempRect.contains(pos)) {
     showTemp = (showTemp + 1) % 3;
 
     isFahrenheit = showTemp == 2;
