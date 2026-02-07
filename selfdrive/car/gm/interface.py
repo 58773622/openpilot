@@ -267,7 +267,8 @@ class CarInterface(CarInterfaceBase):
       ret.steerActuatorDelay = 0.2
       if not ret.openpilotLongitudinalControl:
         ret.minEnableSpeed = -1.  # engage speed is decided by pcm
-      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
+      else:
+        ret.minEnableSpeed = 20 * CV.KPH_TO_MS  # from the log it looks like 10mph is the minimun 10 * CV.MPH_TO_MS, which is around 16kmh, lets set it to 20 first.
     elif candidate == CAR.CHEVROLET_MALIBU_XL:
       ret.steerActuatorDelay = 0.2
       if not ret.openpilotLongitudinalControl:
