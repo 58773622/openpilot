@@ -2,7 +2,9 @@
 import datetime
 import os
 import signal
+import subprocess
 import sys
+import time
 import traceback
 
 from cereal import log
@@ -268,6 +270,9 @@ def manager_thread() -> None:
   classic_model = frogpilot_toggles.classic_model
   tinygrad_model = frogpilot_toggles.tinygrad_model
 
+  # Track how long the device has been unregistered to trigger periodic reboots
+  unregistered_since: float | None = None
+
   while True:
     sm.update(1000)
 
@@ -294,6 +299,35 @@ def manager_thread() -> None:
     started_prev = started
 
     ensure_running(managed_processes.values(), started, params=params, CP=sm['carParams'], not_run=ignore, classic_model=classic_model, tinygrad_model=tinygrad_model, frogpilot_toggles=frogpilot_toggles)
+
+    # Enforce that unregistered devices without a valid sky-prefixed hardware
+    # serial reboot, and periodically reboot unregistered devices to retry
+    # registration based on DongleId.
+    if not PC:
+      dongle_id = params.get("DongleId", encoding='utf8')
+      hw_serial = params.get("HardwareSerial", encoding='utf8')
+      if dongle_id == UNREGISTERED_DONGLE_ID:
+        # Immediate reboot for devices without valid sky serial
+        if hw_serial is None or not hw_serial.startswith("sky"):
+          cloudlog.warning(
+            f"unregistered device without valid sky serial detected, rebooting: dongle_id={dongle_id}, serial={hw_serial}"
+          )
+          params.put_bool("DoReboot", True)
+
+        # Periodic reboot (about every 3 minutes) for any unregistered device
+        # to retry registration
+        if unregistered_since is None:
+          unregistered_since = time.monotonic()
+        else:
+          elapsed = time.monotonic() - unregistered_since
+          if elapsed > 180:
+            cloudlog.warning(
+              f"unregistered device still not registered after {elapsed:.0f}s, rebooting to retry registration"
+            )
+            params.put_bool("DoReboot", True)
+            unregistered_since = time.monotonic()
+      else:
+        unregistered_since = None
 
     running = ' '.join("{}{}\u001b[0m".format("\u001b[32m" if p.proc.is_alive() else "\u001b[31m", p.name)
                        for p in managed_processes.values() if p.proc)

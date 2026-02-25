@@ -5,6 +5,7 @@ import numpy as np
 from panda import Panda
 
 from openpilot.common.conversions import Conversions as CV
+from openpilot.common.params import Params
 from openpilot.selfdrive.car import create_button_events, get_safety_config
 from openpilot.selfdrive.car.gm.radar_interface import RADAR_HEADER_MSG
 from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CarControllerParams, EV_CAR, CAMERA_ACC_CAR, CanBus, GMFlags, CC_ONLY_CAR, SDGM_CAR, ASCM_INT
@@ -109,8 +110,20 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def _get_params(ret, candidate, fingerprint, car_fw, experimental_long, docs, frogpilot_toggles):
     ret.carName = "gm"
-    ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
-                         get_safety_config(car.CarParams.SafetyModel.gm)]
+
+    # External Red Panda switch: when enabled, run a noOutput safety config first,
+    # then the GM safety config. All GM safety flags are applied to the GM
+    # safetyConfig entry. When not using an external Panda, only configure the
+    # GM safety config.
+    use_external_panda = Params().get_bool("UseRedPanda")
+
+    if use_external_panda:
+      ret.safetyConfigs = [
+        get_safety_config(car.CarParams.SafetyModel.noOutput),
+        get_safety_config(car.CarParams.SafetyModel.gm),
+      ]
+    else:
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.gm)]
     ret.autoResumeSng = False
     ret.enableBsm = 0x142 in fingerprint[CanBus.POWERTRAIN]
 

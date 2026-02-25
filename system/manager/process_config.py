@@ -24,12 +24,17 @@ def ublox_available() -> bool:
   return os.path.exists('/dev/ttyHS0') and not os.path.exists('/persist/comma/use-quectel-gps')
 
 def ublox(started, params, CP: car.CarParams, classic_model, tinygrad_model, frogpilot_toggles) -> bool:
-  use_ublox = ublox_available()
+  if CP.carName == "gm" and getattr(frogpilot_toggles, "gm_disable_gps", False):
+    use_ublox = False
+  else:
+    use_ublox = ublox_available()
   if use_ublox != params.get_bool("UbloxAvailable"):
     params.put_bool("UbloxAvailable", use_ublox)
   return started and use_ublox
 
 def qcomgps(started, params, CP: car.CarParams, classic_model, tinygrad_model, frogpilot_toggles) -> bool:
+  if CP.carName == "gm" and getattr(frogpilot_toggles, "gm_disable_gps", False):
+    return False
   return started and not ublox_available()
 
 def always_run(started, params, CP: car.CarParams, classic_model, tinygrad_model, frogpilot_toggles) -> bool:

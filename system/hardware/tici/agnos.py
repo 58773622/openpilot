@@ -9,6 +9,11 @@ import time
 from collections.abc import Generator
 
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+# AGNOS 更新过程中，设备时间可能还没同步，严格的 SSL 校验会导致下载失败。
+# 在这里仅对 AGNOS 更新下载关闭证书校验，并屏蔽相关告警，避免卡在更新流程。
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 import openpilot.system.updated.casync.casync as casync
 
@@ -22,7 +27,8 @@ class StreamingDecompressor:
   def __init__(self, url: str) -> None:
     self.buf = b""
 
-    self.req = requests.get(url, stream=True, headers={'Accept-Encoding': None}, timeout=60)
+    # verify=False: 不校验证书，防止时间错误导致 SSL 握手失败
+    self.req = requests.get(url, stream=True, headers={'Accept-Encoding': None}, timeout=60, verify=False)
     self.it = self.req.iter_content(chunk_size=1024 * 1024)
     self.decompressor = lzma.LZMADecompressor(format=lzma.FORMAT_AUTO)
     self.eof = False

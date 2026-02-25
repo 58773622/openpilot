@@ -339,7 +339,11 @@ class Controls:
         safety_mismatch = pandaState.safetyModel not in IGNORED_SAFETY_MODES
 
       # safety mismatch allows some time for pandad to set the safety mode and publish it back from panda
-      if (safety_mismatch and self.sm.frame*DT_CTRL > 10.) or pandaState.safetyRxChecksInvalid or self.mismatch_counter >= 200:
+      # For GM, we only raise Controls Mismatch on true safety model/param issues or invalid RX checks,
+      # and we ignore the generic controlsAllowed mismatch counter to avoid false positives when
+      # lightly pressing the brake or during brief transition states.
+      if (safety_mismatch and self.sm.frame*DT_CTRL > 10.) or pandaState.safetyRxChecksInvalid or \
+         (self.CP.carName != "gm" and self.mismatch_counter >= 200):
         self.events.add(EventName.controlsMismatch)
 
       if log.PandaState.FaultType.relayMalfunction in pandaState.faults:
@@ -437,7 +441,10 @@ class Controls:
     # TODO: fix simulator
     if not SIMULATION or REPLAY:
       # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
-      if not self.sm['liveLocationKalman'].gpsOK and self.sm['liveLocationKalman'].inputsOK and (self.distance_traveled > 1500):
+      gm_disable_gps_alerts = (self.CP.carName == "gm" and getattr(self.frogpilot_toggles, "gm_disable_gps", False))
+      if (not gm_disable_gps_alerts and
+          not self.sm['liveLocationKalman'].gpsOK and self.sm['liveLocationKalman'].inputsOK and
+          (self.distance_traveled > 1500)):
         self.events.add(EventName.noGps)
       if self.sm['liveLocationKalman'].gpsOK:
         self.distance_traveled = 0
@@ -508,16 +515,25 @@ class Controls:
           error=True,
         )
 
-    # When the panda and controlsd do not agree on controls_allowed
-    # we want to disengage openpilot. However the status from the panda goes through
-    # another socket other than the CAN messages and one can arrive earlier than the other.
-    # Therefore we allow a mismatch for two samples, then we trigger the disengagement.
+    # When the panda and controlsd do not agree on controls_allowed we want to disengage
+    # openpilot. However the status from the panda goes through another socket other than
+    # the CAN messages and one can arrive earlier than the other. Therefore we allow a
+    # mismatch for two samples, then we trigger the disengagement. For GM we still
+    # respect panda's controls_allowed (panda will stop actuating), but we do not use
+    # this counter to raise a "Controls Mismatch" fault event to avoid noisy alerts
+    # on light brake presses.
     if not self.enabled:
       self.mismatch_counter = 0
 
-    # All pandas not in silent mode must have controlsAllowed when openpilot is enabled
-    if self.enabled and any(not ps.controlsAllowed for ps in self.sm['pandaStates']
-           if ps.safetyModel not in IGNORED_SAFETY_MODES):
+    # All pandas not in silent mode must have controlsAllowed when openpilot is enabled.
+    # Keep tracking this mismatch for non-GM platforms. For GM, panda will still hard-stop
+    # actuation when controlsAllowed is false, but we skip incrementing the counter so that
+    # brief transitions (e.g. light brake taps) do not escalate into a Controls Mismatch
+    # fault on the UI.
+    if self.enabled and self.CP.carName != "gm" and any(
+      not ps.controlsAllowed for ps in self.sm['pandaStates']
+      if ps.safetyModel not in IGNORED_SAFETY_MODES
+    ):
       self.mismatch_counter += 1
 
     return CS

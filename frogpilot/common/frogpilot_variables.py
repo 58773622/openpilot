@@ -235,6 +235,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("FullMap", "0", 2, "0"),
   ("GasRegenCmd", "1", 2, "0"),
   ("GMPedalLongitudinal", "1", 2, "1"),
+  ("GMDisableGps", "1", 0, "1"),
   ("GMStopAndGo", "0", 2, "0"),
   ("GithubSshKeys", "", 0, ""),
   ("GithubUsername", "", 0, ""),
@@ -1008,12 +1009,18 @@ class FrogPilotVariables:
       "CHEVROLET_VOLT_2019",
       "CHEVROLET_VOLT_ASCM",
       "CHEVROLET_VOLT_CAMERA",
+      "CHEVROLET_VOLT_CC",
+      "CHEVROLET_VOLT_ASCM",
+      "CHEVROLET_VOLT_CAMERA",
+      "CHEVROLET_VOLT_CC",
+      "CHEVROLET_VOLT_2019",
     }
 
     toggle.volt_sng = toggle.car_model in volt_models and (params.get_bool("VoltSNG") if tuning_level >= level["VoltSNG"] else default.get_bool("VoltSNG"))
 
     toggle.gm_pedal_longitudinal = params.get_bool("GMPedalLongitudinal") if tuning_level >= level["GMPedalLongitudinal"] else default.get_bool("GMPedalLongitudinal")
     toggle.gm_stop_and_go = params.get_bool("GMStopAndGo") if tuning_level >= level["GMStopAndGo"] else default.get_bool("GMStopAndGo")
+    toggle.gm_disable_gps = toggle.car_make == "gm" and (params.get_bool("GMDisableGps") if tuning_level >= level["GMDisableGps"] else default.get_bool("GMDisableGps"))
 
     params_memory.put("FrogPilotToggles", json.dumps(toggle.__dict__))
     params_memory.remove("FrogPilotTogglesUpdated")
