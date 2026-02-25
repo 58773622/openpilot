@@ -125,8 +125,14 @@ class CarState(CarStateBase):
     ret.parkingBrake = pt_cp.vl["BCMGeneralPlatformStatus"]["ParkBrakeSwActive"] == 1
     ret.cruiseState.available = pt_cp.vl["ECMEngineStatus"]["CruiseMainOn"] != 0
     ret.espDisabled = pt_cp.vl["ESPStatus"]["TractionControlOn"] != 1
-    ret.accFaulted = (pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.FAULTED or
-                      pt_cp.vl["EBCMFrictionBrakeStatus"]["FrictionBrakeUnavailable"] == 1)
+    if self.CP.openpilotLongitudinalControl:
+      # When openpilot controls longitudinal, treat only true brake unavailability as a critical fault.
+      # ACC module "FAULTED" states can occur as a side effect of non-stock longitudinal control.
+      ret.accFaulted = pt_cp.vl["EBCMFrictionBrakeStatus"]["FrictionBrakeUnavailable"] == 1
+    else:
+      # With stock ACC longitudinal, preserve original behavior and surface ACC faults as Cruise Fault.
+      ret.accFaulted = (pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.FAULTED or
+                        pt_cp.vl["EBCMFrictionBrakeStatus"]["FrictionBrakeUnavailable"] == 1)
 
     ret.cruiseState.enabled = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] != AccState.OFF
     ret.cruiseState.standstill = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.STANDSTILL

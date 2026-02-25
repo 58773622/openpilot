@@ -228,6 +228,20 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
   gm_stop_and_go->setVisible(show_gm_sng);
   addItem(gm_stop_and_go);
 
+  auto gm_disable_gps = new ParamControl("GMDisableGps",
+                                         tr("屏蔽 GPS提示"),
+                                         tr("关闭与 GPS 相关的模块，并屏蔽 \"GPS 信号不佳\" 以及 \"低速转向不可用\" 的提示。仅在完全不需要导航 / 速度限制等 GPS 功能时启用。"),
+                                         "",
+                                         this);
+  addItem(gm_disable_gps);
+
+  auto quiet_fan = new ParamControl("QuietFan",
+                                    tr("风扇静音模式"),
+                                    tr("降低风扇的最高转速以减少噪音，可能会略微提高设备温度。"),
+                                    "",
+                                    this);
+  addItem(quiet_fan);
+
   QObject::connect(use_red_panda, &ToggleControl::toggleFlipped, [this](bool state) {
     Q_UNUSED(state);
 

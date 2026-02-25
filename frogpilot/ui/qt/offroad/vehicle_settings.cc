@@ -171,8 +171,6 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     {"GMPedalLongitudinal", tr("Use Pedal for Longitudinal Control"), tr("<b>Use the pedal interceptor for longitudinal control</b> instead of camera ACC/Redneck when available."), ""},
     {"UseRedPanda", tr("Use External Red Panda"), tr("<b>Use an external Red Panda for GM vehicles.</b> Requires a reboot after changing."), ""},
     {"LongPitch", tr("Smooth Pedal Response on Hills"), tr("<b>Smoothen acceleration and braking</b> when driving downhill/uphill."), ""},
-    {"GMDisableGps", tr("屏蔽 GPS提示"), tr("关闭与 GPS 相关的模块，并屏蔽 \"GPS 信号不佳\" 以及 \"低速转向不可用\" 的提示。仅在完全不需要导航 / 速度限制等 GPS 功能时启用。"), ""},
-    {"QuietFan", tr("风扇静音模式"), tr("降低风扇的最高转速以减少噪音，可能会略微提高设备温度。"), ""},
     {"VoltSNG", tr("Stop-and-Go Hack"), tr("<b>Force stop-and-go</b> on the 2017 Chevy Volt."), ""},
 
     {"HKGToggles", tr("Hyundai/Kia/Genesis Settings"), tr("<b>FrogPilot features for Genesis, Hyundai, and Kia vehicles.</b>"), ""},
