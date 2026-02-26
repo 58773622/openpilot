@@ -50,66 +50,66 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
   visualsLayout->addWidget(qualityOfLifePanel);
 
   const std::vector<std::tuple<QString, QString, QString, QString>> visualToggles {
-    {"AdvancedCustomUI", tr("Advanced UI Controls"), tr("<b>Advanced visual changes</b> to fine-tune how the driving screen looks."), "../../frogpilot/assets/toggle_icons/icon_advanced_device.png"},
-    {"HideSpeed", tr("Hide Current Speed"), tr("<b>Hide the current speed</b> from the driving screen."), ""},
-    {"HideLeadMarker", tr("Hide Lead Marker"), tr("<b>Hide the lead-vehicle marker</b> from the driving screen."), ""},
-    {"HideMapIcon", tr("Hide Map Settings Button"), tr("<b>Hide the map settings button or map</b> from the driving screen."), ""},
-    {"HideMaxSpeed", tr("Hide Max Speed"), tr("<b>Hide the max speed</b> from the driving screen."), ""},
-    {"HideAlerts", tr("Hide Non-Critical Alerts"), tr("<b>Hide non-critical alerts</b> from the driving screen."), ""},
-    {"HideSpeedLimit", tr("Hide Speed Limits"), tr("<b>Hide posted speed limits</b> from the driving screen."), ""},
-    {"WheelSpeed", tr("Use Wheel Speed"), tr("<b>Use the vehicle's wheel speed</b> instead of the cluster speed. This is purely a visual change and doesn't impact how openpilot drives!"), ""},
+    {"AdvancedCustomUI", tr("高级界面控制"), tr("<b>Advanced visual changes</b> to fine-tune how the driving screen looks."), "../../frogpilot/assets/toggle_icons/icon_advanced_device.png"},
+    {"HideSpeed", tr("隐藏当前车速"), tr("<b>Hide the current speed</b> from the driving screen."), ""},
+    {"HideLeadMarker", tr("隐藏前车标记"), tr("<b>Hide the lead-vehicle marker</b> from the driving screen."), ""},
+    {"HideMapIcon", tr("隐藏地图设置按钮"), tr("<b>Hide the map settings button or map</b> from the driving screen."), ""},
+    {"HideMaxSpeed", tr("隐藏最高速度"), tr("<b>Hide the max speed</b> from the driving screen."), ""},
+    {"HideAlerts", tr("隐藏非关键警报"), tr("<b>Hide non-critical alerts</b> from the driving screen."), ""},
+    {"HideSpeedLimit", tr("隐藏限速标志"), tr("<b>Hide posted speed limits</b> from the driving screen."), ""},
+    {"WheelSpeed", tr("使用车轮速度"), tr("<b>Use the vehicle's wheel speed</b> instead of the cluster speed. This is purely a visual change and doesn't impact how openpilot drives!"), ""},
 
-    {"DeveloperUI", tr("Developer UI"), tr("<b>Detailed information about openpilot's internal operations.</b>"), "../assets/offroad/icon_shell.png"},
-    {"AdjacentPathMetrics", tr("Adjacent Path Metrics"), tr("<b>Show the width of the adjacent lanes.</b>"), ""},
-    {"DeveloperMetrics", tr("Developer Metrics"), tr("<b>Performance data, sensor readings, and system metrics</b> for debugging and optimizing openpilot."), ""},
-    {"BorderMetrics", tr("Border Metrics"), tr("<b>Show statuses along the border of the driving screen.</b><br><br><b>Blind Spot</b>: The border turns red when a vehicle is in a blind spot<br><b>Steering Torque</b>: The border goes from green to red according to how much steering torque is being used<br><b>Turn Signal</b>: The border flashes yellow when a turn signal is on"), ""},
-    {"LeadInfo", tr("Lead Info"), tr("<b>Show each tracked vehicle's distance and speed</b> below its marker."), ""},
-    {"FPSCounter", tr("FPS Display"), tr("<b>Show the frames per second (FPS)</b> at the bottom of the driving screen."), ""},
-    {"NumericalTemp", tr("Numerical Temperature Gauge"), tr("<b>Show a numerical temperature in the sidebar</b> instead of the status labels."), ""},
-    {"SidebarMetrics", tr("Sidebar Metrics"), tr("<b>Display system information</b> (CPU, GPU, RAM usage, IP address, device storage) in the sidebar."), ""},
-    {"UseSI", tr("Use International System of Units"), tr("<b>Display measurements using the \"International System of Units\" (SI)</b> standard."), ""},
-    {"DeveloperSidebar", tr("Developer Sidebar"), tr("<b>Display debugging info and metrics</b> in a dedicated sidebar on the right side of the screen."), ""},
-    {"DeveloperSidebarMetric1", tr("Metric #1"), tr("<b>Select the metric shown in the first \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric2", tr("Metric #2"), tr("<b>Select the metric shown in the second \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric3", tr("Metric #3"), tr("<b>Select the metric shown in the third \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric4", tr("Metric #4"), tr("<b>Select the metric shown in the fourth \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric5", tr("Metric #5"), tr("<b>Select the metric shown in the fifth \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric6", tr("Metric #6"), tr("<b>Select the metric shown in the sixth \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperSidebarMetric7", tr("Metric #7"), tr("<b>Select the metric shown in the seventh \"Developer Sidebar\" widget.</b>"), ""},
-    {"DeveloperWidgets", tr("Developer Widgets"), tr("<b>Overlays for debugging visuals, internal states, and model predictions</b> on the driving screen."), ""},
-    {"AdjacentLeadsUI", tr("Adjacent Leads Tracking"), tr("<b>Display adjacent leads detected by the car's radar</b> to the left and right of the current driving path."), ""},
-    {"ShowStoppingPoint", tr("Model Stopping Point"), tr("<b>Show a stop-sign marker where the model intends to stop.</b>"), ""},
-    {"RadarTracksUI", tr("Radar Tracks"), tr("<b>Display all radar points</b> produced by the car's radar."), ""},
+    {"DeveloperUI", tr("开发者界面"), tr("<b>Detailed information about openpilot's internal operations.</b>"), "../assets/offroad/icon_shell.png"},
+    {"AdjacentPathMetrics", tr("相邻车道数据"), tr("<b>Show the width of the adjacent lanes.</b>"), ""},
+    {"DeveloperMetrics", tr("开发者指标"), tr("<b>Performance data, sensor readings, and system metrics</b> for debugging and optimizing openpilot."), ""},
+    {"BorderMetrics", tr("边框状态"), tr("<b>Show statuses along the border of the driving screen.</b><br><br><b>Blind Spot</b>: The border turns red when a vehicle is in a blind spot<br><b>Steering Torque</b>: The border goes from green to red according to how much steering torque is being used<br><b>Turn Signal</b>: The border flashes yellow when a turn signal is on"), ""},
+    {"LeadInfo", tr("前车信息"), tr("<b>Show each tracked vehicle's distance and speed</b> below its marker."), ""},
+    {"FPSCounter", tr("帧率显示"), tr("<b>Show the frames per second (FPS)</b> at the bottom of the driving screen."), ""},
+    {"NumericalTemp", tr("数字温度显示"), tr("<b>Show a numerical temperature in the sidebar</b> instead of the status labels."), ""},
+    {"SidebarMetrics", tr("侧边栏指标"), tr("<b>Display system information</b> (CPU, GPU, RAM usage, IP address, device storage) in the sidebar."), ""},
+    {"UseSI", tr("使用国际单位制"), tr("<b>Display measurements using the \"International System of Units\" (SI)</b> standard."), ""},
+    {"DeveloperSidebar", tr("开发者侧边栏"), tr("<b>Display debugging info and metrics</b> in a dedicated sidebar on the right side of the screen."), ""},
+    {"DeveloperSidebarMetric1", tr("指标 #1"), tr("<b>Select the metric shown in the first \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric2", tr("指标 #2"), tr("<b>Select the metric shown in the second \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric3", tr("指标 #3"), tr("<b>Select the metric shown in the third \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric4", tr("指标 #4"), tr("<b>Select the metric shown in the fourth \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric5", tr("指标 #5"), tr("<b>Select the metric shown in the fifth \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric6", tr("指标 #6"), tr("<b>Select the metric shown in the sixth \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperSidebarMetric7", tr("指标 #7"), tr("<b>Select the metric shown in the seventh \"Developer Sidebar\" widget.</b>"), ""},
+    {"DeveloperWidgets", tr("开发者小部件"), tr("<b>Overlays for debugging visuals, internal states, and model predictions</b> on the driving screen."), ""},
+    {"AdjacentLeadsUI", tr("相邻目标跟踪"), tr("<b>Display adjacent leads detected by the car's radar</b> to the left and right of the current driving path."), ""},
+    {"ShowStoppingPoint", tr("模型停车点"), tr("<b>Show a stop-sign marker where the model intends to stop.</b>"), ""},
+    {"RadarTracksUI", tr("雷达点显示"), tr("<b>Display all radar points</b> produced by the car's radar."), ""},
 
-    {"CustomUI", tr("Driving Screen Widgets"), tr("<b>Custom FrogPilot widgets</b> for the driving screen."), "../assets/offroad/icon_road.png"},
-    {"AccelerationPath", tr("Acceleration Path"), tr("<b>Color the driving path by planned acceleration and braking.</b>"), ""},
-    {"AdjacentPath", tr("Adjacent Lanes"), tr("<b>Show the driving paths for the left and right lanes.</b>"), ""},
-    {"BlindSpotPath", tr("Blind Spot Path"), tr("<b>Show a red path when a vehicle is in that lane's blind spot.</b>"), ""},
-    {"Compass", tr("Compass"), tr("<b>Show the current driving direction</b> with a simple on-screen compass."), ""},
-    {"OnroadDistanceButton", tr("Driving Personality Button"), tr("<b>Control and view the current driving personality</b> via a driving screen widget."), ""},
-    {"PedalsOnUI", tr("Gas / Brake Pedal Indicators"), tr("<b>On-screen gas and brake indicators.</b><br><br><b>Dynamic</b>: Opacity changes according to how much openpilot is accelerating or braking<br><b>Static</b>: Full when active, dim when not"), ""},
-    {"RotatingWheel", tr("Rotating Steering Wheel"), tr("<b>Rotate the driving screen wheel</b> with the physical steering wheel."), ""},
+    {"CustomUI", tr("行车界面组件"), tr("<b>Custom FrogPilot widgets</b> for the driving screen."), "../assets/offroad/icon_road.png"},
+    {"AccelerationPath", tr("加减速路径"), tr("<b>Color the driving path by planned acceleration and braking.</b>"), ""},
+    {"AdjacentPath", tr("相邻车道"), tr("<b>Show the driving paths for the left and right lanes.</b>"), ""},
+    {"BlindSpotPath", tr("盲区路径"), tr("<b>Show a red path when a vehicle is in that lane's blind spot.</b>"), ""},
+    {"Compass", tr("罗盘"), tr("<b>Show the current driving direction</b> with a simple on-screen compass."), ""},
+    {"OnroadDistanceButton", tr("驾驶风格按钮"), tr("<b>Control and view the current driving personality</b> via a driving screen widget."), ""},
+    {"PedalsOnUI", tr("油门/刹车指示"), tr("<b>On-screen gas and brake indicators.</b><br><br><b>Dynamic</b>: Opacity changes according to how much openpilot is accelerating or braking<br><b>Static</b>: Full when active, dim when not"), ""},
+    {"RotatingWheel", tr("方向盘旋转动画"), tr("<b>Rotate the driving screen wheel</b> with the physical steering wheel."), ""},
 
-    {"ModelUI", tr("Model UI"), tr("<b>Model visualizations</b> for the driving path, lane lines, path edges, and road edges."), "../../frogpilot/assets/toggle_icons/icon_vtc.png"},
-    {"DynamicPathWidth", tr("Dynamic Path Width"), tr("<b>Change the path width based on engagement.</b><br><br><b>Fully Engaged</b>: 100%<br><b>Always On Lateral</b>: 75%<br><b>Disengaged</b>: 50%"), ""},
-    {"LaneLinesWidth", tr("Lane Lines Width"), tr("<b>Set the lane-line thickness.</b><br><br>Default matches the MUTCD lane-line width standard of 4 inches."), ""},
-    {"PathEdgeWidth", tr("Path Edges Width"), tr("<b>Set the driving-path edge width</b> that represents different driving modes and statuses.<br><br>Default is 20% of the total path width.<br><br>Color Guide:<br><br>- <b>Blue</b>: Navigation<br>- <b>Light Blue</b>: Always On Lateral<br>- <b>Green</b>: Default<br>- <b>Orange</b>: Experimental Mode<br>- <b>Red</b>: Traffic Mode<br>- <b>Yellow</b>: Conditional Experimental Mode overridden"), ""},
-    {"PathWidth", tr("Path Width"), tr("<b>Set the driving-path width.</b><br><br>Default (6.1 feet) matches the width of a 2019 Lexus ES 350."), ""},
-    {"RoadEdgesWidth", tr("Road Edges Width"), tr("<b>Set the road-edge thickness.</b><br><br>Default matches half of the MUTCD lane-line width standard of 4 inches."), ""},
-    {"UnlimitedLength", tr("\"Unlimited\" Road UI"), tr("<b>Extend the length of the driving path, lane lines, and road edges</b> for as far as the model can see."), ""},
+    {"ModelUI", tr("模型界面"), tr("<b>Model visualizations</b> for the driving path, lane lines, path edges, and road edges."), "../../frogpilot/assets/toggle_icons/icon_vtc.png"},
+    {"DynamicPathWidth", tr("动态路径宽度"), tr("<b>Change the path width based on engagement.</b><br><br><b>Fully Engaged</b>: 100%<br><b>Always On Lateral</b>: 75%<br><b>Disengaged</b>: 50%"), ""},
+    {"LaneLinesWidth", tr("车道线宽度"), tr("<b>Set the lane-line thickness.</b><br><br>Default matches the MUTCD lane-line width standard of 4 inches."), ""},
+    {"PathEdgeWidth", tr("路径边缘宽度"), tr("<b>Set the driving-path edge width</b> that represents different driving modes and statuses.<br><br>Default is 20% of the total path width.<br><br>Color Guide:<br><br>- <b>Blue</b>: Navigation<br>- <b>Light Blue</b>: Always On Lateral<br>- <b>Green</b>: Default<br>- <b>Orange</b>: Experimental Mode<br>- <b>Red</b>: Traffic Mode<br>- <b>Yellow</b>: Conditional Experimental Mode overridden"), ""},
+    {"PathWidth", tr("路径宽度"), tr("<b>Set the driving-path width.</b><br><br>Default (6.1 feet) matches the width of a 2019 Lexus ES 350."), ""},
+    {"RoadEdgesWidth", tr("道路边缘宽度"), tr("<b>Set the road-edge thickness.</b><br><br>Default matches half of the MUTCD lane-line width standard of 4 inches."), ""},
+    {"UnlimitedLength", tr("“无限”道路界面"), tr("<b>Extend the length of the driving path, lane lines, and road edges</b> for as far as the model can see."), ""},
 
-    {"NavigationUI", tr("Navigation Widgets"), tr("<b>Map style, speed limits, and other navigation widgets.</b>"), "../../frogpilot/assets/toggle_icons/icon_map.png"},
-    {"BigMap", tr("Larger Map Display"), tr("<b>Increase the map size</b> for easier navigation readings."), ""},
-    {"MapStyle", tr("Map Style"), tr("<b>Select the map style</b> for \"Navigate on openpilot\" (NOO):<br><br><b>Stock openpilot</b>: Default comma.ai style<br><b>FrogPilot</b>: Official FrogPilot map style<br><b>Mapbox Streets</b>: Standard street-focused view<br><b>Mapbox Outdoors</b>: Emphasizes outdoor and terrain features<br><b>Mapbox Light</b>: Minimalist, bright theme<br><b>Mapbox Dark</b>: Minimalist, dark theme<br><b>Mapbox Navigation Day</b>: Optimized for daytime navigation<br><b>Mapbox Navigation Night</b>: Optimized for nighttime navigation<br><b>Mapbox Satellite</b>: Satellite imagery only<br><b>Mapbox Satellite Streets</b>: Hybrid satellite imagery with street labels<br><b>Mapbox Traffic Night</b>: Dark theme emphasizing traffic conditions<br><b>Mike's Personalized Style</b>: Customized hybrid satellite view"), ""},
-    {"RoadNameUI", tr("Road Name"), tr("<b>Display the road name at the bottom of the driving screen</b> using data from \"OpenStreetMap (OSM)\"."), ""},
-    {"ShowSpeedLimits", tr("Show Speed Limits"), tr("<b>Show speed limits</b> in the top-left corner of the driving screen. Uses data from the car's dashboard (if supported) and \"OpenStreetMap (OSM)\"."), ""},
-    {"SLCMapboxFiller", tr("Show Speed Limits from Mapbox"), tr("<b>Use Mapbox speed-limit data when no other source is available.</b>"), ""},
-    {"UseVienna", tr("Use Vienna-Style Speed Signs"), tr("<b>Show Vienna-style (EU) speed-limit signs</b> instead of MUTCD (US)."), ""},
+    {"NavigationUI", tr("导航组件"), tr("<b>Map style, speed limits, and other navigation widgets.</b>"), "../../frogpilot/assets/toggle_icons/icon_map.png"},
+    {"BigMap", tr("放大地图显示"), tr("<b>Increase the map size</b> for easier navigation readings."), ""},
+    {"MapStyle", tr("地图样式"), tr("<b>Select the map style</b> for \"Navigate on openpilot\" (NOO):<br><br><b>Stock openpilot</b>: Default comma.ai style<br><b>FrogPilot</b>: Official FrogPilot map style<br><b>Mapbox Streets</b>: Standard street-focused view<br><b>Mapbox Outdoors</b>: Emphasizes outdoor and terrain features<br><b>Mapbox Light</b>: Minimalist, bright theme<br><b>Mapbox Dark</b>: Minimalist, dark theme<br><b>Mapbox Navigation Day</b>: Optimized for daytime navigation<br><b>Mapbox Navigation Night</b>: Optimized for nighttime navigation<br><b>Mapbox Satellite</b>: Satellite imagery only<br><b>Mapbox Satellite Streets</b>: Hybrid satellite imagery with street labels<br><b>Mapbox Traffic Night</b>: Dark theme emphasizing traffic conditions<br><b>Mike's Personalized Style</b>: Customized hybrid satellite view"), ""},
+    {"RoadNameUI", tr("道路名称"), tr("<b>Display the road name at the bottom of the driving screen</b> using data from \"OpenStreetMap (OSM)\"."), ""},
+    {"ShowSpeedLimits", tr("显示限速"), tr("<b>Show speed limits</b> in the top-left corner of the driving screen. Uses data from the car's dashboard (if supported) and \"OpenStreetMap (OSM)\"."), ""},
+    {"SLCMapboxFiller", tr("显示 Mapbox 限速"), tr("<b>Use Mapbox speed-limit data when no other source is available.</b>"), ""},
+    {"UseVienna", tr("使用维也纳风格限速牌"), tr("<b>Show Vienna-style (EU) speed-limit signs</b> instead of MUTCD (US)."), ""},
 
-    {"QOLVisuals", tr("Quality of Life"), tr("<b>Miscellaneous visual changes</b> to fine-tune how the driving screen looks."), "../../frogpilot/assets/toggle_icons/icon_quality_of_life.png"},
-    {"CameraView", tr("Camera View"), tr("<b>Select the active camera view.</b> This is purely a visual change and doesn't impact how openpilot drives!"), ""},
-    {"DriverCamera", tr("Show Driver Camera When In Reverse"), tr("<b>Show the driver camera feed</b> when the vehicle is in reverse."), ""},
-    {"StoppedTimer", tr("Stopped Timer"), tr("<b>Show a timer when stopped</b> in place of the current speed to indicate how long the vehicle has been stopped."), ""}
+    {"QOLVisuals", tr("体验优化"), tr("<b>Miscellaneous visual changes</b> to fine-tune how the driving screen looks."), "../../frogpilot/assets/toggle_icons/icon_quality_of_life.png"},
+    {"CameraView", tr("摄像头视角"), tr("<b>Select the active camera view.</b> This is purely a visual change and doesn't impact how openpilot drives!"), ""},
+    {"DriverCamera", tr("倒车时显示车内摄像头"), tr("<b>Show the driver camera feed</b> when the vehicle is in reverse."), ""},
+    {"StoppedTimer", tr("停车计时器"), tr("<b>Show a timer when stopped</b> in place of the current speed to indicate how long the vehicle has been stopped."), ""}
   };
 
   for (const auto &[param, title, desc, icon] : visualToggles) {
@@ -123,7 +123,7 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       visualToggle = advancedCustomUIToggle;
     } else if (param == "HideMapIcon") {
       std::vector<QString> mapIconToggles{"HideMap"};
-      std::vector<QString> mapIconToggleNames{tr("Hide Map")};
+      std::vector<QString> mapIconToggleNames{tr("隐藏地图")};
       visualToggle = new FrogPilotButtonToggleControl(param, title, desc, icon, mapIconToggles, mapIconToggleNames);
 
     } else if (param == "DeveloperUI") {
@@ -144,16 +144,16 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       visualToggle = developerMetricsToggle;
     } else if (param == "BorderMetrics") {
       std::vector<QString> borderToggles{"BlindSpotMetrics", "ShowSteering", "SignalMetrics"};
-      std::vector<QString> borderToggleNames{tr("Blind Spot"), tr("Steering Torque"), tr("Turn Signal")};
+      std::vector<QString> borderToggleNames{tr("盲区"), tr("转向力矩"), tr("转向灯")};
       borderMetricsButton = new FrogPilotButtonToggleControl(param, title, desc, icon, borderToggles, borderToggleNames);
       visualToggle = borderMetricsButton;
     } else if (param == "NumericalTemp") {
       std::vector<QString> temperatureToggles{"Fahrenheit"};
-      std::vector<QString> temperatureToggleNames{tr("Fahrenheit")};
+      std::vector<QString> temperatureToggleNames{tr("华氏度")};
       visualToggle = new FrogPilotButtonToggleControl(param, title, desc, icon, temperatureToggles, temperatureToggleNames);
     } else if (param == "SidebarMetrics") {
       sidebarMetricsToggles = {"ShowCPU", "ShowGPU", "ShowIP", "ShowMemoryUsage", "ShowStorageLeft", "ShowStorageUsed"};
-      std::vector<QString> sidebarMetricsToggleNames{tr("CPU"), tr("GPU"), tr("IP"), tr("RAM"), tr("SSD Left"), tr("SSD Used")};
+      std::vector<QString> sidebarMetricsToggleNames{tr("CPU"), tr("GPU"), tr("IP"), tr("内存"), tr("SSD 剩余"), tr("SSD 已用")};
       sidebarMetricsToggle = new FrogPilotButtonsControl(title, desc, icon, sidebarMetricsToggleNames, true, false, 150);
       for (int i = 0; i < sidebarMetricsToggles.size(); ++i) {
         if (params.getBool(sidebarMetricsToggles[i].toStdString())) {
@@ -198,29 +198,29 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       visualToggle = developerSidebarToggle;
     } else if (developerSidebarKeys.contains(param)) {
       QMap<int, QString> developerSidebarMetricOptions {
-        {0, tr("None")},
-        {1, tr("Acceleration: Current")},
-        {2, tr("Acceleration: Max")},
-        {3, tr("Auto Tune: Actuator Delay")},
-        {4, tr("Auto Tune: Friction")},
-        {5, tr("Auto Tune: Lateral Acceleration")},
-        {6, tr("Auto Tune: Steer Ratio")},
-        {7, tr("Auto Tune: Stiffness Factor")},
-        {8, tr("Engagement %: Lateral")},
-        {9, tr("Engagement %: Longitudinal")},
-        {10, tr("Lateral Control: Steering Angle")},
-        {11, tr("Lateral Control: Torque % Used")},
-        {12, tr("Longitudinal Control: Actuator Acceleration Output")},
-        {13, tr("Longitudinal MPC Jerk: Acceleration")},
-        {14, tr("Longitudinal MPC Jerk: Danger Zone")},
-        {15, tr("Longitudinal MPC Jerk: Speed Control")},
-        {16, tr("Driving Model: Current")},
+        {0, tr("无")},
+        {1, tr("加速度：当前")},
+        {2, tr("加速度：最大")},
+        {3, tr("自动调参：执行器延迟")},
+        {4, tr("自动调参：摩擦")},
+        {5, tr("自动调参：横向加速度")},
+        {6, tr("自动调参：转向比")},
+        {7, tr("自动调参：刚度系数")},
+        {8, tr("接管率%：横向")},
+        {9, tr("接管率%：纵向")},
+        {10, tr("横向控制：转向角")},
+        {11, tr("横向控制：转向力矩%")},
+        {12, tr("纵向控制：执行器加速度输出")},
+        {13, tr("纵向 MPC 抖动：加速度")},
+        {14, tr("纵向 MPC 抖动：危险区")},
+        {15, tr("纵向 MPC 抖动：车速控制")},
+        {16, tr("驾驶模型：当前")},
       };
 
-      ButtonControl *metricToggle = new ButtonControl(title, tr("SELECT"), desc);
+      ButtonControl *metricToggle = new ButtonControl(title, tr("选择"), desc);
       QObject::connect(metricToggle, &ButtonControl::clicked, [metricToggle, key = param, developerSidebarMetricOptions, this]() mutable {
-        QString current = developerSidebarMetricOptions.value(params.getInt(key.toStdString()), tr("None"));
-        QString selection = MultiOptionDialog::getSelection(tr("Select a metric to display"), developerSidebarMetricOptions.values(), current, this);
+        QString current = developerSidebarMetricOptions.value(params.getInt(key.toStdString()), tr("无"));
+        QString selection = MultiOptionDialog::getSelection(tr("选择要显示的指标"), developerSidebarMetricOptions.values(), current, this);
 
         if (!selection.isEmpty()) {
           int selectedMetric = developerSidebarMetricOptions.key(selection);
@@ -273,7 +273,7 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       });
       visualToggle = modelUIToggle;
     } else if (param == "LaneLinesWidth" || param == "RoadEdgesWidth") {
-      visualToggle = new FrogPilotParamValueControl(param, title, desc, icon, 0, 24, tr(" inches"));
+      visualToggle = new FrogPilotParamValueControl(param, title, desc, icon, 0, 24, tr(" 英寸"));
     } else if (param == "PathEdgeWidth") {
       std::map<float, QString> pathEdgeLabels;
       for (int i = 0; i <= 100; ++i) {
@@ -281,7 +281,7 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       }
       visualToggle = new FrogPilotParamValueControl(param, title, desc, icon, 0, 100, QString(), pathEdgeLabels);
     } else if (param == "PathWidth") {
-      visualToggle = new FrogPilotParamValueControl(param, title, desc, icon, 0, 10, tr(" feet"), std::map<float, QString>(), 0.1);
+      visualToggle = new FrogPilotParamValueControl(param, title, desc, icon, 0, 10, tr(" 英尺"), std::map<float, QString>(), 0.1);
 
     } else if (param == "NavigationUI") {
       FrogPilotManageControl *navigationUIToggle = new FrogPilotManageControl(param, title, desc, icon);
@@ -291,27 +291,27 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       visualToggle = navigationUIToggle;
     } else if (param == "BigMap") {
       std::vector<QString> mapToggles{"FullMap"};
-      std::vector<QString> mapToggleNames{tr("Full Map")};
+      std::vector<QString> mapToggleNames{tr("全屏地图")};
       visualToggle = new FrogPilotButtonToggleControl(param, title, desc, icon, mapToggles, mapToggleNames);
     } else if (param == "MapStyle") {
       QMap<int, QString> styleMap {
-        {0, tr("Stock openpilot")},
-        {1, tr("FrogPilot")},
-        {2, tr("Mapbox Streets")},
-        {3, tr("Mapbox Outdoors")},
-        {4, tr("Mapbox Light")},
-        {5, tr("Mapbox Dark")},
-        {6, tr("Mapbox Navigation Day")},
-        {7, tr("Mapbox Navigation Night")},
-        {8, tr("Mapbox Satellite")},
-        {9, tr("Mapbox Satellite Streets")},
-        {10, tr("Mapbox Traffic Night")},
-        {11, tr("Mike's Personalized Style")}
+        {0, tr("默认 openpilot 样式")},
+        {1, tr("FrogPilot 样式")},
+        {2, tr("Mapbox 街道")},
+        {3, tr("Mapbox 户外")},
+        {4, tr("Mapbox 亮色")},
+        {5, tr("Mapbox 暗色")},
+        {6, tr("Mapbox 日间导航")},
+        {7, tr("Mapbox 夜间导航")},
+        {8, tr("Mapbox 卫星")},
+        {9, tr("Mapbox 卫星街道")},
+        {10, tr("Mapbox 夜间交通")},
+        {11, tr("Mike 自定义样式")}
       };
 
-      ButtonControl *mapStyleButton = new ButtonControl(title, tr("SELECT"), desc);
+      ButtonControl *mapStyleButton = new ButtonControl(title, tr("选择"), desc);
       QObject::connect(mapStyleButton, &ButtonControl::clicked, [mapStyleButton, styleMap, this]() {
-        QString selection = MultiOptionDialog::getSelection(tr("Select a map style"), styleMap.values(), "", this);
+        QString selection = MultiOptionDialog::getSelection(tr("选择地图样式"), styleMap.values(), "", this);
         if (!selection.isEmpty()) {
           int selectedStyle = styleMap.key(selection);
 
@@ -332,7 +332,7 @@ FrogPilotVisualsPanel::FrogPilotVisualsPanel(FrogPilotSettingsWindow *parent) : 
       });
       visualToggle = qolToggle;
     } else if (param == "CameraView") {
-      std::vector<QString> cameraOptions{tr("Auto"), tr("Driver"), tr("Standard"), tr("Wide")};
+      std::vector<QString> cameraOptions{tr("自动"), tr("驾驶员"), tr("标准"), tr("广角")};
       ButtonParamControl *cameraSelection = new ButtonParamControl(param, title, desc, icon, cameraOptions);
       visualToggle = cameraSelection;
 

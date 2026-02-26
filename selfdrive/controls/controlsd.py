@@ -211,6 +211,9 @@ class Controls:
 
 
     self.frogpilot_toggles.is_metric = self.is_metric
+    self.gm_sng_lead_d_at_stop = 0.0
+    self.gm_sng_active = False
+    self.gm_sng_resume_triggered = False
 
   def set_initial_state(self):
     if REPLAY:
@@ -835,9 +838,31 @@ class Controls:
     if self.joystick_mode and self.sm.recv_frame['testJoystick'] > 0 and self.sm['testJoystick'].buttons[0]:
       CC.cruiseControl.cancel = True
 
+    if self.CP.carName == "gm" and self.CP.autoResumeSng and self.frogpilot_toggles.gm_stop_and_go:
+      lead_one = self.sm['radarState'].leadOne
+      if CS.standstill and lead_one.status:
+        if not self.gm_sng_active:
+          self.gm_sng_active = True
+          self.gm_sng_lead_d_at_stop = float(lead_one.dRel)
+          self.gm_sng_resume_triggered = False
+        else:
+          if not self.gm_sng_resume_triggered and float(lead_one.dRel) - self.gm_sng_lead_d_at_stop > 8.0:
+            self.gm_sng_resume_triggered = True
+      else:
+        self.gm_sng_active = False
+        self.gm_sng_resume_triggered = False
+    else:
+      self.gm_sng_active = False
+      self.gm_sng_resume_triggered = False
+
     speeds = self.sm['longitudinalPlan'].speeds
+    CC.cruiseControl.resume = False
     if len(speeds):
-      CC.cruiseControl.resume = self.enabled and CS.cruiseState.standstill and speeds[-1] > 0.1
+      want_resume = self.enabled and CS.cruiseState.standstill and speeds[-1] > 0.1
+      if self.CP.carName == "gm" and self.CP.autoResumeSng and self.frogpilot_toggles.gm_stop_and_go:
+        CC.cruiseControl.resume = want_resume and self.gm_sng_resume_triggered
+      else:
+        CC.cruiseControl.resume = want_resume
 
     hudControl = CC.hudControl
     hudControl.setSpeed = float(self.v_cruise_helper.v_cruise_cluster_kph * CV.KPH_TO_MS)
