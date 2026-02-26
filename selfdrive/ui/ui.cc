@@ -91,6 +91,85 @@ void update_radar_tracks(capnp::List<cereal::LiveTracks>::Reader &tracks_msg, ce
   }
 }
 
+void update_oem_vision(UIState *s, FrogPilotUIState *fs,
+                       const cereal::FrogPilotRadarState::Reader &frogpilot_radar_state,
+                       const cereal::XYZTData::Reader &line) {
+  FrogPilotUIScene &frogpilot_scene = fs->frogpilot_scene;
+
+  // Reset OEM vision containers each frame before repopulating
+  frogpilot_scene.oem_vision_objects.clear();
+  frogpilot_scene.oem_vision_lane_left.clear();
+  frogpilot_scene.oem_vision_lane_right.clear();
+
+  // OEM vision objects
+  const auto vision_points = frogpilot_radar_state.getOemVisionPoints();
+  if (vision_points.size() > 0) {
+    const auto line_z = line.getZ();
+
+    for (int i = 0; i < vision_points.size(); ++i) {
+      auto pt = vision_points[i];
+
+      float dRel = pt.getDRel();
+      if (dRel < 0.0f || dRel > MAX_DRAW_DISTANCE) continue;
+
+      int idx = get_path_length_idx(line, dRel);
+      if (idx < 0 || idx >= line_z.size()) continue;
+
+      float z = line_z[idx];
+      QPointF projected;
+      // OEM vision is in radar/car frame: x=dRel, y lateral, z from model path
+      if (calib_frame_to_full_frame(s, dRel, -pt.getYRel(), z + 1.22f, &projected)) {
+        OemVisionObjectData obj;
+        obj.calibrated_point = projected;
+        obj.width = pt.getWidth();
+        obj.vRel = pt.getVRel();
+        obj.object_type = (int)pt.getObjectType();
+        obj.confidence = pt.getConfidence();
+        obj.in_path = pt.getInPath();
+        frogpilot_scene.oem_vision_objects.push_back(obj);
+      }
+    }
+  }
+
+  // OEM vision lane (single left/right offset from ego path)
+  const auto vision_lane = frogpilot_radar_state.getOemVisionLane();
+  const float left_dist = vision_lane.getLeftValid() ? vision_lane.getDistToLeft() : 0.0f;
+  const float right_dist = vision_lane.getRightValid() ? vision_lane.getDistToRight() : 0.0f;
+
+  if (left_dist > 0.0f || right_dist > 0.0f) {
+    const auto line_x = line.getX();
+    const auto line_z = line.getZ();
+
+    int max_idx = get_path_length_idx(line, MAX_DRAW_DISTANCE);
+
+    if (left_dist > 0.0f) {
+      for (int i = 0; i <= max_idx && i < line_x.size(); ++i) {
+        float x = line_x[i];
+        if (x < 0.0f) continue;
+
+        float z = line_z[i];
+        QPointF projected;
+        if (calib_frame_to_full_frame(s, x, -left_dist, z + 1.22f, &projected)) {
+          frogpilot_scene.oem_vision_lane_left.push_back(projected);
+        }
+      }
+    }
+
+    if (right_dist > 0.0f) {
+      for (int i = 0; i <= max_idx && i < line_x.size(); ++i) {
+        float x = line_x[i];
+        if (x < 0.0f) continue;
+
+        float z = line_z[i];
+        QPointF projected;
+        if (calib_frame_to_full_frame(s, x, right_dist, z + 1.22f, &projected)) {
+          frogpilot_scene.oem_vision_lane_right.push_back(projected);
+        }
+      }
+    }
+  }
+}
+
 void update_line_data(const UIState *s, const cereal::XYZTData::Reader &line,
                       float y_off, float z_off, QPolygonF *pvd, int max_idx, bool allow_invert=true) {
   const auto line_x = line.getX(), line_y = line.getY(), line_z = line.getZ();
@@ -207,7 +286,7 @@ void update_dmonitoring(UIState *s, const cereal::DriverStateV2::Reader &drivers
 static void update_sockets(UIState *s) {
   s->sm->update(0);
 }
-
+ 
 static void update_state(UIState *s, FrogPilotUIState *fs) {
   SubMaster &sm = *(s->sm);
   UIScene &scene = s->scene;

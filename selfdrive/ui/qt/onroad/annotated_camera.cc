@@ -562,9 +562,11 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
     update_model(s, fs, model, sm["uiPlan"].getUiPlan(), frogpilot_toggles);
     drawLaneLines(painter, s, fs);
 
+    auto frogpilot_radar_state = fpsm["frogpilotRadarState"].getFrogpilotRadarState();
+    update_oem_vision(s, fs, frogpilot_radar_state, model.getPosition());
+
     if (s->scene.longitudinal_control && sm.rcv_frame("radarState") > s->scene.started_frame && !frogpilot_toggles.value("hide_lead_marker").toBool()) {
       auto radar_state = sm["radarState"].getRadarState();
-      auto frogpilot_radar_state = fpsm["frogpilotRadarState"].getFrogpilotRadarState();
       update_leads(s, radar_state, model.getPosition());
       update_leads_frogpilot(s, fs, frogpilot_radar_state, model.getPosition());
       auto lead_one = radar_state.getLeadOne();
@@ -578,7 +580,7 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
         drawLead(painter, reinterpret_cast<const cereal::RadarState::LeadData::Reader &>(lead_right), frogpilotPlan, fs->frogpilot_scene.lead_vertices[1], frogpilot_nvg->purpleColor(), fs, true);
       }
       if (lead_one.getStatus()) {
-        drawLead(painter, lead_one, frogpilotPlan, s->scene.lead_vertices[0], lead_one.getModelProb() >= frogpilot_toggles.value("lead_detection_probability").toInt() ? fs->frogpilot_scene.lead_marker_color : whiteColor(), fs);
+        drawLead(painter, lead_one, frogpilotPlan, s->scene.lead_vertices[0], lead_one.getModelProb() >= frogpilot_toggles.value("lead_detection_probability").toDouble() ? fs->frogpilot_scene.lead_marker_color : whiteColor(), fs);
       } else {
         frogpilot_nvg->leadTextRect = QRect();
       }

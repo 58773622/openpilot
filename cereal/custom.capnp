@@ -129,6 +129,19 @@ struct FrogPilotCarState @0xda96579883444c35 {
   sportGear @13 :Bool;
   trafficModeEnabled @14 :Bool;
 
+  # GM-specific extended signals for debugging and visualization
+  latAccel @15 :Float32;           # lateral acceleration from EBCMVehicleDynamic
+  yawRate @16 :Float32;            # yaw rate from EBCMVehicleDynamic
+  yawRate2 @17 :Float32;           # secondary yaw rate from EBCMVehicleDynamic
+  userBrakePressure @18 :Float32;  # user-only brake pressure from BRAKE_RELATED
+  userBrakePressure2 @19 :Float32; # secondary user-only brake pressure from BRAKE_RELATED_2
+
+  accGapLevel @20 :Int8;           # OEM ACC gap setting from ASCMActiveCruiseControlStatus
+  accCmdActive @21 :Bool;          # OEM ACC command active flag
+  accLeadCar @22 :Bool;            # OEM ACC reports lead car present
+  accResumeButton @23 :Bool;       # OEM ACC resume button status
+  fcwAlert @24 :UInt8;             # OEM FCW alert state (0-3)
+
   struct ButtonEvent {
     enum Type {
       lkas @0;
@@ -223,6 +236,8 @@ struct FrogPilotPlan @0xa1680744031fdb2d {
 struct FrogPilotRadarState @0xcb9fd56c7057593a {
   leadLeft @0 :LeadData;
   leadRight @1 :LeadData;
+  oemVisionPoints @2 :List(Car.RadarData.VisionPoint);
+  oemVisionLane @3 :Car.RadarData.VisionLane;
 
   struct LeadData {
     dRel @0 :Float32;

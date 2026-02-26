@@ -27,6 +27,55 @@ def create_radar_can_parser(car_fingerprint):
                      ['TrkWidth'] * NUM_SLOTS + ['TrkObjectID'] * NUM_SLOTS,
                      [RADAR_HEADER_MSG] * 7 + radar_targets * 6, strict=True))
 
+  # OEM vision signals from F_Vision object and environment messages
+  # Object header
+  signals += [
+    ('ClstInPathVehObjID', 1056),
+    ('FVisionNumValidTrgts', 1056),
+    ('FrtVsnUnvlbl', 1056),
+  ]
+
+  # Object tracks (positions, types, widths, lanes, confidence)
+  vision_track_msgs = [
+    (1057, '1'),
+    (1058, '2'),
+    (1059, '3'),
+    (1060, '4'),
+    (1061, '5'),
+    (1062, '6'),
+    (1089, '7'),
+    (1090, '8'),
+    (1091, '9'),
+    (1092, '10'),
+  ]
+
+  for msg, suffix in vision_track_msgs:
+    signals += [
+      (f'FVisionObjectIDTrk{suffix}', msg),
+      (f'FwdVsnRngTrk{suffix}Rev', msg),
+      (f'FwdVsnAzmthTrk{suffix}Rev', msg),
+      (f'FVisionWidthTrk{suffix}', msg),
+      (f'FVisionRelLaneTrk{suffix}', msg),
+      (f'FVisionConfTrk{suffix}', msg),
+      (f'FwdVsnObjTypTr{suffix}Rev', msg),
+    ]
+
+  # Lane and environment information
+  signals += [
+    # F_Vision_Environment (848)
+    ('FwdVsnEnvIllum', 848),
+    ('LaneSnsLLnPosValid', 848),
+    ('LnSenseDistToLLnEdge', 848),
+    ('LnSnsRLnPosValid', 848),
+    ('LnSnsDistToRLnEdge', 848),
+    ('LnSnsLnChngStatus', 848),
+    # F_Vision_Environment_7 (854)
+    ('FwdVsnCnstrctZnDet', 854),
+    ('FwdVsnEgoVehLnPos', 854),
+    ('FwdVsnRdTypDet', 854),
+    ('FwdVsnTunnlDetd', 854),
+  ]
+
   messages = list({(s[1], 14) for s in signals})
 
   return CANParser(DBC[car_fingerprint]['radar'], messages, CanBus.OBSTACLE)
@@ -97,5 +146,76 @@ class RadarInterface(RadarInterfaceBase):
         del self.pts[oldTarget]
 
     ret.points = list(self.pts.values())
+
+    # OEM vision objects and lane data (if available)
+    vision_points = []
+
+    # Object header for in-path flag
+    vision_header = self.rcp.vl.get(1056, {})
+    in_path_id = vision_header.get('ClstInPathVehObjID', 0)
+    num_vision_targets = int(vision_header.get('FVisionNumValidTrgts', 0))
+
+    if num_vision_targets > 0:
+      vision_track_msgs = [
+        (1057, '1'),
+        (1058, '2'),
+        (1059, '3'),
+        (1060, '4'),
+        (1061, '5'),
+        (1062, '6'),
+        (1089, '7'),
+        (1090, '8'),
+        (1091, '9'),
+        (1092, '10'),
+      ]
+
+      for msg, suffix in vision_track_msgs:
+        if msg not in self.rcp.vl:
+          continue
+        vp = self.rcp.vl[msg]
+
+        rng = float(vp.get(f'FwdVsnRngTrk{suffix}Rev', 0.0))
+        if rng <= 0.0:
+          continue
+
+        az_deg = float(vp.get(f'FwdVsnAzmthTrk{suffix}Rev', 0.0))
+        obj_id = int(vp.get(f'FVisionObjectIDTrk{suffix}', 0))
+        width = float(vp.get(f'FVisionWidthTrk{suffix}', 0.0))
+        rel_lane = int(vp.get(f'FVisionRelLaneTrk{suffix}', 0))
+        conf_raw = float(vp.get(f'FVisionConfTrk{suffix}', 0.0))
+        obj_type = int(vp.get(f'FwdVsnObjTypTr{suffix}Rev', 0))
+
+        vision_pt = car.RadarData.VisionPoint.new_message()
+        vision_pt.id = obj_id
+        vision_pt.dRel = rng
+        vision_pt.yRel = math.sin(az_deg * CV.DEG_TO_RAD) * rng
+        vision_pt.vRel = 0.0  # longitudinal velocity not currently parsed
+        vision_pt.width = width
+        vision_pt.objectType = obj_type
+        vision_pt.relLane = rel_lane
+        vision_pt.brakeLight = 0
+        vision_pt.turnSignal = 0
+        vision_pt.confidence = conf_raw
+        vision_pt.inPath = obj_id == in_path_id
+
+        vision_points.append(vision_pt)
+
+    ret.visionPoints = vision_points
+
+    # Lane and environment state
+    env = self.rcp.vl.get(848, {})
+    env7 = self.rcp.vl.get(854, {})
+    lane = ret.visionLane
+
+    lane.leftValid = bool(env.get('LaneSnsLLnPosValid', 0))
+    lane.rightValid = bool(env.get('LnSnsRLnPosValid', 0))
+    lane.distToLeft = float(env.get('LnSenseDistToLLnEdge', 0.0))
+    lane.distToRight = float(env.get('LnSnsDistToRLnEdge', 0.0))
+    lane.egoLanePos = int(env7.get('FwdVsnEgoVehLnPos', 0))
+    lane.roadType = int(env7.get('FwdVsnRdTypDet', 0))
+    lane.laneChangeStatus = int(env.get('LnSnsLnChngStatus', 0))
+    lane.tunnelDetected = int(env7.get('FwdVsnTunnlDetd', 0))
+    lane.constrAreaDetected = int(env7.get('FwdVsnCnstrctZnDet', 0))
+    lane.envIllum = int(env.get('FwdVsnEnvIllum', 0))
     self.updated_messages.clear()
     return ret

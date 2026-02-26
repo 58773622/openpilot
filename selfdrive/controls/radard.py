@@ -318,6 +318,17 @@ class RadarD:
 
     self.frogpilot_radar_state = custom.FrogPilotRadarState.new_message()
 
+    # Copy OEM vision data (if present) into FrogPilotRadarState for debugging/visualization
+    # This does not affect any control or fusion logic.
+    try:
+      # rr is a cereal.car.RadarData struct; visionPoints/visionLane are always defined
+      # by the schema but may be empty when OEM vision is unavailable.
+      self.frogpilot_radar_state.oemVisionPoints = rr.visionPoints
+      self.frogpilot_radar_state.oemVisionLane = rr.visionLane
+    except Exception:
+      # Be robust to older logs or unexpected schema issues.
+      pass
+
     if len(sm['modelV2'].velocity.x):
       model_v_ego = sm['modelV2'].velocity.x[0]
     else:

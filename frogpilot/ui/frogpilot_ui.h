@@ -14,6 +14,15 @@ struct RadarTrackData {
   QPointF calibrated_point;
 };
 
+struct OemVisionObjectData {
+  QPointF calibrated_point;
+  float width;
+  float vRel;
+  int object_type;
+  float confidence;
+  bool in_path;
+};
+
 struct FrogPilotUIScene {
   bool always_on_lateral_active;
   bool downloading_update;
@@ -38,6 +47,7 @@ struct FrogPilotUIScene {
   int started_timer;
 
   std::vector<RadarTrackData> live_radar_tracks;
+  std::vector<OemVisionObjectData> oem_vision_objects;
 
   QColor lane_lines_color;
   QColor lead_marker_color;
@@ -53,6 +63,9 @@ struct FrogPilotUIScene {
 
   QPolygonF track_adjacent_vertices[2];
   QPolygonF track_edge_vertices;
+
+  QPolygonF oem_vision_lane_left;
+  QPolygonF oem_vision_lane_right;
 };
 
 class FrogPilotUIState : public QObject {

@@ -212,3 +212,4 @@ void update_line_data(const UIState *s, const cereal::XYZTData::Reader &line,
 // FrogPilot variables
 void update_leads_frogpilot(UIState *s, FrogPilotUIState *fs, const cereal::FrogPilotRadarState::Reader &frogpilot_radar_state, const cereal::XYZTData::Reader &line);
 void update_radar_tracks(capnp::List<cereal::LiveTracks>::Reader &tracks_msg, cereal::XYZTData::Reader line, const UIState &s, const SubMaster &sm);
+void update_oem_vision(UIState *s, FrogPilotUIState *fs, const cereal::FrogPilotRadarState::Reader &frogpilot_radar_state, const cereal::XYZTData::Reader &line);

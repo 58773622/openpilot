@@ -226,6 +226,7 @@ void FrogPilotAnnotatedCameraWidget::paintFrogPilotWidgets(QPainter &p, UIState 
 
   if (frogpilot_toggles.value("radar_tracks").toBool()) {
     paintRadarTracks(p, model, s, frogpilot_scene, sm, fpsm);
+    paintOemVisionObjects(p, frogpilot_scene);
   }
 
   if (frogpilot_toggles.value("road_name_ui").toBool()) {
@@ -720,6 +721,50 @@ void FrogPilotAnnotatedCameraWidget::paintRadarTracks(QPainter &p, const cereal:
 
     p.setBrush(redColor());
     p.drawEllipse(QPointF(x + diameter / 2.0f, y + diameter / 2.0f), diameter / 2.0f, diameter / 2.0f);
+  }
+
+  p.restore();
+}
+
+void FrogPilotAnnotatedCameraWidget::paintOemVisionObjects(QPainter &p, const FrogPilotUIScene &frogpilot_scene) {
+  p.save();
+
+  QRect viewport = p.viewport();
+
+  // Draw OEM lane lines first
+  if (!frogpilot_scene.oem_vision_lane_left.isEmpty()) {
+    QPen left_pen(QColor(255, 215, 0, 220));
+    left_pen.setWidth(4);
+    left_pen.setStyle(Qt::SolidLine);
+    p.setPen(left_pen);
+    p.setBrush(Qt::NoBrush);
+    p.drawPolyline(frogpilot_scene.oem_vision_lane_left);
+  }
+
+  if (!frogpilot_scene.oem_vision_lane_right.isEmpty()) {
+    QPen right_pen(QColor(255, 215, 0, 180));
+    right_pen.setWidth(3);
+    right_pen.setStyle(Qt::DashLine);
+    p.setPen(right_pen);
+    p.setBrush(Qt::NoBrush);
+    p.drawPolyline(frogpilot_scene.oem_vision_lane_right);
+  }
+
+  // Draw OEM vision objects as orange squares
+  int size = 18;
+  for (const auto &obj : frogpilot_scene.oem_vision_objects) {
+    float x = obj.calibrated_point.x();
+    float y = obj.calibrated_point.y();
+
+    if (x < 0.0f) x = 0.0f;
+    if (y < 0.0f) y = 0.0f;
+    if (x > viewport.width() - size) x = viewport.width() - size;
+    if (y > viewport.height() - size) y = viewport.height() - size;
+
+    QColor color = obj.in_path ? QColor(255, 140, 0, 230) : QColor(255, 165, 0, 200);
+    p.setPen(Qt::NoPen);
+    p.setBrush(color);
+    p.drawRect(QRectF(x - size / 2.0f, y - size / 2.0f, size, size));
   }
 
   p.restore();

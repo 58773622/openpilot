@@ -159,6 +159,36 @@ class CarState(CarStateBase):
 
     self.pcm_acc_status = pt_cp.vl["AcceleratorPedal2"]["CruiseState"]
 
+    # GM-specific extended signals for FrogPilot debugging/visualization
+    # Lateral dynamics from EBCMVehicleDynamic
+    ebcm_dynamic = pt_cp.vl.get("EBCMVehicleDynamic", {})
+    lat_accel = float(ebcm_dynamic.get("LateralAcceleration", 0.0))
+    yaw_rate = float(ebcm_dynamic.get("YawRate", 0.0))
+    yaw_rate2 = float(ebcm_dynamic.get("YawRate2", 0.0))
+
+    # Prefer the high resolution yawRate2 (deg/s) when available for CarState.yawRate (rad/s)
+    if yaw_rate2 != 0.0:
+      ret.yawRate = yaw_rate2 * CV.DEG_TO_RAD
+
+    fp_ret.latAccel = lat_accel
+    fp_ret.yawRate = yaw_rate
+    fp_ret.yawRate2 = yaw_rate2
+
+    # User-only brake pressure from BRAKE_RELATED messages
+    brake_related = pt_cp.vl.get("BRAKE_RELATED", {})
+    brake_related2 = pt_cp.vl.get("BRAKE_RELATED_2", {})
+    fp_ret.userBrakePressure = float(brake_related.get("UserBrakePressure", 0.0))
+    fp_ret.userBrakePressure2 = float(brake_related2.get("UserBrakePressure2", 0.0))
+
+    # OEM ACC / FCW status from ASCMActiveCruiseControlStatus (camera-forward integrations)
+    if self.CP.networkLocation == NetworkLocation.fwdCamera and not self.CP.flags & GMFlags.NO_CAMERA.value and self.CP.carFingerprint not in CC_ONLY_CAR:
+      acc_status = cam_cp.vl.get("ASCMActiveCruiseControlStatus", {})
+      fp_ret.accGapLevel = int(acc_status.get("ACCGapLevel", 0))
+      fp_ret.accCmdActive = acc_status.get("ACCCmdActive", 0) != 0
+      fp_ret.accLeadCar = acc_status.get("ACCLeadCar", 0) != 0
+      fp_ret.accResumeButton = acc_status.get("ACCResumeButton", 0) != 0
+      fp_ret.fcwAlert = int(acc_status.get("FCWAlert", 0))
+
     fp_ret.sportGear = pt_cp.vl["SportMode"]["SportMode"] == 1
 
     return ret, fp_ret
@@ -193,6 +223,9 @@ class CarState(CarStateBase):
       ("EBCMWheelSpdFront", 20),
       ("EBCMWheelSpdRear", 20),
       ("EBCMFrictionBrakeStatus", 20),
+      ("EBCMVehicleDynamic", 20),
+      ("BRAKE_RELATED", 20),
+      ("BRAKE_RELATED_2", 20),
       ("AcceleratorPedal2", 33),
       ("ASCMSteeringButton", 33),
       ("ECMEngineStatus", 100),

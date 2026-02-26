@@ -315,6 +315,36 @@ struct RadarData @0x888ad6581cf0aacb {
     measured @6 :Bool;
   }
 
+  struct VisionPoint {
+    id @0 :UInt32;
+    dRel @1 :Float32;
+    yRel @2 :Float32;
+    vRel @3 :Float32;
+    width @4 :Float32;
+    objectType @5 :UInt8;
+    relLane @6 :UInt8;
+    brakeLight @7 :UInt8;
+    turnSignal @8 :UInt8;
+    confidence @9 :Float32;
+    inPath @10 :Bool;
+  }
+
+  struct VisionLane {
+    leftValid @0 :Bool;
+    rightValid @1 :Bool;
+    distToLeft @2 :Float32;
+    distToRight @3 :Float32;
+    egoLanePos @4 :UInt8;
+    roadType @5 :UInt8;
+    laneChangeStatus @6 :UInt8;
+    tunnelDetected @7 :UInt8;
+    constrAreaDetected @8 :UInt8;
+    envIllum @9 :UInt8;
+  }
+
+  visionPoints @3 :List(VisionPoint);
+  visionLane @4 :VisionLane;
+
   # deprecated
   canMonoTimesDEPRECATED @2 :List(UInt64);
 }

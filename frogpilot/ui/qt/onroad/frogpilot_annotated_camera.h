@@ -70,6 +70,7 @@ private:
   void paintCurveSpeedControl(QPainter &p, const cereal::FrogPilotPlan::Reader &frogpilotPlan);
   void paintLateralPaused(QPainter &p, FrogPilotUIScene &frogpilot_scene);
   void paintLongitudinalPaused(QPainter &p, FrogPilotUIScene &frogpilot_scene);
+  void paintOemVisionObjects(QPainter &p, const FrogPilotUIScene &frogpilot_scene);
   void paintPedalIcons(QPainter &p, const cereal::CarState::Reader &carState, const cereal::FrogPilotCarState::Reader &frogpilotCarState, FrogPilotUIScene &frogpilot_scene, QJsonObject &frogpilot_toggles);
   void paintPendingSpeedLimit(QPainter &p, const cereal::FrogPilotPlan::Reader &frogpilotPlan);
   void paintRadarTracks(QPainter &p, const cereal::ModelDataV2::Reader &model, UIState &s, FrogPilotUIScene &frogpilot_scene, SubMaster &sm, SubMaster &fpsm);
