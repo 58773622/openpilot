@@ -253,10 +253,6 @@
         <source>TORQUE %</source>
         <translation type="gpt-5-generated">TORQUE %</translation>
     </message>
-    <message>
-        <source>DANGER %</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DevicePanel</name>
@@ -426,22 +422,6 @@
     <message>
         <source>Miles</source>
         <translation type="gpt-5-generated">Milhas</translation>
-    </message>
-    <message>
-        <source>ALL TIME (KONIK)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ALL TIME</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PAST WEEK (KONIK)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PAST WEEK</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -930,125 +910,6 @@
     </message>
 </context>
 <context>
-    <name>FrogPilotDriveSummary</name>
-    <message>
-        <source>Random Events Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>UwUs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Loch Ness Encounters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Visits to 1955</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deja Vu Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Internet Explorer Weeeeeeees</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HAL 9000 Denials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>openpilot Crashes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This Is Fine Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To Be Continued Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Noices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attempted Frog Murders</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total Mail Received</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>% of Drive With openpilot Engaged</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Distance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>% of Drive In "Experimental Mode"</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Random Events Played!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> kilometer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> kilometers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> mile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> miles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> day </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> days </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hour </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hours </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>FrogPilotLateralPanel</name>
     <message>
         <source>Advanced Lateral Tuning</source>
@@ -1337,6 +1198,22 @@
     <message>
         <source>&lt;b&gt;Twilsonco's torque-based adjustments to smoothen out steering in curves.&lt;/b&gt;</source>
         <translation type="gpt-5-generated">&lt;b&gt;Ajustes baseados em torque do Twilsonco para suavizar a direção em curvas.&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Steer Offset (Default: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Steer Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Offsets steering torque to help compensate for alignment or tire issues.&lt;/b&gt; More negative pulls the car right; more positive pulls it left. Most users should not need to touch this.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset &lt;b&gt;Steer Offset&lt;/b&gt; to its default value?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3945,14 +3822,6 @@ Desenvolvedor - Configurações altamente personalizáveis para entusiastas expe
         <source>&lt;b&gt;Does your vehicle support "SASCMs"?&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Use External Red Panda</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>FrogPilotVisualsPanel</name>
@@ -4721,37 +4590,6 @@ Desenvolvedor - Configurações altamente personalizáveis para entusiastas expe
     </message>
 </context>
 <context>
-    <name>GMPanel</name>
-    <message>
-        <source>Use External Red Panda</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reboot required to take effect.</source>
-        <translation type="unfinished">Reinicialização necessária para surtir efeito.</translation>
-    </message>
-    <message>
-        <source>Reboot</source>
-        <translation type="unfinished">Reiniciar</translation>
-    </message>
-    <message>
-        <source>Disengage to Reboot</source>
-        <translation type="unfinished">Desacione para Reiniciar</translation>
-    </message>
-    <message>
-        <source>GM Stop-and-Go</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>InputDialog</name>
     <message>
         <source>Cancel</source>
@@ -5077,42 +4915,6 @@ Desenvolvedor - Configurações altamente personalizáveis para entusiastas expe
         <source>FrogPilot</source>
         <translation type="gpt-5-generated">FrogPilot</translation>
     </message>
-    <message>
-        <source>0 MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> GB</source>
-        <translation type="unfinished">GB</translation>
-    </message>
-    <message>
-        <source> MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hour </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hours </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minute </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minutes </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> second</source>
-        <translation type="unfinished"> segundo</translation>
-    </message>
-    <message>
-        <source> seconds</source>
-        <translation type="unfinished"> segundos</translation>
-    </message>
 </context>
 <context>
     <name>Reset</name>
@@ -5215,10 +5017,6 @@ Isso pode levar até um minuto.</translation>
     <message>
         <source>Since you're very experienced with FrogPilot, the "Advanced" toggle preset has been applied, but you can change this at any time via the "Tuning Level" button!</source>
         <translation type="gpt-5-generated">Como você tem muita experiência com o FrogPilot, a predefinição de “Avançado” foi aplicada, mas você pode alterá-la a qualquer momento pelo botão “Nível de Ajuste”!</translation>
-    </message>
-    <message>
-        <source>GM</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

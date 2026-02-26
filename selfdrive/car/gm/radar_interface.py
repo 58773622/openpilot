@@ -125,15 +125,24 @@ class RadarInterface(RadarInterfaceBase):
       if num_targets == 0:
         break
 
+      # Only radar target slot messages contain tracking fields like TrkRange.
+      # Skip any other updated messages (e.g. OEM vision / environment frames).
+      if ii < SLOT_1_MSG or ii > LAST_RADAR_MSG:
+        continue
+
       cpt = self.rcp.vl[ii]
+      # Ensure required tracking fields are present before accessing them.
+      if not all(k in cpt for k in ('TrkRange', 'TrkObjectID', 'TrkAzimuth', 'TrkRangeRate')):
+        continue
+
+      distance = cpt['TrkRange']
       # Zero distance means it's an empty target slot
-      if cpt['TrkRange'] > 0.0:
+      if distance > 0.0:
         targetId = cpt['TrkObjectID']
         currentTargets.add(targetId)
         if targetId not in self.pts:
           self.pts[targetId] = car.RadarData.RadarPoint.new_message()
           self.pts[targetId].trackId = targetId
-        distance = cpt['TrkRange']
         self.pts[targetId].dRel = distance  # from front of car
         # From driver's pov, left is positive
         self.pts[targetId].yRel = math.sin(cpt['TrkAzimuth'] * CV.DEG_TO_RAD) * distance

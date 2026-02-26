@@ -253,10 +253,6 @@
         <source>TORQUE %</source>
         <translation type="gpt-5-generated">扭矩 %</translation>
     </message>
-    <message>
-        <source>DANGER %</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DevicePanel</name>
@@ -426,22 +422,6 @@
     <message>
         <source>Miles</source>
         <translation type="gpt-5-generated">英里</translation>
-    </message>
-    <message>
-        <source>ALL TIME (KONIK)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ALL TIME</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PAST WEEK (KONIK)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PAST WEEK</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -930,125 +910,6 @@
     </message>
 </context>
 <context>
-    <name>FrogPilotDriveSummary</name>
-    <message>
-        <source>Random Events Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>UwUs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Loch Ness Encounters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Visits to 1955</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deja Vu Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Internet Explorer Weeeeeeees</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HAL 9000 Denials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>openpilot Crashes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This Is Fine Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To Be Continued Moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Noices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attempted Frog Murders</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total Mail Received</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>% of Drive With openpilot Engaged</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Distance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drive Time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>% of Drive In "Experimental Mode"</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Random Events Played!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> kilometer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> kilometers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> mile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> miles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> day </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> days </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hour </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hours </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>FrogPilotLateralPanel</name>
     <message>
         <source>Advanced Lateral Tuning</source>
@@ -1337,6 +1198,22 @@
     <message>
         <source>&lt;b&gt;Twilsonco's torque-based adjustments to smoothen out steering in curves.&lt;/b&gt;</source>
         <translation type="gpt-5-generated">&lt;b&gt;Twilsonco 基于扭矩的调整，用于在弯道中平滑转向。&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Steer Offset (Default: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Steer Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Offsets steering torque to help compensate for alignment or tire issues.&lt;/b&gt; More negative pulls the car right; more positive pulls it left. Most users should not need to touch this.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset &lt;b&gt;Steer Offset&lt;/b&gt; to its default value?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3926,23 +3803,15 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
         <translation type="gpt-5-generated">&lt;b&gt;openpilot 会使用车辆的盲点数据吗？&lt;/b&gt;</translation>
     </message>
     <message>
+        <source>comma Pedal Support</source>
+        <translation type="gpt-5-generated">comma Pedal 支持</translation>
+    </message>
+    <message>
         <source>Use Pedal for Longitudinal Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;b&gt;Use the pedal interceptor for longitudinal control&lt;/b&gt; instead of camera ACC/Redneck when available.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use External Red Panda</source>
-        <translation type="unfinished">使用外置熊猫适配器</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
-        <translation type="unfinished">&lt;b&gt;在通用汽车车型上使用外置熊猫（Red Panda）适配器。&lt;/b&gt; 更改后需要重启设备。</translation>
-    </message>
-    <message>
-        <source>comma Pedal Support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3958,694 +3827,694 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
     <name>FrogPilotVisualsPanel</name>
     <message>
         <source>Advanced UI Controls</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">高级界面控件</translation>
     </message>
     <message>
         <source>&lt;b&gt;Advanced visual changes&lt;/b&gt; to fine-tune how the driving screen looks.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;高级视觉更改&lt;/b&gt;，用于微调驾驶屏幕的外观。</translation>
     </message>
     <message>
         <source>Hide Current Speed</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏当前速度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide the current speed&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕中隐藏当前速度&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Hide Lead Marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏前车标记</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide the lead-vehicle marker&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕上隐藏前车标记&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Hide Map Settings Button</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏地图设置按钮</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide the map settings button or map&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕上隐藏地图设置按钮或地图&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Hide Max Speed</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏最高速度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide the max speed&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在行驶屏幕中隐藏最高速度&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Hide Non-Critical Alerts</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏非关键警报</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide non-critical alerts&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">从驾驶屏幕&lt;b&gt;隐藏非关键警报&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Hide Speed Limits</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏限速</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hide posted speed limits&lt;/b&gt; from the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶界面隐藏已发布的限速&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Use Wheel Speed</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">使用车轮速度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Use the vehicle's wheel speed&lt;/b&gt; instead of the cluster speed. This is purely a visual change and doesn't impact how openpilot drives!</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;使用车辆的车轮速度&lt;/b&gt;而不是仪表速度。这只是视觉上的变化，不会影响 openpilot 的驾驶方式！</translation>
     </message>
     <message>
         <source>Developer UI</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">开发者界面</translation>
     </message>
     <message>
         <source>&lt;b&gt;Detailed information about openpilot's internal operations.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;关于 openpilot 内部运行的详细信息。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Adjacent Path Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">相邻路径指标</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show the width of the adjacent lanes.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;显示相邻车道的宽度。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Developer Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">开发者指标</translation>
     </message>
     <message>
         <source>&lt;b&gt;Performance data, sensor readings, and system metrics&lt;/b&gt; for debugging and optimizing openpilot.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;用于调试和优化 openpilot 的性能数据、传感器读数和系统指标&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Border Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">边界指标</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show statuses along the border of the driving screen.&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Blind Spot&lt;/b&gt;: The border turns red when a vehicle is in a blind spot&lt;br&gt;&lt;b&gt;Steering Torque&lt;/b&gt;: The border goes from green to red according to how much steering torque is being used&lt;br&gt;&lt;b&gt;Turn Signal&lt;/b&gt;: The border flashes yellow when a turn signal is on</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕边缘显示状态。&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;盲区&lt;/b&gt;：当有车辆处于盲区时，边框变为红色&lt;br&gt;&lt;b&gt;转向扭矩&lt;/b&gt;：边框会根据使用的转向扭矩从绿色逐渐变为红色&lt;br&gt;&lt;b&gt;转向灯&lt;/b&gt;：当转向灯开启时，边框闪烁黄色</translation>
     </message>
     <message>
         <source>Lead Info</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">前车信息</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show each tracked vehicle's distance and speed&lt;/b&gt; below its marker.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在其标记下方显示每个被跟踪车辆的距离和速度&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>FPS Display</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">FPS 显示</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show the frames per second (FPS)&lt;/b&gt; at the bottom of the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">在驾驶屏幕底部&lt;b&gt;显示每秒帧数（FPS）&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Numerical Temperature Gauge</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">数字温度表</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show a numerical temperature in the sidebar&lt;/b&gt; instead of the status labels.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在侧边栏显示数值温度&lt;/b&gt;，而不是状态标签。</translation>
     </message>
     <message>
         <source>Sidebar Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">侧边栏指标</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display system information&lt;/b&gt; (CPU, GPU, RAM usage, IP address, device storage) in the sidebar.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在侧栏显示系统信息&lt;/b&gt;（CPU、GPU、RAM 使用率、IP 地址、设备存储）。</translation>
     </message>
     <message>
         <source>Use International System of Units</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">使用国际单位制</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display measurements using the "International System of Units" (SI)&lt;/b&gt; standard.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;使用“国际单位制”（SI）标准显示度量&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Developer Sidebar</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">开发者侧边栏</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display debugging info and metrics&lt;/b&gt; in a dedicated sidebar on the right side of the screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">在屏幕右侧的专用侧栏&lt;b&gt;显示调试信息和指标&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Metric #1</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指标 #1</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the first "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第一个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #2</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">度量 #2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the second "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第二个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #3</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指标 #3</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the third "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第三个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #4</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指标 #4</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the fourth "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第四个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #5</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指标 #5</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the fifth "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择在第五个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #6</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">度量 #6</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the sixth "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第六个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metric #7</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指标 #7</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the metric shown in the seventh "Developer Sidebar" widget.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择第七个“开发者侧边栏”小部件中显示的度量。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Developer Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">开发者小部件</translation>
     </message>
     <message>
         <source>&lt;b&gt;Overlays for debugging visuals, internal states, and model predictions&lt;/b&gt; on the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">在驾驶屏幕上&lt;b&gt;用于调试可视化、内部状态和模型预测的叠加层&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Adjacent Leads Tracking</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">相邻车辆跟踪</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display adjacent leads detected by the car's radar&lt;/b&gt; to the left and right of the current driving path.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在当前行驶路径的左右显示车辆雷达检测到的相邻前车&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Model Stopping Point</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">模型停止点</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show a stop-sign marker where the model intends to stop.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在模型计划停车的位置显示停止标志标记。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Radar Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">雷达跟踪</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display all radar points&lt;/b&gt; produced by the car's radar.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;显示车辆雷达生成的所有雷达点&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Driving Screen Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">驾驶屏幕小部件</translation>
     </message>
     <message>
         <source>&lt;b&gt;Custom FrogPilot widgets&lt;/b&gt; for the driving screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">用于驾驶屏幕的&lt;b&gt;自定义 FrogPilot 小部件&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Acceleration Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">加速度路径</translation>
     </message>
     <message>
         <source>&lt;b&gt;Color the driving path by planned acceleration and braking.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;根据规划的加速与制动为行驶路径着色。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Adjacent Lanes</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">相邻车道</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show the driving paths for the left and right lanes.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;显示左右车道的行驶路径。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Blind Spot Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">盲点路径</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show a red path when a vehicle is in that lane's blind spot.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;当有车辆位于该车道盲区时显示红色路径。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Compass</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">指南针</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show the current driving direction&lt;/b&gt; with a simple on-screen compass.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;使用简单的屏幕罗盘&lt;/b&gt;显示当前行驶方向。</translation>
     </message>
     <message>
         <source>Driving Personality Button</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">驾驶个性按钮</translation>
     </message>
     <message>
         <source>&lt;b&gt;Control and view the current driving personality&lt;/b&gt; via a driving screen widget.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">通过驾驶屏幕小部件&lt;b&gt;控制并查看当前驾驶风格&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Gas / Brake Pedal Indicators</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">油门/刹车踏板指示器</translation>
     </message>
     <message>
         <source>&lt;b&gt;On-screen gas and brake indicators.&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Dynamic&lt;/b&gt;: Opacity changes according to how much openpilot is accelerating or braking&lt;br&gt;&lt;b&gt;Static&lt;/b&gt;: Full when active, dim when not</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;屏幕上的油门和制动指示器。&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;动态&lt;/b&gt;：透明度随 openpilot 加速或制动的程度变化&lt;br&gt;&lt;b&gt;静态&lt;/b&gt;：激活时为全亮，未激活时为变暗</translation>
     </message>
     <message>
         <source>Rotating Steering Wheel</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">转动方向盘</translation>
     </message>
     <message>
         <source>&lt;b&gt;Rotate the driving screen wheel&lt;/b&gt; with the physical steering wheel.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;旋转驾驶屏幕滚轮&lt;/b&gt;，使用实体方向盘。</translation>
     </message>
     <message>
         <source>Model UI</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">模型界面</translation>
     </message>
     <message>
         <source>&lt;b&gt;Model visualizations&lt;/b&gt; for the driving path, lane lines, path edges, and road edges.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;模型可视化&lt;/b&gt;，包括行驶路径、车道线、路径边缘和道路边缘。</translation>
     </message>
     <message>
         <source>Dynamic Path Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">动态车道宽度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Change the path width based on engagement.&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Fully Engaged&lt;/b&gt;: 100%&lt;br&gt;&lt;b&gt;Always On Lateral&lt;/b&gt;: 75%&lt;br&gt;&lt;b&gt;Disengaged&lt;/b&gt;: 50%</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;根据接管状态改变路径宽度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;完全接管&lt;/b&gt;：100%&lt;br&gt;&lt;b&gt;始终开启横向控制&lt;/b&gt;：75%&lt;br&gt;&lt;b&gt;未接管&lt;/b&gt;：50%</translation>
     </message>
     <message>
         <source>Lane Lines Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">车道线宽度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the lane-line thickness.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default matches the MUTCD lane-line width standard of 4 inches.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置车道线厚度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值符合MUTCD车道线宽度标准为4英寸。</translation>
     </message>
     <message>
         <source>Path Edges Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">路径边缘宽度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the driving-path edge width&lt;/b&gt; that represents different driving modes and statuses.&lt;br&gt;&lt;br&gt;Default is 20% of the total path width.&lt;br&gt;&lt;br&gt;Color Guide:&lt;br&gt;&lt;br&gt;- &lt;b&gt;Blue&lt;/b&gt;: Navigation&lt;br&gt;- &lt;b&gt;Light Blue&lt;/b&gt;: Always On Lateral&lt;br&gt;- &lt;b&gt;Green&lt;/b&gt;: Default&lt;br&gt;- &lt;b&gt;Orange&lt;/b&gt;: Experimental Mode&lt;br&gt;- &lt;b&gt;Red&lt;/b&gt;: Traffic Mode&lt;br&gt;- &lt;b&gt;Yellow&lt;/b&gt;: Conditional Experimental Mode overridden</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置行驶路径边缘宽度&lt;/b&gt;，用于表示不同的驾驶模式与状态。&lt;br&gt;&lt;br&gt;默认为总路径宽度的 20%。&lt;br&gt;&lt;br&gt;颜色指南：&lt;br&gt;&lt;br&gt;- &lt;b&gt;蓝色&lt;/b&gt;：导航&lt;br&gt;- &lt;b&gt;浅蓝色&lt;/b&gt;：始终开启横向控制&lt;br&gt;- &lt;b&gt;绿色&lt;/b&gt;：默认&lt;br&gt;- &lt;b&gt;橙色&lt;/b&gt;：实验模式&lt;br&gt;- &lt;b&gt;红色&lt;/b&gt;：交通模式&lt;br&gt;- &lt;b&gt;黄色&lt;/b&gt;：条件实验模式被覆盖</translation>
     </message>
     <message>
         <source>Path Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">路径宽度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the driving-path width.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default (6.1 feet) matches the width of a 2019 Lexus ES 350.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置行驶路径宽度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值（6.1 英尺）与 2019 款雷克萨斯 ES 350 的车宽相同。</translation>
     </message>
     <message>
         <source>Road Edges Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">道路边缘宽度</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the road-edge thickness.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default matches half of the MUTCD lane-line width standard of 4 inches.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置道路边缘线厚度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值相当于 MUTCD 车道线标准宽度 4 英寸的一半。</translation>
     </message>
     <message>
         <source>"Unlimited" Road UI</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">“无限制”道路界面</translation>
     </message>
     <message>
         <source>&lt;b&gt;Extend the length of the driving path, lane lines, and road edges&lt;/b&gt; for as far as the model can see.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;尽可能延长行驶路径、车道线和路缘的长度&lt;/b&gt;，达到模型可见的最远距离。</translation>
     </message>
     <message>
         <source>Navigation Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">导航小部件</translation>
     </message>
     <message>
         <source>&lt;b&gt;Map style, speed limits, and other navigation widgets.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;地图样式、限速及其他导航组件。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Larger Map Display</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">更大的地图显示</translation>
     </message>
     <message>
         <source>&lt;b&gt;Increase the map size&lt;/b&gt; for easier navigation readings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;增大地图尺寸&lt;/b&gt;以便更容易读取导航信息。</translation>
     </message>
     <message>
         <source>Map Style</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">地图样式</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the map style&lt;/b&gt; for "Navigate on openpilot" (NOO):&lt;br&gt;&lt;br&gt;&lt;b&gt;Stock openpilot&lt;/b&gt;: Default comma.ai style&lt;br&gt;&lt;b&gt;FrogPilot&lt;/b&gt;: Official FrogPilot map style&lt;br&gt;&lt;b&gt;Mapbox Streets&lt;/b&gt;: Standard street-focused view&lt;br&gt;&lt;b&gt;Mapbox Outdoors&lt;/b&gt;: Emphasizes outdoor and terrain features&lt;br&gt;&lt;b&gt;Mapbox Light&lt;/b&gt;: Minimalist, bright theme&lt;br&gt;&lt;b&gt;Mapbox Dark&lt;/b&gt;: Minimalist, dark theme&lt;br&gt;&lt;b&gt;Mapbox Navigation Day&lt;/b&gt;: Optimized for daytime navigation&lt;br&gt;&lt;b&gt;Mapbox Navigation Night&lt;/b&gt;: Optimized for nighttime navigation&lt;br&gt;&lt;b&gt;Mapbox Satellite&lt;/b&gt;: Satellite imagery only&lt;br&gt;&lt;b&gt;Mapbox Satellite Streets&lt;/b&gt;: Hybrid satellite imagery with street labels&lt;br&gt;&lt;b&gt;Mapbox Traffic Night&lt;/b&gt;: Dark theme emphasizing traffic conditions&lt;br&gt;&lt;b&gt;Mike's Personalized Style&lt;/b&gt;: Customized hybrid satellite view</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;为“Navigate on openpilot”（NOO）选择地图样式&lt;/b&gt;：&lt;br&gt;&lt;br&gt;&lt;b&gt;Stock openpilot&lt;/b&gt;：默认 comma.ai 样式&lt;br&gt;&lt;b&gt;FrogPilot&lt;/b&gt;：FrogPilot 官方地图样式&lt;br&gt;&lt;b&gt;Mapbox Streets&lt;/b&gt;：标准街道视图&lt;br&gt;&lt;b&gt;Mapbox Outdoors&lt;/b&gt;：突出户外与地形特征&lt;br&gt;&lt;b&gt;Mapbox Light&lt;/b&gt;：极简明亮主题&lt;br&gt;&lt;b&gt;Mapbox Dark&lt;/b&gt;：极简深色主题&lt;br&gt;&lt;b&gt;Mapbox Navigation Day&lt;/b&gt;：为白天导航优化&lt;br&gt;&lt;b&gt;Mapbox Navigation Night&lt;/b&gt;：为夜间导航优化&lt;br&gt;&lt;b&gt;Mapbox Satellite&lt;/b&gt;：仅卫星影像&lt;br&gt;&lt;b&gt;Mapbox Satellite Streets&lt;/b&gt;：卫星与街道标签的混合视图&lt;br&gt;&lt;b&gt;Mapbox Traffic Night&lt;/b&gt;：强调交通状况的深色主题&lt;br&gt;&lt;b&gt;Mike's Personalized Style&lt;/b&gt;：个性化混合卫星视图</translation>
     </message>
     <message>
         <source>Road Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">道路名称</translation>
     </message>
     <message>
         <source>&lt;b&gt;Display the road name at the bottom of the driving screen&lt;/b&gt; using data from "OpenStreetMap (OSM)".</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕底部显示道路名称&lt;/b&gt;，使用来自“OpenStreetMap (OSM)”的数据。</translation>
     </message>
     <message>
         <source>Show Speed Limits</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">显示限速</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show speed limits&lt;/b&gt; in the top-left corner of the driving screen. Uses data from the car's dashboard (if supported) and "OpenStreetMap (OSM)".</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在驾驶屏幕左上角显示限速&lt;/b&gt;。使用车辆仪表盘的数据（如支持）以及“OpenStreetMap (OSM)”。</translation>
     </message>
     <message>
         <source>Show Speed Limits from Mapbox</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">从 Mapbox 显示限速</translation>
     </message>
     <message>
         <source>&lt;b&gt;Use Mapbox speed-limit data when no other source is available.&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;当没有其他来源可用时，使用 Mapbox 的限速数据。&lt;/b&gt;</translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在没有其他来源时使用 Mapbox 的限速数据。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Use Vienna-Style Speed Signs</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">使用维也纳式限速标志</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show Vienna-style (EU) speed-limit signs&lt;/b&gt; instead of MUTCD (US).</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;显示维也纳风格（欧盟）的限速标志&lt;/b&gt;，而不是 MUTCD（美国）。</translation>
     </message>
     <message>
         <source>Quality of Life</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">生活质量</translation>
     </message>
     <message>
         <source>&lt;b&gt;Miscellaneous visual changes&lt;/b&gt; to fine-tune how the driving screen looks.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;其他视觉更改&lt;/b&gt;，用于微调驾驶屏幕的外观。</translation>
     </message>
     <message>
         <source>Camera View</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">摄像头视图</translation>
     </message>
     <message>
         <source>&lt;b&gt;Select the active camera view.&lt;/b&gt; This is purely a visual change and doesn't impact how openpilot drives!</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;选择活动摄像头视图。&lt;/b&gt; 这只是视觉上的变化，不会影响 openpilot 的驾驶方式！</translation>
     </message>
     <message>
         <source>Show Driver Camera When In Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">倒车时显示驾驶员摄像头</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show the driver camera feed&lt;/b&gt; when the vehicle is in reverse.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">当车辆处于倒挡时&lt;b&gt;显示驾驶员摄像头画面&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Stopped Timer</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">已停止计时器</translation>
     </message>
     <message>
         <source>&lt;b&gt;Show a timer when stopped&lt;/b&gt; in place of the current speed to indicate how long the vehicle has been stopped.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;在停止时显示计时器&lt;/b&gt;，取代当前速度，以指示车辆已停止的时长。</translation>
     </message>
     <message>
         <source>Hide Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">隐藏地图</translation>
     </message>
     <message>
         <source>Blind Spot</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">盲点</translation>
     </message>
     <message>
         <source>Steering Torque</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">转向扭矩</translation>
     </message>
     <message>
         <source>Turn Signal</source>
-        <translation type="unfinished">转向灯</translation>
+        <translation type="gpt-5-generated">转向信号</translation>
     </message>
     <message>
         <source>Fahrenheit</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">华氏度</translation>
     </message>
     <message>
         <source>CPU</source>
-        <translation type="unfinished">CPU</translation>
+        <translation type="gpt-5-generated">CPU</translation>
     </message>
     <message>
         <source>GPU</source>
-        <translation type="unfinished">GPU</translation>
+        <translation type="gpt-5-generated">GPU</translation>
     </message>
     <message>
         <source>IP</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">IP</translation>
     </message>
     <message>
         <source>RAM</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">RAM</translation>
     </message>
     <message>
         <source>SSD Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">SSD 左侧</translation>
     </message>
     <message>
         <source>SSD Used</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">SSD 已用</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">无</translation>
+        <translation type="gpt-5-generated">无</translation>
     </message>
     <message>
         <source>Acceleration: Current</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">加速度：当前</translation>
     </message>
     <message>
         <source>Acceleration: Max</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">加速：最大</translation>
     </message>
     <message>
         <source>Auto Tune: Actuator Delay</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">自动调校：执行器延迟</translation>
     </message>
     <message>
         <source>Auto Tune: Friction</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">自动调谐：摩擦</translation>
     </message>
     <message>
         <source>Auto Tune: Lateral Acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">自动调谐：横向加速度</translation>
     </message>
     <message>
         <source>Auto Tune: Steer Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">自动调谐：转向比</translation>
     </message>
     <message>
         <source>Auto Tune: Stiffness Factor</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">自动调谐：刚度系数</translation>
     </message>
     <message>
         <source>Engagement %: Lateral</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">参与率 %：横向</translation>
     </message>
     <message>
         <source>Engagement %: Longitudinal</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">参与率 %：纵向</translation>
     </message>
     <message>
         <source>Lateral Control: Steering Angle</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">横向控制：转向角</translation>
     </message>
     <message>
         <source>Lateral Control: Torque % Used</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">横向控制：扭矩使用率 %</translation>
     </message>
     <message>
         <source>Longitudinal Control: Actuator Acceleration Output</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">纵向控制：执行器加速度输出</translation>
     </message>
     <message>
         <source>Longitudinal MPC Jerk: Acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">纵向MPC抖动：加速度</translation>
     </message>
     <message>
         <source>Longitudinal MPC Jerk: Danger Zone</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">纵向MPC加加速度：危险区域</translation>
     </message>
     <message>
         <source>Longitudinal MPC Jerk: Speed Control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Driving Model: Current</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">纵向MPC加加速度：速度控制</translation>
     </message>
     <message>
         <source>SELECT</source>
-        <translation type="unfinished">选择</translation>
+        <translation type="gpt-5-generated">选择</translation>
     </message>
     <message>
         <source>Select a metric to display</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">选择要显示的度量指标</translation>
     </message>
     <message>
         <source>Show Distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">显示距离</translation>
     </message>
     <message>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">动态</translation>
     </message>
     <message>
         <source>Static</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">静态</translation>
     </message>
     <message>
         <source> inches</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">英寸</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished">关闭</translation>
+        <translation type="gpt-5-generated">关闭</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished">英尺</translation>
+        <translation type="gpt-5-generated">英尺</translation>
     </message>
     <message>
         <source>Full Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">完整地图</translation>
     </message>
     <message>
         <source>Stock openpilot</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">原厂 openpilot</translation>
     </message>
     <message>
         <source>FrogPilot</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">FrogPilot</translation>
     </message>
     <message>
         <source>Mapbox Streets</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 街道</translation>
     </message>
     <message>
         <source>Mapbox Outdoors</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 户外</translation>
     </message>
     <message>
         <source>Mapbox Light</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 亮色</translation>
     </message>
     <message>
         <source>Mapbox Dark</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 深色</translation>
     </message>
     <message>
         <source>Mapbox Navigation Day</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 导航（白天）</translation>
     </message>
     <message>
         <source>Mapbox Navigation Night</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 导航夜间模式</translation>
     </message>
     <message>
         <source>Mapbox Satellite</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 卫星</translation>
     </message>
     <message>
         <source>Mapbox Satellite Streets</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 卫星街道</translation>
     </message>
     <message>
         <source>Mapbox Traffic Night</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mapbox 交通夜间模式</translation>
     </message>
     <message>
         <source>Mike's Personalized Style</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">Mike 的个性化风格</translation>
     </message>
     <message>
         <source>Select a map style</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">选择地图样式</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation type="unfinished">自动</translation>
+        <translation type="gpt-5-generated">自动</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">驾驶员</translation>
     </message>
     <message>
         <source>Standard</source>
-        <translation type="unfinished">标准</translation>
+        <translation type="gpt-5-generated">标准</translation>
     </message>
     <message>
         <source>Wide</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">宽</translation>
     </message>
     <message>
         <source> foot</source>
-        <translation type="unfinished">英尺</translation>
+        <translation type="gpt-5-generated">英尺</translation>
     </message>
     <message>
         <source> inch</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">英寸</translation>
     </message>
     <message>
         <source> meter</source>
-        <translation type="unfinished">米</translation>
+        <translation type="gpt-5-generated">米</translation>
     </message>
     <message>
         <source> meters</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">米</translation>
     </message>
     <message>
         <source> centimeter</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">厘米</translation>
     </message>
     <message>
         <source> centimeters</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">厘米</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the lane-line thickness.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default matches the MUTCD lane-line width standard of 10 centimeters.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置车道线厚度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值符合 MUTCD 车道线宽度标准：10 厘米。</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the driving-path width.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default (1.9 meters) matches the width of a 2019 Lexus ES 350.</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;设置行驶路径宽度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值（1.9米）与2019款雷克萨斯ES 350的车宽相匹配。</translation>
     </message>
     <message>
         <source>&lt;b&gt;Set the road-edge thickness.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Default matches half of the MUTCD lane-line width standard of 10 centimeters.</source>
+        <translation type="gpt-5-generated">&lt;b&gt;设置路缘厚度。&lt;/b&gt;&lt;br&gt;&lt;br&gt;默认值等于 MUTCD 车道线宽度标准 10 厘米的一半。</translation>
+    </message>
+    <message>
+        <source>Driving Model: Current</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4653,102 +4522,71 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
     <name>FrogPilotWheelPanel</name>
     <message>
         <source>Distance Button</source>
-        <translation type="unfinished">距离按钮</translation>
+        <translation type="gpt-5-generated">距离按钮</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action performed when the "Distance" button is pressed.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;按下“距离”按钮时执行的操作。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Distance Button (Long Press)</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">距离按钮（长按）</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action performed when the "Distance" button is pressed for more than 0.5 seconds.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;长按“距离”按钮超过0.5秒时执行的操作。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Distance Button (Very Long Press)</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">距离按钮（超长按）</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action performed when the "Distance" button is pressed for more than 2.5 seconds.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;当按住“距离”按钮超过 2.5 秒时执行的操作。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>LKAS Button</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">LKAS 按钮</translation>
     </message>
     <message>
         <source>&lt;b&gt;Action performed when the "LKAS" button is pressed.&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">&lt;b&gt;按下“LKAS”按钮时执行的操作。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>No Action</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">无操作</translation>
     </message>
     <message>
         <source>Pause Steering</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">暂停转向</translation>
     </message>
     <message>
         <source>Change "Personality Profile"</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">更改“个性档案”</translation>
     </message>
     <message>
         <source>Force openpilot to Coast</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">强制 openpilot 进入滑行</translation>
     </message>
     <message>
         <source>Pause Acceleration/Braking</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">暂停加速/制动</translation>
     </message>
     <message>
         <source>Toggle "Experimental Mode" On/Off</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">切换“实验模式”开/关</translation>
     </message>
     <message>
         <source>Toggle "Traffic Mode" On/Off</source>
-        <translation type="unfinished"></translation>
+        <translation type="gpt-5-generated">切换“交通模式”开/关</translation>
     </message>
     <message>
         <source>SELECT</source>
-        <translation type="unfinished">选择</translation>
+        <translation type="gpt-5-generated">选择</translation>
     </message>
     <message>
         <source>Select a function to assign to this button</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>GMPanel</name>
-    <message>
-        <source>Use External Red Panda</source>
-        <translation type="gpt-5-generated">使用外置熊猫适配器</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Use an external Red Panda for GM vehicles.&lt;/b&gt; Requires a reboot after changing.</source>
-        <translation type="gpt-5-generated">&lt;b&gt;在通用汽车车型上使用外置熊猫（Red Panda）适配器。&lt;/b&gt; 更改后需要重启设备。</translation>
-    </message>
-    <message>
-        <source>GM Stop-and-Go</source>
-        <translation type="gpt-5-generated">GM走走停停（跟车起步）</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Enable GM stop-and-go for following and restart in traffic.&lt;/b&gt; Requires openpilot longitudinal control (alpha).</source>
-        <translation type="gpt-5-generated">&lt;b&gt;在拥堵路况下启用 GM 走走停停，实现自动跟车起步。&lt;/b&gt; 需要开启 openpilot 纵向控制 Alpha 模式。</translation>
-    </message>
-    <message>
-        <source>Reboot required to take effect.</source>
-        <translation type="gpt-5-generated">需要重启才能生效。</translation>
-    </message>
-    <message>
-        <source>Reboot</source>
-        <translation type="gpt-5-generated">重启</translation>
-    </message>
-    <message>
-        <source>Disengage to Reboot</source>
-        <translation type="gpt-5-generated">请先退出 openpilot 再重启</translation>
+        <translation type="gpt-5-generated">选择要分配给此按钮的功能</translation>
     </message>
 </context>
 <context>
@@ -5073,42 +4911,6 @@ Developer - Highly customizable settings for seasoned enthusiasts</source>
         <source>FrogPilot</source>
         <translation type="gpt-5-generated">FrogPilot</translation>
     </message>
-    <message>
-        <source>0 MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> GB</source>
-        <translation type="unfinished">GB</translation>
-    </message>
-    <message>
-        <source> MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hour </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> hours </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minute </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> minutes </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> second</source>
-        <translation type="unfinished"> 秒</translation>
-    </message>
-    <message>
-        <source> seconds</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Reset</name>
@@ -5186,11 +4988,7 @@ This may take up to a minute.</source>
     </message>
     <message>
         <source>FrogPilot</source>
-        <translation>青蛙飞行员</translation>
-    </message>
-    <message>
-        <source>GM</source>
-        <translation>通用汽车</translation>
+        <translation type="gpt-5-generated">FrogPilot</translation>
     </message>
     <message>
         <source>Welcome to FrogPilot! Since you're new to openpilot, the "Minimal" toggle preset has been applied, but you can change this at any time via the "Tuning Level" button!</source>
