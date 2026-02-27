@@ -261,7 +261,7 @@ class Controls:
     if not self.CP.pcmCruise and not self.v_cruise_helper.v_cruise_initialized and resume_pressed:
       self.events.add(EventName.resumeBlocked)
 
-    if not self.CP.notCar:
+    if not self.CP.notCar and not getattr(self.frogpilot_toggles, 'disable_driver_monitoring', False):
       self.events.add_from_msg(self.sm['driverMonitoringState'].events)
 
     # Add car events, ignore if CAN isn't valid

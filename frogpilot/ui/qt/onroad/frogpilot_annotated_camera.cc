@@ -133,6 +133,70 @@ void FrogPilotAnnotatedCameraWidget::updateSignals() {
   }
 }
 
+void FrogPilotAnnotatedCameraWidget::drawCarIcon(QPainter &p, const QPointF &center, const QColor &bodyColor, bool cameraStyle, bool radarStyle) {
+  p.save();
+
+  // Basic car body
+  const float bodyWidth = 32.0f;
+  const float bodyHeight = 18.0f;
+  QRectF bodyRect(center.x() - bodyWidth / 2.0f,
+                  center.y() - bodyHeight / 2.0f,
+                  bodyWidth,
+                  bodyHeight);
+
+  p.setPen(Qt::NoPen);
+  p.setBrush(bodyColor);
+  p.drawRoundedRect(bodyRect, 3.0f, 3.0f);
+
+  // Wheels as small darker rectangles
+  QColor wheelColor = bodyColor.darker(150);
+  const float wheelWidth = 4.0f;
+  const float wheelHeight = 6.0f;
+
+  QRectF frontLeftWheel(bodyRect.left() + 3.0f, bodyRect.top() - wheelHeight / 2.0f, wheelWidth, wheelHeight);
+  QRectF frontRightWheel(bodyRect.right() - wheelWidth - 3.0f, bodyRect.top() - wheelHeight / 2.0f, wheelWidth, wheelHeight);
+  QRectF rearLeftWheel(bodyRect.left() + 3.0f, bodyRect.bottom() - wheelHeight / 2.0f, wheelWidth, wheelHeight);
+  QRectF rearRightWheel(bodyRect.right() - wheelWidth - 3.0f, bodyRect.bottom() - wheelHeight / 2.0f, wheelWidth, wheelHeight);
+
+  p.setBrush(wheelColor);
+  p.drawRect(frontLeftWheel);
+  p.drawRect(frontRightWheel);
+  p.drawRect(rearLeftWheel);
+  p.drawRect(rearRightWheel);
+
+  // Camera style: small triangle above the roof
+  if (cameraStyle) {
+    QPolygonF cameraTri;
+    const float camHeight = 7.0f;
+    cameraTri << QPointF(center.x(), bodyRect.top() - camHeight)
+              << QPointF(center.x() - 6.0f, bodyRect.top())
+              << QPointF(center.x() + 6.0f, bodyRect.top());
+    p.setBrush(bodyColor);
+    p.drawPolygon(cameraTri);
+  }
+
+  // Radar style: arcs in front of the car
+  if (radarStyle) {
+    p.setBrush(Qt::NoBrush);
+    p.setPen(QPen(bodyColor, 2.0f));
+
+    const float arcWidth = 26.0f;
+    const float arcHeight = bodyHeight * 2.2f;
+    const float spacing = 5.0f;
+
+    for (int i = 0; i < 3; ++i) {
+      QRectF arcRect(bodyRect.right() + 2.0f + i * spacing,
+                     center.y() - arcHeight / 2.0f,
+                     arcWidth,
+                     arcHeight);
+      // Draw a forward-facing arc
+      p.drawArc(arcRect, -30 * 16, 60 * 16);
+    }
+  }
+
+  p.restore();
+}
+
 void FrogPilotAnnotatedCameraWidget::updateState(const FrogPilotUIState &fs, const QJsonObject &frogpilot_toggles) {
   const FrogPilotUIScene &frogpilot_scene = fs.frogpilot_scene;
   const SubMaster &fpsm = *(fs.sm);
@@ -276,11 +340,19 @@ void FrogPilotAnnotatedCameraWidget::paintAdjacentPaths(QPainter &p, const cerea
   };
 
   std::function<void(bool, float, const QPolygonF &)> drawAdjacentPathMetric = [&p, &frogpilot_toggles, this](bool isBlindSpot, float width, const QPolygonF &polygon) {
-    QString text = isBlindSpot && frogpilot_toggles.value("blind_spot_path").toBool() ? tr("Vehicle in blind spot") : QString::number(width * distanceConversion, 'f', 2) + leadDistanceUnit;
+    QRectF bounds = polygon.boundingRect();
 
-    p.setFont(InterFont(40, QFont::DemiBold));
-    p.setPen(QPen(whiteColor()));
-    p.drawText(polygon.boundingRect(), Qt::AlignCenter, text);
+    if (isBlindSpot && frogpilot_toggles.value("blind_spot_path").toBool()) {
+      // Draw a small red car icon instead of text when a vehicle is in the blind spot
+      QPointF center = bounds.center();
+      drawCarIcon(p, center, redColor(), false, false);
+    } else {
+      QString text = QString::number(width * distanceConversion, 'f', 2) + leadDistanceUnit;
+
+      p.setFont(InterFont(40, QFont::DemiBold));
+      p.setPen(QPen(whiteColor()));
+      p.drawText(bounds, Qt::AlignCenter, text);
+    }
   };
 
   if (frogpilot_scene.lane_width_left >= frogpilot_toggles.value("lane_detection_width").toDouble()) {
@@ -709,18 +781,17 @@ void FrogPilotAnnotatedCameraWidget::paintRadarTracks(QPainter &p, const cereal:
   capnp::List<cereal::LiveTracks>::Reader liveTracks = fpsm["liveTracks"].getLiveTracks();
   update_radar_tracks(liveTracks, model.getPosition(), s, sm);
 
-  int diameter = 25;
-
   QRect viewport = p.viewport();
 
   for (std::size_t i = 0; i < frogpilot_scene.live_radar_tracks.size(); ++i) {
     const RadarTrackData &track = frogpilot_scene.live_radar_tracks[i];
 
-    float x = std::clamp(static_cast<float>(track.calibrated_point.x()), 0.0f, float(viewport.width() - diameter));
-    float y = std::clamp(static_cast<float>(track.calibrated_point.y()), 0.0f, float(viewport.height() - diameter));
+    // Clamp to keep the icon fully on screen
+    const float halfSize = 14.0f;
+    float x = std::clamp(static_cast<float>(track.calibrated_point.x()), halfSize, float(viewport.width()) - halfSize);
+    float y = std::clamp(static_cast<float>(track.calibrated_point.y()), halfSize, float(viewport.height()) - halfSize);
 
-    p.setBrush(redColor());
-    p.drawEllipse(QPointF(x + diameter / 2.0f, y + diameter / 2.0f), diameter / 2.0f, diameter / 2.0f);
+    drawCarIcon(p, QPointF(x, y), redColor(), false, true);
   }
 
   p.restore();
@@ -750,21 +821,17 @@ void FrogPilotAnnotatedCameraWidget::paintOemVisionObjects(QPainter &p, const Fr
     p.drawPolyline(frogpilot_scene.oem_vision_lane_right);
   }
 
-  // Draw OEM vision objects as orange squares
-  int size = 18;
+  // Draw OEM vision objects as orange camera+car icons
+  const float halfSize = 14.0f;
   for (const auto &obj : frogpilot_scene.oem_vision_objects) {
     float x = obj.calibrated_point.x();
     float y = obj.calibrated_point.y();
 
-    if (x < 0.0f) x = 0.0f;
-    if (y < 0.0f) y = 0.0f;
-    if (x > viewport.width() - size) x = viewport.width() - size;
-    if (y > viewport.height() - size) y = viewport.height() - size;
+    x = std::clamp(x, halfSize, float(viewport.width()) - halfSize);
+    y = std::clamp(y, halfSize, float(viewport.height()) - halfSize);
 
     QColor color = obj.in_path ? QColor(255, 140, 0, 230) : QColor(255, 165, 0, 200);
-    p.setPen(Qt::NoPen);
-    p.setBrush(color);
-    p.drawRect(QRectF(x - size / 2.0f, y - size / 2.0f, size, size));
+    drawCarIcon(p, QPointF(x, y), color, true, false);
   }
 
   p.restore();

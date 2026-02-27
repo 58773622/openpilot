@@ -302,6 +302,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"DeveloperUI", PERSISTENT},
     {"DeviceManagement", PERSISTENT},
     {"DeviceShutdown", PERSISTENT},
+    {"DisableDriverMonitoring", PERSISTENT},
     {"DisableOnroadUploads", PERSISTENT},
     {"DisableOpenpilotLongitudinal", PERSISTENT},
     {"DiscordUsername", PERSISTENT},

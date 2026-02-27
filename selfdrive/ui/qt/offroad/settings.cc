@@ -242,6 +242,13 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
                                     this);
   addItem(quiet_fan);
 
+  auto disable_driver_monitoring = new ParamControl("DisableDriverMonitoring",
+                                                    tr("屏蔽驾驶员监控"),
+                                                    tr("完全关闭驾驶员监控模型和相关提醒，仅在测试或赛道环境使用。日常驾驶请保持关闭，以确保安全。"),
+                                                    "",
+                                                    this);
+  addItem(disable_driver_monitoring);
+
   QObject::connect(use_red_panda, &ToggleControl::toggleFlipped, [this](bool state) {
     Q_UNUSED(state);
 

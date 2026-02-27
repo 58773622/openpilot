@@ -82,6 +82,8 @@ private:
   void paintTurnSignals(QPainter &p, const cereal::CarState::Reader &carState);
   void updateSignals();
 
+  void drawCarIcon(QPainter &p, const QPointF &center, const QColor &bodyColor, bool cameraStyle = false, bool radarStyle = false);
+
   int animationFrameIndex;
   int signalAnimationLength;
   int signalHeight;

@@ -208,6 +208,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("DeveloperUI", "1", 3, "0"),
   ("DeviceManagement", "1", 1, "0"),
   ("DeviceShutdown", "9", 1, "33"),
+  ("DisableDriverMonitoring", "0", 2, "0"),
   ("DisableOnroadUploads", "0", 2, "0"),
   ("DisableOpenpilotLongitudinal", "0", 0, "0"),
   ("DiscordUsername", "", 0, ""),
@@ -773,6 +774,9 @@ class FrogPilotVariables:
     toggle.no_logging = device_management and (params.get_bool("NoLogging") if tuning_level >= level["NoLogging"] else default.get_bool("NoLogging")) and not self.vetting_branch or toggle.force_onroad
     toggle.no_uploads = device_management and (params.get_bool("NoUploads") if tuning_level >= level["NoUploads"] else default.get_bool("NoUploads")) and not self.vetting_branch or toggle.use_higher_bitrate
     toggle.no_onroad_uploads = toggle.no_uploads and (params.get_bool("DisableOnroadUploads") if tuning_level >= level["DisableOnroadUploads"] else default.get_bool("DisableOnroadUploads")) and not toggle.use_higher_bitrate
+
+    # Driver monitoring
+    toggle.disable_driver_monitoring = params.get_bool("DisableDriverMonitoring")
 
     distance_button_control = params.get_int("DistanceButtonControl") if tuning_level >= level["DistanceButtonControl"] else default.get_int("DistanceButtonControl")
     toggle.experimental_mode_via_distance = toggle.openpilot_longitudinal and distance_button_control == BUTTON_FUNCTIONS["EXPERIMENTAL_MODE"]

@@ -170,6 +170,7 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(FrogPilotSettingsWindow *parent) 
     {"ExperimentalGMTune", tr("FrogsGoMoo's Experimental Tune"), tr("<b>Experimental GM tune by FrogsGoMoo</b> that attempts to smoothen stopping and takeoff control. Use at your own risk!"), ""},
     {"GMPedalLongitudinal", tr("Use Pedal for Longitudinal Control"), tr("<b>Use the pedal interceptor for longitudinal control</b> instead of camera ACC/Redneck when available."), ""},
     {"UseRedPanda", tr("Use External Red Panda"), tr("<b>Use an external Red Panda for GM vehicles.</b> Requires a reboot after changing."), ""},
+    {"DisableDriverMonitoring", tr("Disable Driver Monitoring"), QString("<b>%1</b><br><br>%2").arg(tr("WARNING: This will significantly reduce safety as the system may not detect driver inattentiveness!")).arg(tr("<b>Completely disable driver monitoring alerts and the driver monitoring model.</b>")), ""},
     {"LongPitch", tr("Smooth Pedal Response on Hills"), tr("<b>Smoothen acceleration and braking</b> when driving downhill/uphill."), ""},
     {"VoltSNG", tr("Stop-and-Go Hack"), tr("<b>Force stop-and-go</b> on the 2017 Chevy Volt."), ""},
 
