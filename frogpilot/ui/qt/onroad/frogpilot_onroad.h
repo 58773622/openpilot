@@ -19,6 +19,7 @@ private:
   void paintFPS(QPainter &p, const QRect &rect);
   void paintSteeringTorqueBorder(QPainter &p, const QRect &rect);
   void paintTurnSignalBorder(QPainter &p, const QRect &rect);
+  void paintBottomStatusBar(QPainter &p, const QRect &rect);
 
   bool blindSpotLeft;
   bool blindSpotRight;
@@ -29,6 +30,18 @@ private:
   bool showSteering;
   bool turnSignalLeft;
   bool turnSignalRight;
+
+  bool hasLead;
+  bool isMetricUnits;
+
+  double headwayS;
+  double leadDistanceM;
+  double leadSpeed;
+
+  QString gearLabel;
+
+  int cpuTempC;
+  int memoryUsage;
 
   float steer;
 

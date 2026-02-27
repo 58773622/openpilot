@@ -478,14 +478,31 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   painter.setBrush(QColor(218, 202, 37, 255));
   painter.drawPolygon(glow, std::size(glow));
 
-  // chevron
-  QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  // lead box: distance-scaled rounded rectangle instead of chevron
+  float boxWidth = sz * 1.8f;
+  float boxHeight = sz;
+  QRectF leadRect(x - boxWidth / 2.0f,
+                  y,
+                  boxWidth,
+                  boxHeight);
+
+  QColor fillColor;
   if (!adjacent && fs->frogpilot_scene.use_stock_colors) {
-    painter.setBrush(redColor(fillAlpha));
+    fillColor = redColor(fillAlpha);
   } else {
-    painter.setBrush(QColor(marker_color.red(), marker_color.green(), marker_color.blue(), fillAlpha));
+    fillColor = QColor(marker_color.red(), marker_color.green(), marker_color.blue(), fillAlpha);
   }
-  painter.drawPolygon(chevron, std::size(chevron));
+
+  painter.setBrush(fillColor);
+  painter.setPen(QPen(whiteColor(), 4.0f));
+  painter.drawRoundedRect(leadRect, 18.0f, 18.0f);
+
+  // Maintain a chevron-like reference geometry for lead metrics text placement
+  QPointF chevron[] = {
+    QPointF(leadRect.right(), leadRect.bottom()),
+    QPointF(leadRect.center().x(), leadRect.top()),
+    QPointF(leadRect.left(), leadRect.bottom()),
+  };
 
   if (fs->frogpilot_toggles.value("lead_metrics").toBool()) {
     frogpilot_nvg->paintLeadMetrics(painter, adjacent, chevron, frogpilotPlan, lead_data);

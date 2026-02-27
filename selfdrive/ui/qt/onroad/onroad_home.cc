@@ -52,6 +52,10 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   // FrogPilot variables
   frogpilot_onroad = new FrogPilotOnroadWindow(this);
   frogpilot_onroad->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+  // Make sure the FrogPilot overlay is visible and above the main content so the bottom status bar is drawn.
+  frogpilot_onroad->setGeometry(rect());
+  frogpilot_onroad->raise();
+  frogpilot_onroad->show();
 }
 
 void OnroadWindow::resizeEvent(QResizeEvent *event) {

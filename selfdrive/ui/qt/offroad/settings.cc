@@ -497,32 +497,18 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(frogpilotSettingsWindow, &FrogPilotSettingsWindow::openSubPanel, [this]() {subPanelOpen=true;});
   QObject::connect(frogpilotSettingsWindow, &FrogPilotSettingsWindow::openSubSubPanel, [this]() {subSubPanelOpen=true;});
 
-  bool is_gm = false;
-  auto cp_bytes = params.get("CarParamsPersistent");
-  if (!cp_bytes.empty()) {
-    AlignedBuffer aligned_buf;
-    capnp::FlatArrayMessageReader cmsg(aligned_buf.align(cp_bytes.data(), cp_bytes.size()));
-    cereal::CarParams::Reader CP = cmsg.getRoot<cereal::CarParams>();
-    is_gm = CP.getCarName() == "gm";
-  }
-
-  GMPanel *gm_panel = nullptr;
-  if (is_gm) {
-    gm_panel = new GMPanel(this);
-  }
+  // Always expose the GM panel so GM-specific toggles are available even
+  // before CarParamsPersistent is populated after a fresh install.
+  GMPanel *gm_panel = new GMPanel(this);
 
   QList<QPair<QString, QWidget *>> panels = {
     {tr("Device"), device},
     {tr("Network"), new Networking(this)},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
+    {tr("GM"), gm_panel},
+    {tr("FrogPilot"), frogpilotSettingsWindow},
   };
-
-  if (is_gm && gm_panel != nullptr) {
-    panels.push_back({tr("GM"), gm_panel});
-  }
-
-  panels.push_back({tr("FrogPilot"), frogpilotSettingsWindow});
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {
