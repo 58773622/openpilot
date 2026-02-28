@@ -189,6 +189,11 @@ function launch {
   # write tmux scrollback to a file
   tmux capture-pane -pq -S-1000 > /tmp/launch_log
 
+  # FrogPilot: sync system time once on boot (best-effort, non-fatal)
+  if [ -f "selfdrive/sync_time.py" ]; then
+    python3 selfdrive/sync_time.py || echo "Time sync failed, continuing without correction"
+  fi
+
   # start manager
   cd system/manager
   if [ ! -f $DIR/prebuilt ]; then

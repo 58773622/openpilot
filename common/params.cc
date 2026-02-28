@@ -579,6 +579,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"UseKonikServer", PERSISTENT},
     {"UseRedPanda", PERSISTENT},
     {"GMStopAndGo", PERSISTENT},
+    {"GMStopAndGoDistance", PERSISTENT},
     {"GMDisableGps", PERSISTENT},
     {"QuietFan", PERSISTENT},
     {"UseSI", PERSISTENT},

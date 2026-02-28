@@ -211,15 +211,15 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
   setSpacing(50);
 
   auto use_red_panda = new ParamControl("UseRedPanda",
-                                        tr("Use External Red Panda"),
-                                        tr("<b>Use an external Red Panda for GM vehicles.</b> Requires a reboot after changing."),
+                                        tr("使用外部红熊"),
+                                        tr("<b>为通用（GM）车辆使用外部 Red Panda 设备。 更改后需要重启。"),
                                         "",
                                         this);
   addItem(use_red_panda);
 
   auto gm_stop_and_go = new ParamControl("GMStopAndGo",
-                                         tr("GM Stop-and-Go"),
-                                         tr("<b>Enable GM stop-and-go for following and restart in traffic.</b> Requires openpilot longitudinal control (alpha)."),
+                                         tr("GM 停走功能（实验）"),
+                                         tr("<b>启用 GM 停走功能，用于跟车及在交通中自动重新启动"),
                                          "",
                                          this);
 
@@ -227,6 +227,16 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
   bool show_gm_sng = params.getBool("ExperimentalLongitudinalEnabled");
   gm_stop_and_go->setVisible(show_gm_sng);
   addItem(gm_stop_and_go);
+
+  // GM stop-and-go follow-start distance (absolute distance to lead at which RES+ is triggered)
+  std::vector<QString> gm_sng_distance_buttons{tr("3 m"), tr("4 m"), tr("5 m"), tr("6 m"), tr("8 m")};
+  auto gm_sng_distance = new ButtonParamControl("GMStopAndGoDistance",
+                                                tr("GM 停走启动距离（实验）"),
+                                                tr("<b>设置与前车的距离，当车距达到该值时，GM 停走功能将通过模拟 RES+ 操作自动恢复行驶。"),
+                                                "",
+                                                gm_sng_distance_buttons);
+  gm_sng_distance->setVisible(show_gm_sng);
+  addItem(gm_sng_distance);
 
   auto gm_disable_gps = new ParamControl("GMDisableGps",
                                          tr("屏蔽 GPS提示"),
@@ -243,8 +253,8 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
   addItem(quiet_fan);
 
   auto disable_driver_monitoring = new ParamControl("DisableDriverMonitoring",
-                                                    tr("屏蔽驾驶员监控"),
-                                                    tr("完全关闭驾驶员监控模型和相关提醒，仅在测试或赛道环境使用。日常驾驶请保持关闭，以确保安全。"),
+                                                    tr("屏蔽驾驶员监控（实验）"),
+                                                    tr("完全关闭驾驶员监控模型和相关提醒，日常驾驶请保持关闭，以确保安全。"),
                                                     "",
                                                     this);
   addItem(disable_driver_monitoring);

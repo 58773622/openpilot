@@ -1,7 +1,7 @@
 [
   {
     "name": "boot",
-    "url": "https://www.dropbox.com/scl/fi/z8gcamb7n78xqb515kfgq/boot.img.xz?rlkey=r2zxothb3pz0q9rtqysr1zhwv&st=f0acze3w&dl=1",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/boot.img.xz",
     "hash": "b997aae3f1c93de82449ef7f23f30ff482b0978f3d0ac08219366f9ce362ad7a",
     "hash_raw": "b997aae3f1c93de82449ef7f23f30ff482b0978f3d0ac08219366f9ce362ad7a",
     "size": 16029696,
@@ -10,13 +10,13 @@
     "has_ab": true,
     "alt": {
       "hash": "5674ea6767e7198cf1e7def3de66a57061f001ed76d43dc4b4f84de545c53c6f",
-      "url": "https://commadist.azureedge.net/agnosupdate/boot-5674ea6767e7198cf1e7def3de66a57061f001ed76d43dc4b4f84de545c53c6f.img.xz",
+      "url": "https://skyunlock.cn:5600/firmware/097fp/boot.img.xz",
       "size": 16029696
     }
   },
   {
     "name": "abl",
-    "url": "https://commadist.azureedge.net/agnosupdate/abl-eeb89a74c968a5a2ffce96f23158b72e03e2814adf72ef59d1200ba8ea5d2f39.img.xz",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/abl-eeb89a74c968a5a2ffce96f23158b72e03e2814adf72ef59d1200ba8ea5d2f39.img.xz",
     "hash": "eeb89a74c968a5a2ffce96f23158b72e03e2814adf72ef59d1200ba8ea5d2f39",
     "hash_raw": "eeb89a74c968a5a2ffce96f23158b72e03e2814adf72ef59d1200ba8ea5d2f39",
     "size": 274432,
@@ -26,7 +26,7 @@
   },
   {
     "name": "xbl",
-    "url": "https://commadist.azureedge.net/agnosupdate/xbl-bcef195b00a1ab685da601f4072722569773ab161e91c8753ad99ca4217a28f5.img.xz",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/xbl-bcef195b00a1ab685da601f4072722569773ab161e91c8753ad99ca4217a28f5.img.xz",
     "hash": "bcef195b00a1ab685da601f4072722569773ab161e91c8753ad99ca4217a28f5",
     "hash_raw": "bcef195b00a1ab685da601f4072722569773ab161e91c8753ad99ca4217a28f5",
     "size": 3282672,
@@ -36,7 +36,7 @@
   },
   {
     "name": "xbl_config",
-    "url": "https://commadist.azureedge.net/agnosupdate/xbl_config-19791056558c16f8dae787531b5e30b3b3db2ded9d666688df45ce1b91a72bac.img.xz",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/xbl_config-19791056558c16f8dae787531b5e30b3b3db2ded9d666688df45ce1b91a72bac.img.xz",
     "hash": "19791056558c16f8dae787531b5e30b3b3db2ded9d666688df45ce1b91a72bac",
     "hash_raw": "19791056558c16f8dae787531b5e30b3b3db2ded9d666688df45ce1b91a72bac",
     "size": 98124,
@@ -46,7 +46,7 @@
   },
   {
     "name": "devcfg",
-    "url": "https://commadist.azureedge.net/agnosupdate/devcfg-be44b73dda5be840b09d5347d536459e31098da3fea97596956c0bdad19bdf27.img.xz",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/devcfg-be44b73dda5be840b09d5347d536459e31098da3fea97596956c0bdad19bdf27.img.xz",
     "hash": "be44b73dda5be840b09d5347d536459e31098da3fea97596956c0bdad19bdf27",
     "hash_raw": "be44b73dda5be840b09d5347d536459e31098da3fea97596956c0bdad19bdf27",
     "size": 40336,
@@ -56,7 +56,7 @@
   },
   {
     "name": "aop",
-    "url": "https://commadist.azureedge.net/agnosupdate/aop-5d764611a683d6a738cf06a1dcf8a926d0f47b5117ad40d3054167de6dd8bd0f.img.xz",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/aop-5d764611a683d6a738cf06a1dcf8a926d0f47b5117ad40d3054167de6dd8bd0f.img.xz",
     "hash": "5d764611a683d6a738cf06a1dcf8a926d0f47b5117ad40d3054167de6dd8bd0f",
     "hash_raw": "5d764611a683d6a738cf06a1dcf8a926d0f47b5117ad40d3054167de6dd8bd0f",
     "size": 184364,
@@ -66,7 +66,7 @@
   },
   {
     "name": "system",
-    "url": "https://www.dropbox.com/scl/fi/n22f3eex1z52dbrhhxqry/system.img.xz?rlkey=yw4ult7s3sdm6b7d31hrm3zx8&st=of6m7zis&dl=1",
+    "url": "https://skyunlock.cn:5600/firmware/097fp/system.img.xz",
     "hash": "be1c6bb9ee5e06779087b1b81e09b6df61d942566b0f8d4539c452179c661782",
     "hash_raw": "a5f84e68d199466fda5c9aead760b90a4cd2d2ef9a418708b9794d95bb03ec5b",
     "size": 10737418240,
@@ -75,7 +75,7 @@
     "has_ab": true,
     "alt": {
       "hash": "328e90c62068222dfd98f71dd3f6251fcb962f082b49c6be66ab2699f5db6f4f",
-      "url": "https://commadist.azureedge.net/agnosupdate/system-1badfe72851628d6cf9200a53a6151bb4e797b49c717141409fc57138eae388a.img.xz",
+      "url": "https://skyunlock.cn:5600/firmware/097fp/system.img.xz",
       "size": 10737418240
     }
   }

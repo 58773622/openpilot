@@ -47,6 +47,10 @@ class CarController(CarControllerBase):
     self.lka_steering_cmd_counter = 0
     self.lka_icon_status_last = (False, False)
 
+    # GM stop-and-go (SNG) state for stock longitudinal (SDGM) using RES+ presses
+    self.sng_last_resume = False
+    self.sng_res_press_count = 0
+
     self.params = CarControllerParams(self.CP)
     self.is_volt = self.CP.carFingerprint in (CAR.CHEVROLET_VOLT, CAR.CHEVROLET_VOLT_2019, CAR.CHEVROLET_VOLT_ASCM, CAR.CHEVROLET_VOLT_CAMERA, CAR.CHEVROLET_VOLT_CC)
     self.mass = CP.mass
@@ -296,10 +300,37 @@ class CarController(CarControllerBase):
       self.cancel_counter = self.cancel_counter + 1 if CC.cruiseControl.cancel else 0
 
       # Stock longitudinal, integrated at camera
-      if (self.frame - self.last_button_frame) * DT_CTRL > 0.04:
+      time_since_last_button = (self.frame - self.last_button_frame) * DT_CTRL
+
+      # Handle user cancel requests on the camera bus
+      if time_since_last_button > 0.04:
         if self.cancel_counter > CAMERA_CANCEL_DELAY_FRAMES:
           self.last_button_frame = self.frame
           can_sends.append(gmcan.create_buttons(self.packer_pt, CanBus.CAMERA, CS.buttons_counter, CruiseButtons.CANCEL))
+
+      # GM stop-and-go via RES+ for SDGM cars with stock longitudinal at the camera.
+      # The higher level controls logic already ensures CC.cruiseControl.resume is only
+      # asserted when autoResumeSng is enabled, gm_stop_and_go is true, the car is at
+      # a standstill, and the lead has moved sufficiently.
+      if (
+        self.CP.carName == "gm"
+        and self.CP.autoResumeSng
+        and self.CP.carFingerprint in SDGM_CAR
+      ):
+        resume = CC.cruiseControl.resume
+
+        # Detect rising edge of the resume request to start a new RES+ sequence
+        if resume and not self.sng_last_resume:
+          # Schedule two RES+ presses
+          self.sng_res_press_count = 2
+
+        self.sng_last_resume = resume
+
+        # Rate-limit RES+ presses so we don't spam the camera
+        if self.sng_res_press_count > 0 and time_since_last_button > 0.3:
+          self.last_button_frame = self.frame
+          self.sng_res_press_count -= 1
+          can_sends.append(gmcan.create_buttons(self.packer_pt, CanBus.CAMERA, CS.buttons_counter, CruiseButtons.RES_ACCEL))
 
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       # Silence "Take Steering" alert sent by camera, forward PSCMStatus with HandsOffSWlDetectionStatus=1

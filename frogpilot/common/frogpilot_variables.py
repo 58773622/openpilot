@@ -238,6 +238,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("GMPedalLongitudinal", "1", 2, "1"),
   ("GMDisableGps", "1", 0, "1"),
   ("GMStopAndGo", "0", 2, "0"),
+  ("GMStopAndGoDistance", "2", 2, "2"),
   ("GithubSshKeys", "", 0, ""),
   ("GithubUsername", "", 0, ""),
   ("GoatScream", "0", 1, "0"),

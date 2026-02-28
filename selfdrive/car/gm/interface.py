@@ -150,7 +150,7 @@ class CarInterface(CarInterfaceBase):
       ret.radarUnavailable = 0x460 not in fingerprint[CanBus.OBSTACLE]
       ret.pcmCruise = True
       ret.minEnableSpeed = 5 * CV.KPH_TO_MS
-      ret.minSteerSpeed = 10 * CV.KPH_TO_MS
+      ret.minSteerSpeed = 10 * CV.MPH_TO_MS
       if candidate in SDGM_CAR:
         ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_SDGM
         # Use C9 brake bit only on SDGM variants that lack 0xBE (ECMAcceleratorPos)
@@ -159,6 +159,7 @@ class CarInterface(CarInterfaceBase):
           ret.flags |= GMFlags.FORCE_BRAKE_C9.value
         ret.minEnableSpeed = -1.  # engage speed is decided by pcm
         ret.minSteerSpeed = 7 * CV.MPH_TO_MS
+        ret.autoResumeSng = True
       elif candidate in ASCM_INT:
         ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_GM_HW_CAM
         ret.minSteerSpeed = 7 * CV.MPH_TO_MS

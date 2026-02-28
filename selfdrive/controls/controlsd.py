@@ -98,7 +98,13 @@ class Controls:
     # TODO: de-couple controlsd with card/conflate on carState without introducing controls mismatches
     self.car_state_sock = messaging.sub_sock('carState', timeout=20)
 
+    # When driver monitoring is disabled (or hardware missing), don't treat missing
+    # driverMonitoringState/driverCameraState/managerState as a comms failure.
+    disable_dm = self.params.get_bool("DisableDriverMonitoring")
+
     ignore = self.sensor_packets + ['testJoystick']
+    if disable_dm:
+      ignore += ['driverCameraState', 'driverMonitoringState', 'managerState']
     if SIMULATION:
       ignore += ['driverCameraState', 'managerState']
     if REPLAY:
@@ -846,8 +852,22 @@ class Controls:
           self.gm_sng_lead_d_at_stop = float(lead_one.dRel)
           self.gm_sng_resume_triggered = False
         else:
-          if not self.gm_sng_resume_triggered and float(lead_one.dRel) - self.gm_sng_lead_d_at_stop > 8.0:
-            self.gm_sng_resume_triggered = True
+          if not self.gm_sng_resume_triggered:
+            # GM stop-and-go follow-start distance is configured via the GMStopAndGoDistance param
+            # as a discrete index into [3, 4, 5, 6, 8] meters. Default index 2 corresponds to 5 m.
+            try:
+              gm_sng_distance_idx = int(self.params.get("GMStopAndGoDistance") or "2")
+            except (TypeError, ValueError):
+              gm_sng_distance_idx = 2
+
+            gm_sng_distance_options = [3.0, 4.0, 5.0, 6.0, 8.0]
+            if gm_sng_distance_idx < 0 or gm_sng_distance_idx >= len(gm_sng_distance_options):
+              gm_sng_distance_idx = 2
+
+            gm_sng_trigger_distance = gm_sng_distance_options[gm_sng_distance_idx]
+
+            if float(lead_one.dRel) >= gm_sng_trigger_distance:
+              self.gm_sng_resume_triggered = True
       else:
         self.gm_sng_active = False
         self.gm_sng_resume_triggered = False
