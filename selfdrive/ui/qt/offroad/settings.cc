@@ -221,20 +221,46 @@ GMPanel::GMPanel(SettingsWindow *parent) : ListWidget(parent) {
                                          tr("GM 停走功能（实验）"),
                                          tr("<b>启用 GM 停走功能，用于跟车及在交通中自动重新启动"),
                                          "",
-                                         this);
+                                          this);
 
   Params params;
   bool show_gm_sng = params.getBool("ExperimentalLongitudinalEnabled");
   gm_stop_and_go->setVisible(show_gm_sng);
   addItem(gm_stop_and_go);
 
-  // GM stop-and-go follow-start distance (absolute distance to lead at which RES+ is triggered)
-  std::vector<QString> gm_sng_distance_buttons{tr("3 m"), tr("4 m"), tr("5 m"), tr("6 m"), tr("8 m")};
-  auto gm_sng_distance = new ButtonParamControl("GMStopAndGoDistance",
-                                                tr("GM 停走启动距离（实验）"),
-                                                tr("<b>设置与前车的距离，当车距达到该值时，GM 停走功能将通过模拟 RES+ 操作自动恢复行驶。"),
-                                                "",
-                                                gm_sng_distance_buttons);
+  // GM stop-and-go follow-start distance (absolute distance to lead at which RES+ is triggered).
+  // Use a second-level dialog to avoid horizontal overflow of multiple buttons on small screens.
+  QStringList gm_sng_distance_options{tr("3 m"), tr("4 m"), tr("5 m"), tr("6 m"), tr("8 m")};
+
+  ButtonControl *gm_sng_distance = new ButtonControl(tr("GM 停走启动距离（实验）"), "",
+                                                     tr("<b>设置与前车的距离，当车距达到该值时，GM 停走功能将通过模拟 RES+ 操作自动恢复行驶。"));
+
+  // Initialize button label from stored param (index into gm_sng_distance_options, default 5 m / index 2).
+  int gm_sng_distance_idx = QString::fromStdString(params.get("GMStopAndGoDistance")).toInt();
+  if (gm_sng_distance_idx < 0 || gm_sng_distance_idx >= gm_sng_distance_options.size()) {
+    gm_sng_distance_idx = 2;
+  }
+  gm_sng_distance->setValue(gm_sng_distance_options[gm_sng_distance_idx]);
+
+  QObject::connect(gm_sng_distance, &ButtonControl::clicked, [gm_sng_distance_options, gm_sng_distance, this]() {
+    Params params;
+
+    int current_idx = QString::fromStdString(params.get("GMStopAndGoDistance")).toInt();
+    if (current_idx < 0 || current_idx >= gm_sng_distance_options.size()) {
+      current_idx = 2;
+    }
+
+    QString current_value = gm_sng_distance_options[current_idx];
+    QString selection = MultiOptionDialog::getSelection(tr("选择 GM 停走启动距离"), gm_sng_distance_options, current_value, this);
+    if (!selection.isEmpty()) {
+      int new_idx = gm_sng_distance_options.indexOf(selection);
+      if (new_idx >= 0) {
+        params.put("GMStopAndGoDistance", std::to_string(new_idx));
+        gm_sng_distance->setValue(selection);
+      }
+    }
+  });
+
   gm_sng_distance->setVisible(show_gm_sng);
   addItem(gm_sng_distance);
 
