@@ -22,7 +22,7 @@ class StreamingDecompressor:
   def __init__(self, url: str) -> None:
     self.buf = b""
 
-    self.req = requests.get(url, stream=True, headers={'Accept-Encoding': None}, timeout=60)
+    self.req = requests.get(url, stream=True, headers={'Accept-Encoding': None}, timeout=60, verify=False)
     self.it = self.req.iter_content(chunk_size=1024 * 1024)
     self.decompressor = lzma.LZMADecompressor(format=lzma.FORMAT_AUTO)
     self.eof = False
